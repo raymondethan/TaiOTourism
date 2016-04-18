@@ -2,9 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="hk.ust.cse.comp4521.taiotourism.MainActivity">
-    <item
+    <!--<item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
+
+    <item
+        android:id="@+id/action_gotomap"
+        android:icon="@drawable/map_icon"
+        app:showAsAction="always"
+        android:title="Go To Map" />
 </menu>
