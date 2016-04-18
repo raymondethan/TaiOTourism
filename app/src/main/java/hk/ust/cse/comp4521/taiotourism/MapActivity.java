@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentSender;
 import android.content.Loader;
 import android.content.SharedPreferences;
@@ -153,6 +154,8 @@ public class MapActivity extends Activity implements LoaderManager.LoaderCallbac
 
         // Build the Google API client so that connections can be established
         buildGoogleApiClient();
+
+        Intent in = getIntent();
 
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";

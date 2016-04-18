@@ -1,5 +1,6 @@
 package hk.ust.cse.comp4521.taiotourism;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -44,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        if (id == R.id.action_gotomap) {
+            Intent intent = new Intent(this,MapActivity.class);
+            startActivity(intent);
             return true;
         }
 
