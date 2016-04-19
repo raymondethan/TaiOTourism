@@ -7,10 +7,11 @@
         android:orderInCategory="100"
         android:title="@string/action_settings"
         app:showAsAction="never" />-->
-
     <item
         android:id="@+id/action_gotomap"
-        android:icon="@drawable/map_icon"
-        app:showAsAction="always"
-        android:title="Go To Map" />
+        android:orderInCategory="99"
+        android:title="action_gotomap"
+        android:icon="@drawable/ic_map_black_24dp"
+        app:showAsAction="always" />
+
 </menu>
