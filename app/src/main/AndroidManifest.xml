@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="hk.ust.cse.comp4521.taiotourism">
 
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -21,10 +20,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".POIActivity"
-            android:label="@string/title_activity_poi"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
 
         <activity
 
@@ -36,7 +31,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAUgcUgiJgaUtCHpdgcorPVMFNKHpgmOZ0" />
 
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity
+            android:name=".DrawerActivity"
+            android:label="@string/title_activity_drawer"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".POIActivity"
+            android:label="@string/title_activity_poi"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
