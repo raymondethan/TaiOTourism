@@ -50,14 +50,19 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+
+import static android.provider.BaseColumns._ID;
 
 
 public class MapActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, GoogleMap.OnInfoWindowClickListener,
@@ -532,8 +537,38 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
     }
+
+    /**
+     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
+     * just add a marker near Africa.
+     * <p>
+     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     */
+//    private void setUpMarkers(Cursor markerCursor) {
+//
+//        while (!mapReady) {
+//            Log.d("Map-","map not ready");
+//        }
+//        //Move to the first row in the cursor
+//        markerCursor.moveToFirst();
+//
+//        do{ // for all the rows in the cursor
+//
+//
+//            // Get the poiName's name, latitude and longitude
+//            id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
+//            poiName = markerCursor.getString(markerCursor.getColumnIndexOrThrow(COLUMN_POI));
+//            latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(COLUMN_LATITUDE));
+//            longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(COLUMN_LONGITUDE));
+//
+//            Log.i(TAG, "Marker at: "+id+poiName+latitude+longitude);
+//
+//        } while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
+//
+//        markerCursor.close();
+//
+//    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
@@ -557,8 +592,20 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        return false;
+        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.map_popup, null);
+        final PopupWindow popupWindow = new PopupWindow(
+                popupView,
+                Toolbar.LayoutParams.WRAP_CONTENT,
+                Toolbar.LayoutParams.WRAP_CONTENT);
+
+        //popupWindow.showAsDropDown(btnOpenPopup, 50, -30);
+        //SHOULD I USE LINEAR LAYOUT OR FINDVIEWBYID (WHICH CAUSES A NULL POINTER EXCEPTION)
+        popupWindow.showAtLocation(new LinearLayout(this), Gravity.BOTTOM, 100, 100);
+        return true;
     }
+
+
 
     @Override
     public void onMarkerDragStart(Marker marker) {
@@ -673,6 +720,12 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerDragListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+
+        // Add a marker in Sydney, Australia, and move the camera.
+        LatLng sydney = new LatLng(22.253155, 113.858185);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Tai O"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
 
     }
 
