@@ -3,15 +3,77 @@
     android:layout_width="wrap_content"
     android:id="@+id/popup"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@color/popupBackground">
+    android:orientation="horizontal"
+    android:background="@color/popupBackground"
+    android:gravity="center_horizontal">
 
-    <Button
-        android:id="@+id/close"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Close" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/popup_image_layout"
+        android:paddingLeft="5dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:id="@+id/popup_image"
+            android:layout_gravity="left"
+            android:paddingRight="2px"
+            android:src="@mipmap/taiotest"
+            android:scaleType="fitXY"
+            android:minWidth="100dp"
+            android:minHeight="100dp"
+            android:layout_marginBottom="5dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/popup_text_layout"
+        android:layout_marginBottom="5dp"
+        android:paddingRight="5dp"
+        android:weightSum="1">
+
+        <ImageButton
+            android:layout_width="33dp"
+            android:layout_height="31dp"
+            android:id="@+id/popup_exit"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_close_black_24dp" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Medium Text"
+            android:id="@+id/POI_title"
+            android:layout_gravity="center_horizontal|left|top"
+            android:layout_above="@+id/POI_description"
+            android:paddingBottom="5dp"
+            android:layout_width="wrap_content"
+            android:minWidth="200dp" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Small Text"
+            android:id="@+id/POI_description"
+            android:layout_gravity="center_vertical|left"
+            android:paddingTop="1dp"
+            android:paddingBottom="3dp"
+            android:layout_below="@+id/POI_title"
+            android:minWidth="200dp" />
+
+        <ImageButton
+            android:layout_width="36dp"
+            android:layout_height="33dp"
+            android:id="@+id/POI_view_button"
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:paddingTop="1dp"
+            android:layout_marginBottom="3dp" />
+    </LinearLayout>
 
 </LinearLayout>

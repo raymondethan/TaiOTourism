@@ -34,9 +34,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.appindexing.Action;
@@ -596,12 +603,48 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         View popupView = layoutInflater.inflate(R.layout.map_popup, null);
         final PopupWindow popupWindow = new PopupWindow(
                 popupView,
-                Toolbar.LayoutParams.WRAP_CONTENT,
-                Toolbar.LayoutParams.WRAP_CONTENT);
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ImageView image = (ImageView) popupView.findViewById(R.id.popup_image);
+        image.setImageResource(R.mipmap.taiotest);
 
-        //popupWindow.showAsDropDown(btnOpenPopup, 50, -30);
+        TextView title = (TextView) popupView.findViewById(R.id.POI_title);
+        TextView description = (TextView) popupView.findViewById(R.id.POI_description);
+
+        title.setText("Random POI");
+        description.setText("This is the description of the POI bla bla bla bla bla bla bla bla bla bla");
+
+        //Popup dismisses when the user touches outside the screen or clicks the exit button
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        //exit button
+        ImageButton exit = (ImageButton) popupView.findViewById(R.id.popup_exit);
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        //set click actions for popup and map
+        popupView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), POIActivity.class);
+                startActivity(intent);
+            }
+        });
+        //Do I need to duplicate this code?
+        ImageButton go_to_poi = (ImageButton) popupView.findViewById(R.id.POI_view_button);
+        go_to_poi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), POIActivity.class);
+                startActivity(intent);
+            }
+        });
         //SHOULD I USE LINEAR LAYOUT OR FINDVIEWBYID (WHICH CAUSES A NULL POINTER EXCEPTION)
-        popupWindow.showAtLocation(new LinearLayout(this), Gravity.BOTTOM, 100, 100);
+        popupWindow.showAtLocation(new LinearLayout(this), Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 0);
         return true;
     }
 

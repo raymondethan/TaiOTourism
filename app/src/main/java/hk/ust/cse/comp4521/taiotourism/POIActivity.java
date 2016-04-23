@@ -1,5 +1,6 @@
 package hk.ust.cse.comp4521.taiotourism;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,5 +25,7 @@ public class POIActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        Intent in = getIntent();
     }
 }
