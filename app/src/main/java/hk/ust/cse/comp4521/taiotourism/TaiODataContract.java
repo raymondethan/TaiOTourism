@@ -16,7 +16,7 @@ public class TaiODataContract {
         public static final String TABLE_NAME = "POI";
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_COORDINATES = "coordinates";
-        public static final String COLUMN_CATEGORY = "coordinates";
+        public static final String COLUMN_CATEGORY = "category";
         public static final String COLUMN_TOUR_ORDER = "tourOrder";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_RATING = "rating";
