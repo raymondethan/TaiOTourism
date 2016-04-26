@@ -1,6 +1,10 @@
 package hk.ust.cse.comp4521.taiotourism;
 
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +23,28 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+
+        //This was just a test so we can work out grabbing POIs from internal storage and placing them on the map
+//        final ContentValues values = new ContentValues();
+//        values.put(TaiODataContract.POIEntry.COLUMN_NAME, "Test");
+//        values.put(TaiODataContract.POIEntry.COLUMN_LATITUDE, 22.253155);
+//        values.put(TaiODataContract.POIEntry.COLUMN_LONGITUDE, 113.858185);
+//        values.put(TaiODataContract.POIEntry.COLUMN_CATEGORY,"Tour Stop in Tai O");
+//        values.put(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, 2);
+//        values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION,"This is a really test dude 2");
+//        values.put(TaiODataContract.POIEntry.COLUMN_RATING, 4.5);
+//        values.put(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, "5-9");
+//        values.put(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER, 100);
+
+        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.fab);
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+//                Uri contractUri = getContentResolver().insert(TaiODataProvider.POIENTRY_URI, values);
+//                long rawContactId = ContentUris.parseId(contractUri);
+                Intent intent = new Intent(getBaseContext(), MapActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 

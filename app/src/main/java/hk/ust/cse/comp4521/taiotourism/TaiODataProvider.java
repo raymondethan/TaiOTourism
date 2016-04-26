@@ -11,6 +11,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import static hk.ust.cse.comp4521.taiotourism.TaiODataContract.*;
 
@@ -20,7 +21,7 @@ import static hk.ust.cse.comp4521.taiotourism.TaiODataContract.*;
 public class TaiODataProvider extends ContentProvider {
 
     private DatabaseHelper db;
-    private static final String PROVIDER_NAME = "hk.ust.cse.comp4521.taiotourism";
+    private static final String PROVIDER_NAME = "hk.ust.cse.comp4521.taiotourism.provider";
 
     //set to the correspondng table name?
     private static final String PATH_POI = "POI";
@@ -137,11 +138,150 @@ public class TaiODataProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = uriMatcher.match(uri);
+        SQLiteDatabase sqlDB = db.getWritableDatabase();
+        int rowsDeleted = 0;
+        switch (uriType) {
+            case POI_ENTRY:
+                rowsDeleted = sqlDB.delete(POIEntry.TABLE_NAME, selection,
+                        selectionArgs);
+                break;
+            case REVIEW_ENTRY:
+                rowsDeleted = sqlDB.delete(ReviewEntry.TABLE_NAME, selection,
+                        selectionArgs);
+                break;
+            case GENERALINFO:
+                rowsDeleted = sqlDB.delete(GeneralInfo.TABLE_NAME, selection,
+                        selectionArgs);
+                break;
+            case POI_ENTRY_ID: {
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(POIEntry.TABLE_NAME,
+                            POIEntry._ID + "=" + id,
+                            null);
+                } else {
+                    rowsDeleted = sqlDB.delete(POIEntry.TABLE_NAME,
+                            POIEntry._ID + "=" + id
+                                    + " and " + selection,
+                            selectionArgs);
+                }
+                break;
+            }
+            case REVIEW_ENTRY_ID: {
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(ReviewEntry.TABLE_NAME,
+                            POIEntry._ID + "=" + id,
+                            null);
+                } else {
+                    rowsDeleted = sqlDB.delete(ReviewEntry.TABLE_NAME,
+                            POIEntry._ID + "=" + id
+                                    + " and " + selection,
+                            selectionArgs);
+                }
+                break;
+            }
+            case GENERALINFO_ID: {
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(GeneralInfo.TABLE_NAME,
+                            POIEntry._ID + "=" + id,
+                            null);
+                } else {
+                    rowsDeleted = sqlDB.delete(GeneralInfo.TABLE_NAME,
+                            POIEntry._ID + "=" + id
+                                    + " and " + selection,
+                            selectionArgs);
+                }
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsDeleted;
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        int uriType = uriMatcher.match(uri);
+        SQLiteDatabase sqlDB = db.getWritableDatabase();
+        int rowsUpdated = 0;
+        switch (uriType) {
+            case POI_ENTRY:
+                rowsUpdated = sqlDB.update(POIEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            case REVIEW_ENTRY:
+                rowsUpdated = sqlDB.update(ReviewEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            case GENERALINFO:
+                rowsUpdated = sqlDB.update(ReviewEntry.TABLE_NAME,
+                        values,
+                        selection,
+                        selectionArgs);
+                break;
+            case POI_ENTRY_ID: {
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(POIEntry.TABLE_NAME,
+                            values,
+                            POIEntry._ID + "=" + id,
+                            null);
+                } else {
+                    rowsUpdated = sqlDB.update(POIEntry.TABLE_NAME,
+                            values,
+                            POIEntry._ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs);
+                }
+                break;
+            }
+            case REVIEW_ENTRY_ID: {
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(ReviewEntry.TABLE_NAME,
+                            values,
+                            ReviewEntry._ID + "=" + id,
+                            null);
+                } else {
+                    rowsUpdated = sqlDB.update(ReviewEntry.TABLE_NAME,
+                            values,
+                            ReviewEntry._ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs);
+                }
+                break;
+            }
+            case GENERALINFO_ID: {
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(GeneralInfo.TABLE_NAME,
+                            values,
+                            GeneralInfo._ID + "=" + id,
+                            null);
+                } else {
+                    rowsUpdated = sqlDB.update(GeneralInfo.TABLE_NAME,
+                            values,
+                            GeneralInfo._ID + "=" + id
+                                    + " and "
+                                    + selection,
+                            selectionArgs);
+                }
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return rowsUpdated;
     }
 }

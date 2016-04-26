@@ -4,13 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -45,6 +43,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.app.LoaderManager;
+import android.widget.SimpleCursorAdapter;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -178,6 +181,8 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
+
+    private static final int URL_LOADER = 0;
 
     //make sure everything still works without wifi/3g connection
     @Override
@@ -539,11 +544,34 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        /*
+     * Takes action based on the ID of the Loader that's being created
+     */
+        String[] projection = {TaiODataContract.POIEntry._ID, TaiODataContract.POIEntry.COLUMN_NAME, TaiODataContract.POIEntry.COLUMN_LATITUDE, TaiODataContract.POIEntry.COLUMN_LONGITUDE,
+                TaiODataContract.POIEntry.COLUMN_CATEGORY, TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, TaiODataContract.POIEntry.COLUMN_DESCRIPTION,
+                TaiODataContract.POIEntry.COLUMN_RATING, TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER};
+        switch (id) {
+            case URL_LOADER:
+                // Returns a new CursorLoader
+                return new CursorLoader(
+                        this,   // Parent activity context
+                        TaiODataProvider.POIENTRY_URI,      // Table to query
+                        projection,     // Projection to return
+                        null,            // No selection clause
+                        null,            // No selection arguments
+                        null             // Default sort order
+                );
+            default:
+                // An invalid id was passed in
+                return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        setUpMarkers(data);
+        Log.d("******LOADER MANAGER: ", "called initLoader");
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(22.253155, 113.858185)));
     }
 
     /**
@@ -552,34 +580,54 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
      * <p>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
-//    private void setUpMarkers(Cursor markerCursor) {
-//
-//        while (!mapReady) {
-//            Log.d("Map-","map not ready");
-//        }
-//        //Move to the first row in the cursor
-//        markerCursor.moveToFirst();
-//
-//        do{ // for all the rows in the cursor
-//
-//
-//            // Get the poiName's name, latitude and longitude
-//            id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
-//            poiName = markerCursor.getString(markerCursor.getColumnIndexOrThrow(COLUMN_POI));
-//            latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(COLUMN_LATITUDE));
-//            longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(COLUMN_LONGITUDE));
-//
-//            Log.i(TAG, "Marker at: "+id+poiName+latitude+longitude);
-//
-//        } while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
-//
-//        markerCursor.close();
-//
-//    }
+    private void setUpMarkers(Cursor markerCursor) {
+
+        int column_index;
+        double latitude, longitude;
+        String name;
+        long id;
+        String category;
+        int tour_order;
+        String description;
+        double rating;
+        String opening_hours;
+        int count;
+
+        while (!mapReady) {
+            Log.d("Map-","map not ready");
+        }
+        //Move to the first row in the cursor
+        markerCursor.moveToFirst();
+
+        do{ // for all the rows in the cursor
+
+
+            // Get the poiName's name, latitude and longitude
+            id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
+            name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME));
+            latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LATITUDE));
+            longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LONGITUDE));
+            category = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_CATEGORY));
+            tour_order = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER));
+            description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION));
+            rating = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_RATING));
+            opening_hours = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS));
+            count = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER));
+
+            Log.i(TAG, "Marker at: "+id+name+latitude+longitude);
+
+            //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
+
+        } while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
+
+        markerCursor.close();
+
+    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        //mAdapter.changeCursor(null);
     }
 
     @Override
@@ -611,8 +659,8 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         TextView title = (TextView) popupView.findViewById(R.id.POI_title);
         TextView description = (TextView) popupView.findViewById(R.id.POI_description);
 
-        title.setText("Random POI");
-        description.setText("This is the description of the POI bla bla bla bla bla bla bla bla bla bla");
+        title.setText(marker.getTitle());
+        description.setText(marker.getSnippet());
 
         //Popup dismisses when the user touches outside the screen or clicks the exit button
         popupWindow.setOutsideTouchable(true);
@@ -766,9 +814,12 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         mMap.setOnInfoWindowClickListener(this);
 
         // Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(22.253155, 113.858185);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Tai O"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        LatLng sydney = new LatLng(22.253155, 113.858185);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Tai O"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        getLoaderManager().initLoader(URL_LOADER,null,this);
+        Log.d("******LOADER MANAGER: ", "called initLoader");
 
     }
 

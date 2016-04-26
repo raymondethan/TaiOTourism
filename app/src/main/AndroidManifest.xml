@@ -43,7 +43,7 @@
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <provider
             android:name=".TaiODataProvider"
-            android:authorities="hkust.comp4521.taiodata.provider"	>
+            android:authorities="hk.ust.cse.comp4521.taiotourism.provider"	>
         </provider>
         <meta-data
             android:name="com.google.android.gms.version"
