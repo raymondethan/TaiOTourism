@@ -10,18 +10,19 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private	static final String	DATABASE_NAME =	"POIdata";
-    private	static final int DATABASE_VERSION =	1;
+    private	static final int DATABASE_VERSION =	2;
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String PRIMARY_KEY = " INTEGER PRIMARY KEY";
     private static final String REAL_TYPE = " REAL";
-    private static final String INT_TYPE = "INTEGER";
+    private static final String INT_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
     private static final String SQL_CREATE_POIEntries =
             "CREATE TABLE " + TaiODataContract.POIEntry.TABLE_NAME + " (" +
-                    TaiODataContract.POIEntry._ID + PRIMARY_KEY +
+                    TaiODataContract.POIEntry._ID + PRIMARY_KEY + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
-                    TaiODataContract.POIEntry.COLUMN_COORDINATES + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_LATITUDE + REAL_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_LONGITUDE + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_CATEGORY + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_TOUR_ORDER + INT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
@@ -31,13 +32,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ReviewEntries =
             "CREATE TABLE " + TaiODataContract.ReviewEntry.TABLE_NAME + " (" +
-                    TaiODataContract.ReviewEntry._ID + PRIMARY_KEY +
+                    TaiODataContract.ReviewEntry._ID + PRIMARY_KEY + COMMA_SEP +
                     TaiODataContract.ReviewEntry.COLUMN_RATING + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.ReviewEntry.COLUMN_COMMENT + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_GeneralInfo =
             "CREATE TABLE " + TaiODataContract.GeneralInfo.TABLE_NAME + " (" +
-                    TaiODataContract.GeneralInfo._ID + PRIMARY_KEY +
+                    TaiODataContract.GeneralInfo._ID + PRIMARY_KEY + COMMA_SEP +
                     TaiODataContract.GeneralInfo.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.GeneralInfo.COLUMN_INFO + TEXT_TYPE + " )";
 
@@ -57,6 +58,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TaiODataContract.POIEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TaiODataContract.ReviewEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TaiODataContract.GeneralInfo.TABLE_NAME);
 
+        onCreate(db);
     }
 }
