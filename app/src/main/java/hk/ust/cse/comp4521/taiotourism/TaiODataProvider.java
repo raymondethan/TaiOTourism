@@ -21,7 +21,7 @@ import static hk.ust.cse.comp4521.taiotourism.TaiODataContract.*;
 public class TaiODataProvider extends ContentProvider {
 
     private DatabaseHelper db;
-    private static final String PROVIDER_NAME = "hk.ust.cse.comp4521.taiotourism.provider";
+    private static final String PROVIDER_NAME = TaiODataContract.AUTHORITY;
 
     //set to the correspondng table name?
     private static final String PATH_POI = "POI";

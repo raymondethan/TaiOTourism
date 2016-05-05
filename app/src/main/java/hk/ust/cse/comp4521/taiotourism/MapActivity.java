@@ -71,6 +71,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static android.provider.BaseColumns._ID;
 
@@ -184,6 +185,10 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     private static final int URL_LOADER = 0;
 
+    final HashMap<String,String> textToCategory = new HashMap<String, String>();
+
+    private ArrayList<Marker> markers = new ArrayList<Marker>();
+
     //make sure everything still works without wifi/3g connection
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -235,6 +240,12 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        //Is there a more scalable way we can do this
+        textToCategory.put(Constants.CATEGORY_TOUR_STOP_TEXT, Constants.CATEGORY_TOUR_STOP);
+        textToCategory.put(Constants.CATEGORY_RESTAURANT_TEXT, Constants.CATEGORY_RESTAURANT);
+        textToCategory.put(Constants.CATEGORY_FACILITY_TEXT, Constants.CATEGORY_FACILITY);
+
     }
 
     @Override
@@ -468,9 +479,9 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
     }
     public void showCategoryDialog() {
         AlertDialog dialog;
-        final CharSequence[] categories = {" Tour Stops ", " Restaurants ", " Facilities ", " Other "};
+        final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT,Constants.CATEGORY_RESTAURANT_TEXT,Constants.CATEGORY_FACILITY_TEXT};
         // arraylist to keep the selected items
-        final ArrayList seletedItems = new ArrayList();
+        final ArrayList<String> seletedItems = new ArrayList<String>();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Select What You Want to Visit");
@@ -483,7 +494,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
                         if (isChecked) {
                             // If the user checked the item, add it to the selected items
                             // write your code when user checked the checkbox
-                            seletedItems.add(indexSelected);
+                            seletedItems.add(textToCategory.get(categories[indexSelected]));
                         } else if (seletedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
                             // write your code when user Uchecked the checkbox
@@ -497,6 +508,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
                     public void onClick(DialogInterface dialog, int id) {
                         //  Code when user clicked on OK
                         //  Tell the controller to edit the map
+                        filterMarkers(seletedItems);
 
                     }
                 })
@@ -510,6 +522,12 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
         dialog = builder.create();//AlertDialog dialog; create like this outside onClick
         dialog.show();
+    }
+
+    private void filterMarkers(ArrayList<String> categories) {
+        for (Marker marker : markers) {
+            marker.setVisible(false);
+        }
     }
 
     /**
@@ -599,28 +617,32 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         //Move to the first row in the cursor
         markerCursor.moveToFirst();
 
-        do{ // for all the rows in the cursor
+        if (!markerCursor.isAfterLast()) {
+
+            do { // for all the rows in the cursor
 
 
-            // Get the poiName's name, latitude and longitude
-            id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
-            name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME));
-            latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LATITUDE));
-            longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LONGITUDE));
-            category = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_CATEGORY));
-            tour_order = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER));
-            description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION));
-            rating = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_RATING));
-            opening_hours = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS));
-            count = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER));
+                // Get the poiName's name, latitude and longitude
+                id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
+                name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME));
+                latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LATITUDE));
+                longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LONGITUDE));
+                category = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_CATEGORY));
+                tour_order = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER));
+                description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION));
+                rating = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_RATING));
+                opening_hours = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS));
+                count = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER));
 
-            Log.i(TAG, "Marker at: "+id+name+latitude+longitude);
+                Log.i(TAG, "Marker at: " + id + name + latitude + longitude);
 
-            //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
-            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
+                //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
+                Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
+                markers.add(m);
 
-        } while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
-
+            }
+            while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
+        }
         markerCursor.close();
 
     }

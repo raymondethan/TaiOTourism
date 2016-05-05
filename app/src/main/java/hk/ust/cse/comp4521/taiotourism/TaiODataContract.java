@@ -7,6 +7,8 @@ import android.provider.BaseColumns;
  */
 public class TaiODataContract {
 
+    public static final String AUTHORITY = "hk.ust.cse.comp4521.taiotourism.provider";
+
     // To prevent someone from accidentally instantiating the contract class,
     // give it an empty constructor.
     public TaiODataContract() {}

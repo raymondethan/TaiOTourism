@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private	static final String	DATABASE_NAME =	"POIdata";
-    private	static final int DATABASE_VERSION =	2;
+    private	static final int DATABASE_VERSION =	3;
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String PRIMARY_KEY = " INTEGER PRIMARY KEY";
