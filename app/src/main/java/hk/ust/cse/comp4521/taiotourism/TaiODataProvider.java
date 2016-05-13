@@ -12,6 +12,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import static hk.ust.cse.comp4521.taiotourism.TaiODataContract.*;
 
@@ -21,7 +22,7 @@ import static hk.ust.cse.comp4521.taiotourism.TaiODataContract.*;
 public class TaiODataProvider extends ContentProvider {
 
     private DatabaseHelper db;
-    private static final String PROVIDER_NAME = "hk.ust.cse.comp4521.taiotourism.provider";
+    private static final String PROVIDER_NAME = TaiODataContract.AUTHORITY;
 
     //set to the correspondng table name?
     private static final String PATH_POI = "POI";
@@ -70,9 +71,10 @@ public class TaiODataProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         int uriType = uriMatcher.match(uri);
-
+        Log.i("DataProvider","Uri :" + uri.toString());
         switch (uriType) {
             case POI_ENTRY:
+                Log.i("DataProvider","POI_ENTRY");
                 queryBuilder.setTables(POIEntry.TABLE_NAME);
                 break;
             case REVIEW_ENTRY:
@@ -82,6 +84,7 @@ public class TaiODataProvider extends ContentProvider {
                 queryBuilder.setTables(GeneralInfo.TABLE_NAME);
                 break;
             case POI_ENTRY_ID:
+                Log.i("DataProvider","POI_ENTRY_ID :" + uri.toString());
                 queryBuilder.appendWhere(POIEntry._ID + "="
                         + uri.getLastPathSegment());
                 break;
@@ -96,6 +99,8 @@ public class TaiODataProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
+        Log.i("DataProvider",queryBuilder.toString());
+        Log.i("DataProvider",queryBuilder.getTables().toString());
         SQLiteDatabase db = this.db.getWritableDatabase();
         Cursor cursor = queryBuilder.query(db,
                 projection, selection, selectionArgs, null, null, sortOrder);

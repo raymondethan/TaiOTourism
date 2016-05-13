@@ -4,13 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.LoaderManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.Loader;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,24 +16,41 @@ import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import android.content.CursorLoader;
+import android.content.Loader;
+import android.app.LoaderManager;
+import android.widget.SimpleCursorAdapter;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -45,13 +60,20 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static android.provider.BaseColumns._ID;
 
 
 public class MapActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, GoogleMap.OnInfoWindowClickListener,
@@ -155,6 +177,17 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
     private GoogleMap mMap;
     private boolean mapReady = false;
     private Marker meMarker = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
+    private static final int URL_LOADER = 0;
+
+    final HashMap<String,String> textToCategory = new HashMap<String, String>();
+
+    private ArrayList<Marker> markers = new ArrayList<Marker>();
 
     //make sure everything still works without wifi/3g connection
     @Override
@@ -203,6 +236,15 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         // async callback method onMapReady() where we get the reference to the map.
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.mapview);
         mapFragment.getMapAsync(this);
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        //Is there a more scalable way we can do this
+        textToCategory.put(Constants.CATEGORY_TOUR_STOP_TEXT, Constants.CATEGORY_TOUR_STOP);
+        textToCategory.put(Constants.CATEGORY_RESTAURANT_TEXT, Constants.CATEGORY_RESTAURANT);
+        textToCategory.put(Constants.CATEGORY_FACILITY_TEXT, Constants.CATEGORY_FACILITY);
 
     }
 
@@ -290,7 +332,23 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
     protected void onStart() {
 
         super.onStart();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
         mGoogleApiClient.connect();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Map Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://hk.ust.cse.comp4521.taiotourism/http/host/path")
+        );
+        AppIndex.AppIndexApi.start(client, viewAction);
     }
 
     @Override
@@ -324,6 +382,22 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
             mGoogleApiClient.disconnect();
         }
         super.onStop();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        Action viewAction = Action.newAction(
+                Action.TYPE_VIEW, // TODO: choose an action type.
+                "Map Page", // TODO: Define a title for the content shown.
+                // TODO: If you have web page content that matches this app activity's content,
+                // make sure this auto-generated web page URL is correct.
+                // Otherwise, set the URL to null.
+                Uri.parse("http://host/path"),
+                // TODO: Make sure this auto-generated app URL is correct.
+                Uri.parse("android-app://hk.ust.cse.comp4521.taiotourism/http/host/path")
+        );
+        AppIndex.AppIndexApi.end(client, viewAction);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.disconnect();
     }
 
     @Override
@@ -392,8 +466,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings:
-                PopupWindow popup = new PopupWindow(MapActivity.this, (AttributeSet) new Point(5,5));
-
+                showCategoryDialog();
                 // User chose the "Settings" item, show the app settings UI...
                 return true;
 
@@ -404,44 +477,57 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
         }
     }
+    public void showCategoryDialog() {
+        AlertDialog dialog;
+        final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT,Constants.CATEGORY_RESTAURANT_TEXT,Constants.CATEGORY_FACILITY_TEXT};
+        // arraylist to keep the selected items
+        final ArrayList<String> seletedItems = new ArrayList<String>();
 
-    //displays the popup.
-    private void showPopup(final Activity context, Point p) {
-        int popupWidth = 200;
-        int popupHeight = 150;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select What You Want to Visit");
+        builder.setMultiChoiceItems(categories, null,
+                new DialogInterface.OnMultiChoiceClickListener() {
+                    // indexSelected contains the index of item (of which checkbox checked)
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected,
+                                        boolean isChecked) {
+                        if (isChecked) {
+                            // If the user checked the item, add it to the selected items
+                            // write your code when user checked the checkbox
+                            seletedItems.add(textToCategory.get(categories[indexSelected]));
+                        } else if (seletedItems.contains(indexSelected)) {
+                            // Else, if the item is already in the array, remove it
+                            // write your code when user Uchecked the checkbox
+                            seletedItems.remove(Integer.valueOf(indexSelected));
+                        }
+                    }
+                })
+                // Set the action buttons
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Code when user clicked on OK
+                        //  Tell the controller to edit the map
+                        filterMarkers(seletedItems);
 
-        // Inflate the popup_layout.xml
-        LinearLayout viewGroup = (LinearLayout) context.findViewById(R.id.popup);
-        LayoutInflater layoutInflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = layoutInflater.inflate(R.layout.map_popup, viewGroup);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Your code when user clicked on Cancel
 
-        // Creating the PopupWindow
-        final PopupWindow popup = new PopupWindow(context);
-        popup.setContentView(layout);
-        popup.setWidth(popupWidth);
-        popup.setHeight(popupHeight);
-        popup.setFocusable(true);
+                    }
+                });
 
-        // Some offset to align the popup a bit to the right, and a bit down, relative to button's position.
-        int OFFSET_X = 30;
-        int OFFSET_Y = 30;
+        dialog = builder.create();//AlertDialog dialog; create like this outside onClick
+        dialog.show();
+    }
 
-        // Clear the default translucent background
-        popup.setBackgroundDrawable(new BitmapDrawable());
-
-        // Displaying the popup at the specified location, + offsets.
-        popup.showAtLocation(layout, Gravity.NO_GRAVITY, p.x + OFFSET_X, p.y + OFFSET_Y);
-
-        // Getting a reference to Close button, and close the popup when clicked.
-        Button close = (Button) layout.findViewById(R.id.close);
-        close.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                popup.dismiss();
-            }
-        });
+    private void filterMarkers(ArrayList<String> categories) {
+        for (Marker marker : markers) {
+            marker.setVisible(false);
+        }
     }
 
     /**
@@ -476,17 +562,94 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        /*
+     * Takes action based on the ID of the Loader that's being created
+     */
+        String[] projection = {TaiODataContract.POIEntry._ID, TaiODataContract.POIEntry.COLUMN_NAME, TaiODataContract.POIEntry.COLUMN_LATITUDE, TaiODataContract.POIEntry.COLUMN_LONGITUDE,
+                TaiODataContract.POIEntry.COLUMN_CATEGORY, TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, TaiODataContract.POIEntry.COLUMN_DESCRIPTION,
+                TaiODataContract.POIEntry.COLUMN_RATING, TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER};
+        switch (id) {
+            case URL_LOADER:
+                // Returns a new CursorLoader
+                return new CursorLoader(
+                        this,   // Parent activity context
+                        TaiODataProvider.POIENTRY_URI,      // Table to query
+                        projection,     // Projection to return
+                        null,            // No selection clause
+                        null,            // No selection arguments
+                        null             // Default sort order
+                );
+            default:
+                // An invalid id was passed in
+                return null;
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        setUpMarkers(data);
+        Log.d("******LOADER MANAGER: ", "called initLoader");
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(22.253155, 113.858185)));
+    }
+
+    /**
+     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
+     * just add a marker near Africa.
+     * <p>
+     * This should only be called once and when we are sure that {@link #mMap} is not null.
+     */
+    private void setUpMarkers(Cursor markerCursor) {
+
+        int column_index;
+        double latitude, longitude;
+        String name;
+        long id;
+        String category;
+        int tour_order;
+        String description;
+        double rating;
+        String opening_hours;
+        int count;
+
+        while (!mapReady) {
+            Log.d("Map-","map not ready");
+        }
+        //Move to the first row in the cursor
+        markerCursor.moveToFirst();
+
+        if (!markerCursor.isAfterLast()) {
+
+            do { // for all the rows in the cursor
+
+
+                // Get the poiName's name, latitude and longitude
+                id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
+                name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME));
+                latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LATITUDE));
+                longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LONGITUDE));
+                category = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_CATEGORY));
+                tour_order = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER));
+                description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION));
+                rating = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_RATING));
+                opening_hours = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS));
+                count = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER));
+
+                Log.i(TAG, "Marker at: " + id + name + latitude + longitude);
+
+                //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
+                Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
+                markers.add(m);
+
+            }
+            while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
+        }
+        markerCursor.close();
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        //mAdapter.changeCursor(null);
     }
 
     @Override
@@ -506,8 +669,56 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        return false;
+        LayoutInflater layoutInflater = (LayoutInflater)getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = layoutInflater.inflate(R.layout.map_popup, null);
+        final PopupWindow popupWindow = new PopupWindow(
+                popupView,
+                RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.WRAP_CONTENT);
+        ImageView image = (ImageView) popupView.findViewById(R.id.popup_image);
+        image.setImageResource(R.mipmap.taiotest);
+
+        TextView title = (TextView) popupView.findViewById(R.id.POI_title);
+        TextView description = (TextView) popupView.findViewById(R.id.POI_description);
+
+        title.setText(marker.getTitle());
+        description.setText(marker.getSnippet());
+
+        //Popup dismisses when the user touches outside the screen or clicks the exit button
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.setFocusable(true);
+        //exit button
+        ImageButton exit = (ImageButton) popupView.findViewById(R.id.popup_exit);
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupWindow.dismiss();
+            }
+        });
+
+        //set click actions for popup and map
+        popupView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), POIActivity.class);
+                startActivity(intent);
+            }
+        });
+        //Do I need to duplicate this code?
+        ImageButton go_to_poi = (ImageButton) popupView.findViewById(R.id.POI_view_button);
+        go_to_poi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), POIActivity.class);
+                startActivity(intent);
+            }
+        });
+        //SHOULD I USE LINEAR LAYOUT OR FINDVIEWBYID (WHICH CAUSES A NULL POINTER EXCEPTION)
+        popupWindow.showAtLocation(new LinearLayout(this), Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 0);
+        return true;
     }
+
+
 
     @Override
     public void onMarkerDragStart(Marker marker) {
@@ -589,7 +800,8 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     /* A fragment to display an error dialog */
     public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
+        public ErrorDialogFragment() {
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -601,7 +813,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
         @Override
         public void onDismiss(DialogInterface dialog) {
-            ((MapActivity)getActivity()).onDialogDismissed();
+            ((MapActivity) getActivity()).onDialogDismissed();
         }
     }
 
@@ -621,6 +833,15 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         mMap.setOnMapLongClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerDragListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+
+        // Add a marker in Sydney, Australia, and move the camera.
+//        LatLng sydney = new LatLng(22.253155, 113.858185);
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Tai O"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        getLoaderManager().initLoader(URL_LOADER,null,this);
+        Log.d("******LOADER MANAGER: ", "called initLoader");
 
     }
 
