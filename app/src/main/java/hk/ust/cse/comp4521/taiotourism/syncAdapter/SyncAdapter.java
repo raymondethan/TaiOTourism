@@ -129,20 +129,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void insertPOI(POIModel poi) {
+        Log.i(TAG,"Constructing query arguments");
         String[] mProjection = {TaiODataContract.POIEntry._ID};
 
         // Defines a string to contain the selection clause
-        String mSelectionClause = TaiODataContract.POIEntry._ID + " = " + poi.getId();
-        String mSelectionArgs[] = {""};
+        String mSelectionClause = TaiODataContract.POIEntry._ID + " = ?";
+        String mSelectionArgs[] = {poi.getId().toString()};
 
         Cursor mCursor = mContentResolver.query(TaiODataProvider.POIENTRY_URI,mProjection,mSelectionClause,mSelectionArgs,"");
-        Log.i(TAG,"cursor: " + mCursor.getCount());
+        Log.i(TAG,"Checked database for entry");
+        Log.i(TAG,"cursor: " + ((Integer) mCursor.getCount()).toString());
         if (null == mCursor || mCursor.getCount() < 1) {
             Log.i(TAG, "Inserting:  " + poi.getName() + ", " + poi.getDescription());
             final ContentValues values = new ContentValues();
             values.put(TaiODataContract.POIEntry.COLUMN_NAME, poi.getName());
-            values.put(TaiODataContract.POIEntry.COLUMN_LATITUDE, poi.getLatitude());
-            values.put(TaiODataContract.POIEntry.COLUMN_LONGITUDE, poi.getLongitude());
+            values.put(TaiODataContract.POIEntry.COLUMN_LATITUDE, poi.getCoordinates().getLat());
+            values.put(TaiODataContract.POIEntry.COLUMN_LONGITUDE, poi.getCoordinates().getLng());
             values.put(TaiODataContract.POIEntry.COLUMN_CATEGORY, poi.getCategory());
             values.put(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, poi.getTourOrder());
             values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION, poi.getDescription());
@@ -152,6 +154,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Uri contractUri = mContentResolver.insert(TaiODataProvider.POIENTRY_URI, values);
             long rawContactId = ContentUris.parseId(contractUri);
         }
+        mCursor.close();
     }
 
     //Do I have to make a request for all information and sync it locally or does loopback provide a way for me to only query recently updated items

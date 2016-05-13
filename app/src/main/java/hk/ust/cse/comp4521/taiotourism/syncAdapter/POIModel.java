@@ -8,8 +8,7 @@ import com.strongloop.android.loopback.Model;
 public class POIModel extends Model {
 
     private String name;
-    private Double latitude;
-    private Double longitude;
+    private GeoPoint coordinates;
     private String category;
     private Integer tourOrder;
     private String description;
@@ -23,22 +22,6 @@ public class POIModel extends Model {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
     }
 
     public String getCategory() {
@@ -87,5 +70,13 @@ public class POIModel extends Model {
 
     public void setCounter(Integer counter) {
         this.counter = counter;
+    }
+
+    public GeoPoint getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(GeoPoint coordinates) {
+        this.coordinates = coordinates;
     }
 }
