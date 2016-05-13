@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_first_fragment"
+            android:title="Home"
+            android:icon="@drawable/icon_home"
+            android:checked = "true"/>
+        <item
+            android:id="@+id/nav_second_fragment"
+            android:title="Map"
+            android:icon="@drawable/icon_map"/>
+        <item
+            android:id="@+id/nav_third_fragment"
+            android:title="Tour"
+            android:icon="@drawable/icon_tour"/>
+    </group>
+    <item android:title="Places To Go">
+        <menu>
+            <group android:checkableBehavior="single">
+                <item
+                    android:title="Points of Interest" />
+                <item
+                    android:title="Restaurants" />
+                <item
+                    android:title="Facilities" />
+            </group>
+        </menu>
+    </item>
+</menu>
