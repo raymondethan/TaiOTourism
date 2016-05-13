@@ -121,6 +121,15 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 }
             });
 
+        //Test to see if the sync adapter works
+        Bundle settingsBundle = new Bundle();
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_MANUAL, true);
+        settingsBundle.putBoolean(
+                ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+
+        ContentResolver.requestSync(mAccount, TaiODataContract.AUTHORITY, settingsBundle);
+
     }
 
     public RestAdapter getLoopBackAdapter() {
