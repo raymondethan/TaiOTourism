@@ -14,9 +14,18 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.strongloop.android.loopback.RestAdapter;
+import com.strongloop.android.loopback.callbacks.ListCallback;
+
+import java.util.List;
+
+import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
+import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String ACCOUNT = "dummyaccount";
 
     Account mAccount;
+
+    RestAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,37 @@ public class MainActivity extends AppCompatActivity {
         if (mAccount != null)
             getContentResolver().setSyncAutomatically(mAccount, TaiODataContract.AUTHORITY, true);
 
+        adapter = getLoopBackAdapter();
+        SyncAdapter.POIRepository POIRepo = adapter.createRepository(SyncAdapter.POIRepository.class);
+
+        POIRepo.findAll(new ListCallback<POIModel>() {
+                @Override
+                public void onSuccess(List<POIModel> objects) {
+                    Log.i("Main Activity", "First result from server is " + objects.get(0).getName());
+                    Log.e("Main Activity", "Successfullly fetched data!");
+                }
+
+                @Override
+                public void onError(Throwable t) {
+                    Log.e("Main Activity", "Failed to fetch data!");
+                }
+            });
+
+    }
+
+    public RestAdapter getLoopBackAdapter() {
+        if (adapter == null) {
+            // Instantiate the shared RestAdapter. In most circumstances,
+            // you'll do this only once; putting that reference in a singleton
+            // is recommended for the sake of simplicity.
+            // However, some applications will need to talk to more than one
+            // server - create as many Adapters as you need.
+            adapter = new RestAdapter(
+                    getApplicationContext(), "http://10.0.2.2:3000/api");
+
+        }
+        Log.i("Main Activity", getApplicationContext().toString());
+        return adapter;
     }
 
     /**
