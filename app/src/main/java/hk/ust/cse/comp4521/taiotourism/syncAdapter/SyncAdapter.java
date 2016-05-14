@@ -11,6 +11,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
@@ -47,8 +48,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,6 +75,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private String serverUrl = "http://10.0.2.2:3000/api";
     private String getUpdateUrl = "/POIs/getUpdate?date=";
+
+    private SharedPreferences mSharedPreferences;
+    private Date lastUpdate;
+    private SimpleDateFormat formatter;
     /**
      * Set up the sync adapter
      */
@@ -82,6 +90,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mContentResolver = mContext.getContentResolver();
 
         adapter = getLoopBackAdapter();
+
+        formatter = new SimpleDateFormat(Constants.DATE_FORMAT);
+
     }
 
     @Override
@@ -92,12 +103,28 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.i(TAG, "starting sync");
 
+        mSharedPreferences = mContext.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,Context.MODE_PRIVATE);
+
+        try {
+            lastUpdate = formatter.parse(mSharedPreferences.getString(Constants.SHAREDPREF_LAST_UPDATE,Constants.LAST_UPDATE_DEFAULT));
+        } catch (ParseException e) {
+            //There was an error when retrieving the date so we just reset it
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            lastUpdate = new Date();
+            editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
+            editor.commit();
+            Log.i(TAG,"Updated last update: " + lastUpdate);
+            e.printStackTrace();
+        }
+
+        Log.i(TAG,"Last update: " + lastUpdate);
+
         SyncResult result = new SyncResult();
 
         try {
             Looper.prepare();
             Log.i(TAG, "trying get all places");
-            getUpdatedPois();
+            getUpdatedPois(formatter.format(lastUpdate));
 
             //getAllPlaces();
             //2016-05-10T00:00:00.000Z
@@ -107,7 +134,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Log.e(TAG, e.getMessage(), e);
         }
 
+        setLastUpdatPreference();
+
         Log.i(TAG, "done sync");
+    }
+
+    private void setLastUpdatPreference() {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
+        editor.commit();
+        Log.i(TAG,"Updated last update: " + lastUpdate);
     }
 
     private RestAdapter getLoopBackAdapter() {
@@ -174,7 +210,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             values.put(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, poi.getTourOrder());
             values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION, poi.getDescription());
             values.put(TaiODataContract.POIEntry.COLUMN_RATING, poi.getRating());
-            values.put(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, poi.getOpeningHours());
             values.put(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER, poi.getCounter());
             values.put(TaiODataContract.POIEntry.COLUMN_LAST_MODIFIED, poi.getLastModified());
             Uri contractUri = mContentResolver.insert(TaiODataProvider.POIENTRY_URI, values);
@@ -260,11 +295,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void getUpdatedPois() {
+    private void getUpdatedPois(String lastUpdate) {
         InputStream inputStream;
         HttpURLConnection urlConnection;
         Integer result = 0;
-        String serverUrl = this.serverUrl + getUpdateUrl + "2016-03-10T00:00:00.000Z";
+        //We need to do this because loopback formats dates differently than Java can
+        lastUpdate = lastUpdate.substring(0,10) + "T" + lastUpdate.substring(10,18) + "." + lastUpdate.substring(19,lastUpdate.length());
+        String serverUrl = this.serverUrl + getUpdateUrl + lastUpdate;
         try {
                 /* forming th java.net.URL object */
             Log.e(TAG, "server update ulr is "+serverUrl);
