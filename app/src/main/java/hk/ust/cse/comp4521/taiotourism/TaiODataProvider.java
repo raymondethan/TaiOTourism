@@ -71,10 +71,10 @@ public class TaiODataProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
         int uriType = uriMatcher.match(uri);
-        Log.i("DataProvider","Uri :" + uri.toString());
+        //Log.i("DataProvider","Uri :" + uri.toString());
         switch (uriType) {
             case POI_ENTRY:
-                Log.i("DataProvider","POI_ENTRY");
+                //Log.i("DataProvider","POI_ENTRY");
                 queryBuilder.setTables(POIEntry.TABLE_NAME);
                 break;
             case REVIEW_ENTRY:
@@ -84,7 +84,7 @@ public class TaiODataProvider extends ContentProvider {
                 queryBuilder.setTables(GeneralInfo.TABLE_NAME);
                 break;
             case POI_ENTRY_ID:
-                Log.i("DataProvider","POI_ENTRY_ID :" + uri.toString());
+                //Log.i("DataProvider","POI_ENTRY_ID :" + uri.toString());
                 queryBuilder.appendWhere(POIEntry._ID + "="
                         + uri.getLastPathSegment());
                 break;
@@ -99,8 +99,6 @@ public class TaiODataProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        Log.i("DataProvider",queryBuilder.toString());
-        Log.i("DataProvider",queryBuilder.getTables().toString());
         SQLiteDatabase db = this.db.getWritableDatabase();
         Cursor cursor = queryBuilder.query(db,
                 projection, selection, selectionArgs, null, null, sortOrder);

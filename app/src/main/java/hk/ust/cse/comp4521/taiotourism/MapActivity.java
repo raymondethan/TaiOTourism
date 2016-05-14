@@ -634,7 +634,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
                 opening_hours = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS));
                 count = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER));
 
-                Log.i(TAG, "Marker at: " + id + name + latitude + longitude);
+                Log.i(TAG, "Marker at: " + id + " " + name + " " + latitude + " " + longitude);
 
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
                 Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));

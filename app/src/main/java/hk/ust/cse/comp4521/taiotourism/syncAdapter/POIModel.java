@@ -2,6 +2,12 @@ package hk.ust.cse.comp4521.taiotourism.syncAdapter;
 
 import com.strongloop.android.loopback.Model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * Created by ethanraymond on 5/4/16.
  */
@@ -15,8 +21,11 @@ public class POIModel extends Model {
     private Double rating;
     private String openingHours;
     private Integer counter;
+    private String lastModified;
+    //private Integer id;
 
     public String getName() {
+        if (null == name) return "No Name";
         return name;
     }
 
@@ -25,6 +34,8 @@ public class POIModel extends Model {
     }
 
     public String getCategory() {
+
+        if (null == category) return "Unknown Category";
         return category;
     }
 
@@ -33,6 +44,7 @@ public class POIModel extends Model {
     }
 
     public Integer getTourOrder() {
+        if (null == tourOrder) return -1;
         return tourOrder;
     }
 
@@ -41,6 +53,7 @@ public class POIModel extends Model {
     }
 
     public String getDescription() {
+        if (null == description) return "";
         return description;
     }
 
@@ -49,6 +62,7 @@ public class POIModel extends Model {
     }
 
     public Double getRating() {
+        if (null == rating) return 0.0;
         return rating;
     }
 
@@ -57,6 +71,7 @@ public class POIModel extends Model {
     }
 
     public String getOpeningHours() {
+        if (null == openingHours) return "";
         return openingHours;
     }
 
@@ -65,6 +80,7 @@ public class POIModel extends Model {
     }
 
     public Integer getCounter() {
+        if (null == counter) return 0;
         return counter;
     }
 
@@ -79,4 +95,22 @@ public class POIModel extends Model {
     public void setCoordinates(GeoPoint coordinates) {
         this.coordinates = coordinates;
     }
+
+    public String getLastModified() {
+        if (null == lastModified) return new Date().toString();
+        return lastModified;
+    }
+
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
+    }
+
+//    @Override
+//    public Integer getId() {
+//        return id;
+//    }
+//
+//    public void setId(Integer id) {
+//        this.id = id;
+//    }
 }

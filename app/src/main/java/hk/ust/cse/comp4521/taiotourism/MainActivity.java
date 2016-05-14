@@ -19,10 +19,22 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.common.collect.ImmutableMap;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.loopback.callbacks.ListCallback;
+import com.strongloop.android.remoting.adapters.Adapter;
 
+import org.json.JSONArray;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
@@ -75,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("Main Activity", "Failed to fetch data!");
                 }
             });
-
     }
 
     public RestAdapter getLoopBackAdapter() {
