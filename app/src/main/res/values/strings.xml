@@ -1,5 +1,17 @@
 <resources>
-    <string name="app_name">TaiOTourism</string>
+
+    <!--app global-->
+    <string name="app_name">大澳 Tai O Guide</string>
+    <string name="tai_o">大澳 Tai O</string>
+
+    <!--fragments-->
+    <string name="fragment_placeholder">Place holder fragment text.</string>
+
+    <!--nav drawer-->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+
     <string name="action_settings">Settings</string>
     <string name="title_activity_poi">POIActivity</string>
     <string name="title_activity_map">MapActivity</string>

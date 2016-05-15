@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -83,7 +84,6 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
     private String TAG = "Maps Activity";
 
-
     /**
      * Provides the entry point to Google Play services.
      */
@@ -151,7 +151,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
     /**
      * Receiver registered with this activity to get the response from FetchAddressIntentService.
      */
-    private AddressResultReceiver mResultReceiver;
+//    private AddressResultReceiver mResultReceiver;
 
 
     /**
@@ -212,7 +212,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         mLastUpdateTime = "";
 
         // Set defaults, then update using values stored in the Bundle.
-        mResultReceiver = new AddressResultReceiver(new Handler());
+//        mResultReceiver = new AddressResultReceiver(new Handler());
         mAddressRequested = false;
         mAddressOutput = "";
 
@@ -696,23 +696,23 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
             }
         });
 
-        //set click actions for popup and map
-        popupView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), POIActivity.class);
-                startActivity(intent);
-            }
-        });
-        //Do I need to duplicate this code?
-        ImageButton go_to_poi = (ImageButton) popupView.findViewById(R.id.POI_view_button);
-        go_to_poi.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), POIActivity.class);
-                startActivity(intent);
-            }
-        });
+//        //set click actions for popup and map
+//        popupView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getBaseContext(), POIActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+//        //Do I need to duplicate this code?
+//        ImageButton go_to_poi = (ImageButton) popupView.findViewById(R.id.POI_view_button);
+//        go_to_poi.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getBaseContext(), POIActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         //SHOULD I USE LINEAR LAYOUT OR FINDVIEWBYID (WHICH CAUSES A NULL POINTER EXCEPTION)
         popupWindow.showAtLocation(new LinearLayout(this), Gravity.BOTTOM, Gravity.CENTER_HORIZONTAL, 0);
         return true;
@@ -743,12 +743,12 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
     /**
      * Receiver for data sent from FetchAddressIntentService.
      */
-    class AddressResultReceiver extends ResultReceiver {
-        public AddressResultReceiver(Handler handler) {
-            super(handler);
-        }
-
-    }
+//    class AddressResultReceiver extends ResultReceiver {
+//        public AddressResultReceiver(Handler handler) {
+//            super(handler);
+//        }
+//
+//    }
 
     private void logSecurityException(SecurityException securityException) {
         Log.e(TAG, "Invalid location permission. " +

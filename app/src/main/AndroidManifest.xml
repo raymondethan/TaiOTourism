@@ -21,10 +21,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".MainActivity">
+            <!--android:label="@string/navdrawerwithfragments">-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,26 +32,28 @@
             </intent-filter>
         </activity>
 
-        <activity
 
+        <!--<activity-->
+            <!--android:name=".MainActivity"-->
+            <!--android:label="@string/app_name"-->
+            <!--android:theme="@style/AppTheme.NoActionBar">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+
+        <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map"
-            android:theme="@style/AppTheme.NoActionBar" ></activity>
+            android:label="@string/title_activity_map" ></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBGUK6OZloYxFGuj4kHZavZPUNl3EsKAoA" />
+            android:value="AIzaSyByZw3jKG0c7MVrdH0fwfqhCWodLw4nsic" />
 
         <activity android:name=".SettingsActivity" />
-        <activity
-            android:name=".DrawerActivity"
-            android:label="@string/title_activity_drawer"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".POIActivity"
-            android:label="@string/title_activity_poi"
-            android:theme="@style/AppTheme.NoActionBar"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+
         <provider
             android:name=".TaiODataProvider"
             android:authorities="hk.ust.cse.comp4521.taiotourism.provider"	>
@@ -78,6 +80,7 @@
             <meta-data android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
+
     </application>
 
 </manifest>

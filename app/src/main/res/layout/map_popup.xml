@@ -4,7 +4,7 @@
     android:id="@+id/popup"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:background="@color/popupBackground"
+    android:background="@color/colorPrimary"
     android:gravity="center_horizontal">
 
     <LinearLayout
