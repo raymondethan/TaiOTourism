@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private	static final String	DATABASE_NAME =	"POIdata";
-    private	static final int DATABASE_VERSION =	4;
+    private	static final int DATABASE_VERSION =	5;
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String PRIMARY_KEY = " INTEGER PRIMARY KEY";
@@ -28,7 +28,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     TaiODataContract.POIEntry.COLUMN_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_RATING + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_OPENING_HOURS + TEXT_TYPE + COMMA_SEP +
-                    TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER + INT_TYPE + " )";
+                    TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER + INT_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_LAST_MODIFIED + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_ReviewEntries =
             "CREATE TABLE " + TaiODataContract.ReviewEntry.TABLE_NAME + " (" +

@@ -11,6 +11,7 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncResult;
 import android.database.Cursor;
 import android.net.Uri;
@@ -23,6 +24,11 @@ import android.widget.ArrayAdapter;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.internal.$Gson$Types;
+import com.google.gson.reflect.TypeToken;
 import com.strongloop.android.loopback.Model;
 import com.strongloop.android.loopback.ModelRepository;
 import com.strongloop.android.loopback.RestAdapter;
@@ -39,16 +45,23 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import hk.ust.cse.comp4521.taiotourism.Constants;
 import hk.ust.cse.comp4521.taiotourism.TaiODataContract;
 import hk.ust.cse.comp4521.taiotourism.TaiODataProvider;
+
+import static android.provider.BaseColumns._ID;
 
 public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String TAG = "SyncAdapter";
@@ -61,7 +74,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private RestAdapter adapter;
 
     private String serverUrl = "http://10.0.2.2:3000/api";
+    private String getUpdateUrl = "/POIs/getUpdate?date=";
 
+    private SharedPreferences mSharedPreferences;
+    private Date lastUpdate;
+    private SimpleDateFormat formatter;
     /**
      * Set up the sync adapter
      */
@@ -73,6 +90,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         mContentResolver = mContext.getContentResolver();
 
         adapter = getLoopBackAdapter();
+
+        formatter = new SimpleDateFormat(Constants.DATE_FORMAT);
+
     }
 
     @Override
@@ -83,20 +103,47 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.i(TAG, "starting sync");
 
+        mSharedPreferences = mContext.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,Context.MODE_PRIVATE);
+
+        try {
+            lastUpdate = formatter.parse(mSharedPreferences.getString(Constants.SHAREDPREF_LAST_UPDATE,Constants.LAST_UPDATE_DEFAULT));
+        } catch (ParseException e) {
+            //There was an error when retrieving the date so we just reset it
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            lastUpdate = new Date();
+            editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
+            editor.commit();
+            Log.i(TAG,"Updated last update: " + lastUpdate);
+            e.printStackTrace();
+        }
+
+        Log.i(TAG,"Last update: " + lastUpdate);
+
         SyncResult result = new SyncResult();
 
         try {
             Looper.prepare();
             Log.i(TAG, "trying get all places");
-            getData();
+            getUpdatedPois(formatter.format(lastUpdate));
+
             //getAllPlaces();
+            //2016-05-10T00:00:00.000Z
         }
         catch (Exception e) {
             syncResult.hasHardError();
             Log.e(TAG, e.getMessage(), e);
         }
 
+        setLastUpdatPreference();
+
         Log.i(TAG, "done sync");
+    }
+
+    private void setLastUpdatPreference() {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
+        editor.commit();
+        Log.i(TAG,"Updated last update: " + lastUpdate);
     }
 
     private RestAdapter getLoopBackAdapter() {
@@ -128,8 +175,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i(TAG, "Rows deleted: "+retval);
     }
 
+    private void deletePoi(Long id) {
+        try {
+            mContentResolver.delete(TaiODataProvider.POIENTRY_URI,id+"=?",new String[] {id.toString()});
+            Log.i("Poi deleted",id.toString());
+        } catch (Exception e) {
+            Log.e("Poi failed to delete", e.toString());
+        }
+    }
+
     private void insertPOI(POIModel poi) {
-        Log.i(TAG,"Constructing query arguments");
+        Log.i(TAG,"Constructing query arguments for poi id: " + poi.getId());
         String[] mProjection = {TaiODataContract.POIEntry._ID};
 
         // Defines a string to contain the selection clause
@@ -139,20 +195,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Cursor mCursor = mContentResolver.query(TaiODataProvider.POIENTRY_URI,mProjection,mSelectionClause,mSelectionArgs,"");
         Log.i(TAG,"Checked database for entry");
         Log.i(TAG,"cursor: " + ((Integer) mCursor.getCount()).toString());
-        if (null == mCursor || mCursor.getCount() < 1) {
+        if (mCursor.getCount() > 0) {
+            mCursor.moveToFirst();
+            long id = mCursor.getLong(mCursor.getColumnIndexOrThrow(_ID));
+            deletePoi(id);
+        } else {
             Log.i(TAG, "Inserting:  " + poi.getName() + ", " + poi.getDescription());
             final ContentValues values = new ContentValues();
             values.put(TaiODataContract.POIEntry.COLUMN_NAME, poi.getName());
+            values.put(TaiODataContract.POIEntry._ID, ((Double) poi.getId()).intValue());
             values.put(TaiODataContract.POIEntry.COLUMN_LATITUDE, poi.getCoordinates().getLat());
             values.put(TaiODataContract.POIEntry.COLUMN_LONGITUDE, poi.getCoordinates().getLng());
             values.put(TaiODataContract.POIEntry.COLUMN_CATEGORY, poi.getCategory());
             values.put(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, poi.getTourOrder());
             values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION, poi.getDescription());
             values.put(TaiODataContract.POIEntry.COLUMN_RATING, poi.getRating());
-            values.put(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, poi.getOpeningHours());
             values.put(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER, poi.getCounter());
+            values.put(TaiODataContract.POIEntry.COLUMN_LAST_MODIFIED, poi.getLastModified());
             Uri contractUri = mContentResolver.insert(TaiODataProvider.POIENTRY_URI, values);
             long rawContactId = ContentUris.parseId(contractUri);
+            Log.i("Inserted ID: ", String.valueOf(rawContactId));
         }
         mCursor.close();
     }
@@ -171,17 +233,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         try {
 
             Log.e(TAG, "trying to find all places");
-
-//            POIRepo.findById(2, new ObjectCallback<POIModel>() {
-//                @Override
-//                public void onSuccess(POIModel model) {
-//                    Log.i(TAG,"SUCCESSFULLY CALLED");
-//                }
-//
-//                public void onError(Throwable t) {
-//                    Log.i(TAG,"UNSUCCESSFULLY CALLED: " + t.toString());
-//                }
-//            });
 
             POIRepo.findAll(new ListCallback<POIModel>() {
                 @Override
@@ -240,15 +291,51 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.e(TAG, "Failed to fetch data!");
             }
         } catch (Exception e) {
-            Log.d(TAG, e.getLocalizedMessage());
+            Log.d(TAG + "getdataerror", e.getLocalizedMessage());
+        }
+    }
+
+    private void getUpdatedPois(String lastUpdate) {
+        InputStream inputStream;
+        HttpURLConnection urlConnection;
+        Integer result = 0;
+        //We need to do this because loopback formats dates differently than Java can
+        lastUpdate = lastUpdate.substring(0,10) + "T" + lastUpdate.substring(10,18) + "." + lastUpdate.substring(19,lastUpdate.length());
+        String serverUrl = this.serverUrl + getUpdateUrl + lastUpdate;
+        try {
+                /* forming th java.net.URL object */
+            Log.e(TAG, "server update ulr is "+serverUrl);
+            URL url = new URL(serverUrl);
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+                 /* optional request header */
+            urlConnection.setRequestProperty("Content-Type", "application/json");
+
+                /* optional request header */
+            urlConnection.setRequestProperty("Accept", "application/json");
+
+                /* for Get request */
+            urlConnection.setRequestMethod("GET");
+            // urlConnection.connect();
+            int statusCode = urlConnection.getResponseCode();
+            Log.i(TAG, "statusCode is "+statusCode);
+
+                /* 200 represents HTTP OK */
+            if (statusCode == 200) {
+                inputStream = new BufferedInputStream(urlConnection.getInputStream());
+                String response = convertInputStreamToString(inputStream);
+                parseJson(response);
+            } else {
+                Log.e(TAG, "Failed to fetch data!");
+            }
+        } catch (Exception e) {
+            Log.d(TAG + "updatepoi", e.toString());
         }
     }
 
     private void parseJson(String result) {
 
-        List<POIModel> POIArrayList = new ArrayList<POIModel>();
-
-        Log.i(TAG, "Result from server is " + result);
+        Log.i(TAG + "parse json", "Result from server is " + result);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -274,7 +361,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void parseResult(List<POIModel> models) {
 
-        Log.i(TAG, "Result from server is " + models.toString());
+        Log.i(TAG + "parse result", "Result from server is " + models.toString());
 
         for (int i = 0; i < models.size(); ++i) {
             insertPOI(models.get(i));
@@ -287,6 +374,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i(TAG, "Result from server is " + models.toString());
 
         for (int i = 0; i < models.size(); ++i) {
+            Log.i(TAG + " model", models.get(i).toString());
             insertPOI(models.get(i));
         }
 
@@ -322,6 +410,23 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             super("POI", POIModel.class);
         }
     }
+
+//    final Map<String,?> parameters = ImmutableMap.of(
+//            "date", "2016-05-10T00:00:00.000Z");
+//    Log.e("params", String.valueOf(parameters));
+//    POIRepo.invokeStaticMethod("getUpdate", parameters, new Adapter.JsonArrayCallback() {
+//        @Override
+//        public void onSuccess(final JSONArray response) {
+//            Log.e("Main Activity", "Successfullly fetched data!");
+//            Log.i("Main activity", String.valueOf(response));
+//        }
+//
+//        @Override
+//        public void onError(final Throwable t) {
+//            Log.e("Date request test","Cannot list locations.", t);
+//        }
+//    });
+//    Log.e("ism", "called");
 
 }
 

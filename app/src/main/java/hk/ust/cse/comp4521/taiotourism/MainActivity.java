@@ -10,6 +10,7 @@ import android.content.Intent;
 
 import android.content.res.Configuration;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -35,10 +36,22 @@ import java.util.List;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
+import com.google.common.collect.ImmutableMap;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.loopback.callbacks.ListCallback;
+import com.strongloop.android.remoting.adapters.Adapter;
 
+import org.json.JSONArray;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
@@ -58,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     Account mAccount;
 
     RestAdapter adapter;
+
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 }
             });
 
-        //Test to see if the sync adapter works
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(
                 ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -130,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
         ContentResolver.requestSync(mAccount, TaiODataContract.AUTHORITY, settingsBundle);
 
+        //might not need this line
+        mSharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
     }
 
     public RestAdapter getLoopBackAdapter() {
