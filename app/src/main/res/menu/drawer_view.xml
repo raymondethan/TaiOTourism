@@ -20,10 +20,13 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
+                    android:id="@+id/nav_ptg_poi"
                     android:title="Points of Interest" />
                 <item
+                    android:id="@+id/nav_ptg_restaurants"
                     android:title="Restaurants" />
                 <item
+                    android:id="@+id/nav_ptg_facilities"
                     android:title="Facilities" />
             </group>
         </menu>
