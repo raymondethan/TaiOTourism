@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     // The account name
     public static final String ACCOUNT = "dummyaccount";
 
+    public static FragmentManager fragmentManager;
+
     Account mAccount;
     RestAdapter adapter;
 
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
 //        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.fab);
