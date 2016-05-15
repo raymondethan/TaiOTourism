@@ -12,9 +12,20 @@ import java.util.List;
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemViewHolder> {
 
     private List<Item> itemList;
+    private static ItemClickListener itemClickListener;
 
+    // Constructor
     public ItemListAdapter(List<Item> itemList) {
         this.itemList = itemList;
+    }
+
+    // Setters and Getters
+    public void setItemList(List<Item> itemList) {
+        this.itemList = itemList;
+    }
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -32,7 +43,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
 
         holder.vTitle.setText(item.title);
         //holder.vPhoto.setImage(item.photo);  // Just for test
-        holder.vDescription.setText(item.description);
+        holder.vOpeningHours.setText(item.openingHours);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -41,20 +52,33 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
         return itemList.size();
     }
 
-    // Custom ViewHolder
+    // ************************************************************************
+    //                       CUSTOM CLASS AND INTERFACE
+    // ************************************************************************
     // Provide a reference to the views for each data item
-    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
 
         protected TextView vTitle;
         protected ImageView vPhoto;
-        protected TextView vDescription;
+        protected TextView vOpeningHours;
 
         public ItemViewHolder(View view) {
             super(view);
 
             vTitle = (TextView) view.findViewById(R.id.item_title);
             vPhoto = (ImageView) view.findViewById(R.id.item_photo);
-            vDescription = (TextView) view.findViewById(R.id.item_description);
+            vOpeningHours = (TextView) view.findViewById(R.id.item_hours);
         }
+
+        @Override
+        public void onClick(View view) {
+            itemClickListener.onItemClick(getAdapterPosition(), view);
+        }
+    }
+
+    // Interface for custom click on item listener
+    public interface ItemClickListener {
+        public void onItemClick(int position, View view);
     }
 }

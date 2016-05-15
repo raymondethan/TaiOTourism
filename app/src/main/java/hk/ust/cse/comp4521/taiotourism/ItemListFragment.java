@@ -1,15 +1,14 @@
 package hk.ust.cse.comp4521.taiotourism;
 
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +26,24 @@ public class ItemListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         mRecyclerViewList = (RecyclerView) rootView.findViewById(R.id.card_recycler_view);
 
+        // TODO : for testing, mock-up data
+        Item item1 = new Item("Tour stop 1",
+                "https://wendymctavish.files.wordpress.com/2011/04/69748013_7d5b129dcc.jpg",
+                "detailed description of the tour stop", "9:00-00:00");
+        Item item2 = new Item("Tour stop 2",
+                "https://wendymctavish.files.wordpress.com/2011/04/69748013_7d5b129dcc.jpg",
+                "detailed description of the tour stop", "9:00-00:00");
+        Item item3 = new Item("Tour stop 3",
+                "https://wendymctavish.files.wordpress.com/2011/04/69748013_7d5b129dcc.jpg",
+                "detailed description of the tour stop", "9:00-00:00");
+        itemList = new ArrayList<Item>();
+        itemList.add(item1);
+        itemList.add(item2);
+        itemList.add(item3);
+        itemList.add(item1);
+        itemList.add(item2);
+        itemList.add(item3);
+
         return rootView;
     }
 
@@ -41,9 +58,16 @@ public class ItemListFragment extends Fragment {
         mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerViewList.setAdapter(mItemListAdapter);
         mRecyclerViewList.setLayoutManager(mLayoutManager);
-    }
 
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+        // Set listener for clicks on item
+        mItemListAdapter.setItemClickListener(
+                new ItemListAdapter.ItemClickListener() {
+                    @Override
+                    public void onItemClick(int position, View view) {
+                        // TODO : start POIActivity intent
+                        return;
+                    }
+                }
+        );
     }
 }

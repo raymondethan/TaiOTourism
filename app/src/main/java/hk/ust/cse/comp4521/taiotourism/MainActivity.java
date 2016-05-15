@@ -234,7 +234,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 fragmentClass = BlankFragment.class;
                 break;
             case R.id.nav_third_fragment:
-                fragmentClass = BlankFragment.class;
+                // TODO : Just testing list
+                fragmentClass = ItemListFragment.class;
                 break;
             default:
                 fragmentClass = BlankFragment.class;
