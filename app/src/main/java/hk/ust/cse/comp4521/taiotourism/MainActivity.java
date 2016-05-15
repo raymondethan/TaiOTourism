@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                     Log.e("Main Activity", "Failed to fetch data!");
                 }
             });
-        
+
         //might not need this line
         mSharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
         //Test to see if the sync adapter works
