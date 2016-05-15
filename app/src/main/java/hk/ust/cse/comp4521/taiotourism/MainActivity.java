@@ -2,6 +2,7 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -29,10 +30,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.android.gms.maps.MapFragment;
 import com.strongloop.android.loopback.callbacks.ListCallback;
 
 import java.util.List;
 
+import hk.ust.cse.comp4521.taiotourism.HomeFragment.OnFragmentInteractionListener;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
@@ -55,7 +58,7 @@ import java.util.Map;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
-public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener, TaiOMapFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
@@ -68,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     public static final String ACCOUNT = "dummyaccount";
 
     Account mAccount;
-
     RestAdapter adapter;
 
     private SharedPreferences mSharedPreferences;
@@ -96,10 +98,9 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         setupDrawerContent(nvDrawer);
 
         // Set Home page fragment
-        Class home = BlankFragment.class;
         Fragment fragment = null;
         try {
-            fragment = (Fragment) home.newInstance();
+            fragment = (Fragment) TaiOMapFragment.class.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -241,19 +242,38 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 //                return true;
 //
 
+        // On Nav Drawer menu item selection
+        // Switch fragment in content pane according to selected item
+
         switch(menuItem.getItemId()) {
+
             case R.id.nav_first_fragment:
-                Intent intent = new Intent(getBaseContext(), MapActivity.class);
-                startActivity(intent);
-                return;
+                // home
+                fragmentClass = HomeFragment.class;
+                break;
             case R.id.nav_second_fragment:
-                fragmentClass = BlankFragment.class;
+                // map
+                fragmentClass = TaiOMapFragment.class;
                 break;
             case R.id.nav_third_fragment:
-                fragmentClass = BlankFragment.class;
+                // tour
+                //TODO: add map filter to tour selection
+                fragmentClass = TaiOMapFragment.class;
                 break;
+
+            // TODO: change these fragments
+            case R.id.nav_ptg_poi:
+                fragmentClass = TaiOMapFragment.class;
+                break;
+            case R.id.nav_ptg_restaurants:
+                fragmentClass = TaiOMapFragment.class;
+                break;
+            case R.id.nav_ptg_facilities:
+                fragmentClass = TaiOMapFragment.class;
+                break;
+
             default:
-                fragmentClass = BlankFragment.class;
+                fragmentClass = HomeFragment.class;
         }
 
         try {
@@ -267,6 +287,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
         menuItem.setChecked(true);
+
+        // TODO: setup get title method so can retrieve title string
         // Set action bar title
 //        setTitle(menuItem.getTitle());
         // Close the navigation drawer
@@ -299,8 +321,13 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     }
 
     @Override
-    public void onBottomBarInteraction(int ViewId) {
-        
+    public void OnHomeFragmentInteraction() {
+
+    }
+
+    @Override
+    public void OnMapFragmentInteraction() {
+
     }
 
 
