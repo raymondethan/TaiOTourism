@@ -5,37 +5,19 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <!--<fragment xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:name="com.google.android.gms.maps.MapFragment"-->
-        <!--android:id="@+id/gmFragment"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"/>-->
-
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gmFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/gmFragment"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:name="com.google.android.gms.maps.SupportMapFragment"/>-->
-        <!--android:name="hk.ust.cse.comp4521.taiotourism.MainActivity"/>-->
-    <!--<com.google.android.gms.maps.MapView-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/mapView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
-
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_map" />
 
     <!-- The POI Peaker -->
+
     <include
         layout="@layout/fragment_map_poi_peak"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
 
 
 </FrameLayout>

@@ -201,7 +201,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
-        getLoaderManager().initLoader(0, null, (LoaderManager.LoaderCallbacks<Cursor>) this);
+        getLoaderManager().initLoader(0, null, this);
 
         // Build the Google API client so that connections can be established
         buildGoogleApiClient();

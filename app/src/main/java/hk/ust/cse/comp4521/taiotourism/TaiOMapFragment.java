@@ -1,48 +1,40 @@
 package hk.ust.cse.comp4521.taiotourism;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.app.PendingIntent;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.database.Cursor;
-import android.location.Geocoder;
-import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
+
 import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -51,6 +43,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static android.provider.BaseColumns._ID;
 
@@ -59,7 +54,7 @@ import static android.provider.BaseColumns._ID;
  */
 public class TaiOMapFragment extends Fragment implements View.OnClickListener, GoogleMap.OnInfoWindowClickListener,
         OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
-        GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
+        GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener, LoaderManager.LoaderCallbacks<Cursor> {
 
     private View view;
     private RelativeLayout poi_peak;
@@ -89,7 +84,13 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     final HashMap<String,String> textToCategory = new HashMap<String, String>();
 
     private ArrayList<Marker> markers = new ArrayList<Marker>();
+    private HashMap<Marker,String> markerCategories = new HashMap();
 
+    private ImageButton category_selector;
+    private HashSet<String> hideItems = new HashSet();
+    private HashSet<String> showItems = new HashSet();
+
+    private AlertDialog selectCategoryDialog;
 
     public TaiOMapFragment() {
         // Required empty public constructor
@@ -119,6 +120,11 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this.getContext()).addApi(AppIndex.API).build();
 
+        selectCategoryDialog = createCategoryDialog();
+
+        //TODO: Bind cursor adapter to popup
+        getLoaderManager().initLoader(0, null, this);
+
         //Is there a more scalable way we can do this
         textToCategory.put(Constants.CATEGORY_TOUR_STOP_TEXT, Constants.CATEGORY_TOUR_STOP);
         textToCategory.put(Constants.CATEGORY_RESTAURANT_TEXT, Constants.CATEGORY_RESTAURANT);
@@ -132,6 +138,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        //add the button to select different categories
+        setHasOptionsMenu(true);
+
         // Get POI peak details container
         poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
 
@@ -140,6 +149,12 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         mapFragment.getMapAsync(this);
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_map, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -159,29 +174,58 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     }
 
     @Override
-    // TODO: Add click events to map pointers, and call OnPOITapHandler() to show POI popup
-    public void onClick(View v) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                selectCategoryDialog.show();
+                // User chose the "Settings" item, show the app settings UI...
+                return true;
 
-        switch (v.getId()) {
-//            case R.id.mapView:
-//                OnPOITapHandler(v);
-//                Log.i(TAG,"map view clicked");
-//                break;
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
         }
     }
+
+    @Override
+    public void onClick(View v) {}
 
     /**
      * Handles the POI popup animation
      * @param v
      */
-    private void OnPOITapHandler(View v) {
+    private void OnPOITapHandler(View v, Marker marker) {
         if (!anim_stopped) return;
 
         anim_stopped = false;
         View m = v.findViewById(R.id.gmFragment);
+
         poi_peak.setVisibility(View.VISIBLE);
 
+//        poi_peak.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getContext(), POIActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+
         if (poi_closed) {
+            //Only change the layout information if a popup is not already open
+            TextView title = (TextView) poi_peak.findViewById(R.id.Title);
+            TextView description = (TextView) poi_peak.findViewById(R.id.Description);
+
+            //Change this to the marker image url
+            ImageView image = (ImageView) poi_peak.findViewById(R.id.POI_image);
+            image.setBackgroundResource(R.drawable.nav_drawer_head);
+
+            title.setText(marker.getTitle());
+            description.setText(marker.getSnippet());
             anim = ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight(), m.getHeight() - poi_peak.getHeight());
         } else {
             anim = ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight() - poi_peak.getHeight(), m.getHeight());
@@ -219,14 +263,12 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     }
 
 
-    public void showCategoryDialog() {
+    public AlertDialog createCategoryDialog() {
         AlertDialog dialog;
         final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT,Constants.CATEGORY_RESTAURANT_TEXT,Constants.CATEGORY_FACILITY_TEXT};
-        // arraylist to keep the selected items
-        final ArrayList<String> seletedItems = new ArrayList<String>();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Select What You Want to Visit");
+        builder.setTitle("Select What You Want to Filter");
         builder.setMultiChoiceItems(categories, null,
                 new DialogInterface.OnMultiChoiceClickListener() {
                     // indexSelected contains the index of item (of which checkbox checked)
@@ -236,11 +278,13 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                         if (isChecked) {
                             // If the user checked the item, add it to the selected items
                             // write your code when user checked the checkbox
-                            seletedItems.add(textToCategory.get(categories[indexSelected]));
-                        } else if (seletedItems.contains(indexSelected)) {
+                            Boolean removed = showItems.remove(textToCategory.get(categories[indexSelected]));
+                            hideItems.add(textToCategory.get(categories[indexSelected]));
+                        } else {
                             // Else, if the item is already in the array, remove it
                             // write your code when user Uchecked the checkbox
-                            seletedItems.remove(Integer.valueOf(indexSelected));
+                            Boolean removed = hideItems.remove(textToCategory.get(categories[indexSelected]));
+                            showItems.add(textToCategory.get(categories[indexSelected]));
                         }
                     }
                 })
@@ -250,7 +294,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                     public void onClick(DialogInterface dialog, int id) {
                         //  Code when user clicked on OK
                         //  Tell the controller to edit the map
-                        filterMarkers(seletedItems);
+                        filterMarkers(hideItems,false);
+                        filterMarkers(showItems,true);
 
                     }
                 })
@@ -262,13 +307,15 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                     }
                 });
 
-        dialog = builder.create();//AlertDialog dialog; create like this outside onClick
-        dialog.show();
+        return builder.create();
     }
 
-    private void filterMarkers(ArrayList<String> categories) {
+    private void filterMarkers(Set<String> categories, Boolean setVisible) {
+        Log.i("filter markers",categories.toString() + "\n" + setVisible.toString());
         for (Marker marker : markers) {
-            marker.setVisible(false);
+            if (categories.contains(markerCategories.get(marker))) {
+                marker.setVisible(setVisible);
+            }
         }
     }
 
@@ -319,6 +366,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
                 Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
                 markers.add(m);
+                markerCategories.put(m,category);
 
             }
             while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
@@ -339,7 +387,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        OnPOITapHandler(view);
+        OnPOITapHandler(view, marker);
         return true;
     }
 
@@ -358,6 +406,46 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+           /*
+     * Takes action based on the ID of the Loader that's being created
+     */
+        String[] projection = {TaiODataContract.POIEntry._ID, TaiODataContract.POIEntry.COLUMN_NAME, TaiODataContract.POIEntry.COLUMN_LATITUDE, TaiODataContract.POIEntry.COLUMN_LONGITUDE,
+                TaiODataContract.POIEntry.COLUMN_CATEGORY, TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, TaiODataContract.POIEntry.COLUMN_DESCRIPTION,
+                TaiODataContract.POIEntry.COLUMN_RATING, TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER};
+        switch (id) {
+            case URL_LOADER:
+                // Returns a new CursorLoader
+                return new CursorLoader(
+                        this.getContext(),   // Parent activity context
+                        TaiODataProvider.POIENTRY_URI,      // Table to query
+                        projection,     // Projection to return
+                        null,            // No selection clause
+                        null,            // No selection arguments
+                        null             // Default sort order
+                );
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        //adapter.swapCursor(data);
+
+        setUpMarkers(data);
+        Log.d("******LOADER MANAGER: ", "called initLoader");
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185),Constants.ZOOM_LEVEL));
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        //adapter.swapCursor(null);
+    }
+
     // TODO: setup interface for main activity to change content pane according to events here.
     public interface OnFragmentInteractionListener {
         void OnMapFragmentInteraction();
@@ -372,14 +460,5 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnInfoWindowClickListener(this);
-
-//        Add a marker in Sydney, Australia, and move the camera.
-        LatLng sydney = new LatLng(22.253155, 113.858185);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Tai O"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
-        Log.i(TAG, "Marker added");
-
-
     }
 }
