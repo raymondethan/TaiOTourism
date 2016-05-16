@@ -68,6 +68,5 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
 
     // Add interface to main activity here
     public interface OnFragmentInteractionListener {
-
     }
 }

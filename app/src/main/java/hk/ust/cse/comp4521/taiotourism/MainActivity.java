@@ -34,7 +34,6 @@ import com.strongloop.android.loopback.callbacks.ListCallback;
 
 import java.util.List;
 
-import hk.ust.cse.comp4521.taiotourism.HomeFragment.OnFragmentInteractionListener;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
@@ -61,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     Account mAccount;
     RestAdapter adapter;
 
+    // Points to fragment that is currently displayed.
+    private Class fragmentClass;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -86,12 +88,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         // Set Home page fragment
         Fragment fragment = null;
         try {
-            fragment = (Fragment) TaiOMapFragment.class.newInstance();
+            fragment = (Fragment) HomeFragment.class.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        setTitle("大澳 Tai O Guide");
 
 //        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.fab);
 //        myFab.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +211,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     public void selectDrawerItem(MenuItem menuItem) {
 
         Fragment fragment = null;
-        Class fragmentClass;
 
 //            case R.id.action_gotomap:
 //                // User chose the "Favorite" action, mark the current item
@@ -234,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             case R.id.nav_first_fragment:
                 // home
                 fragmentClass = HomeFragment.class;
+                setTitle("");
                 break;
             case R.id.nav_second_fragment:
                 // map
@@ -281,6 +284,17 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.action_settings:
+                if (fragmentClass == TaiOMapFragment.class) {
+                    // inflate filter widget for google map
+                }
+                return true;
+        }
+
+
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -314,13 +328,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     }
 
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_map, menu);
+        return true;
+    }
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
