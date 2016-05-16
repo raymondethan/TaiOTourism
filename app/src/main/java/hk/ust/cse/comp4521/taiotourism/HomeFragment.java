@@ -66,6 +66,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     // TODO: setup interface for main activity to change content pane according to events here.
     public interface OnFragmentInteractionListener {
         void OnHomeFragmentInteraction();
-        void passStuff();
     }
 }
