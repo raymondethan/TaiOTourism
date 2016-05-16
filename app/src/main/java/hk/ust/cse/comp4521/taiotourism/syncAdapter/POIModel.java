@@ -1,5 +1,7 @@
 package hk.ust.cse.comp4521.taiotourism.syncAdapter;
 
+import android.net.Uri;
+
 import com.strongloop.android.loopback.Model;
 
 import java.text.DateFormat;
@@ -18,6 +20,7 @@ public class POIModel extends Model {
     private String category;
     private Integer tourOrder;
     private String description;
+    private String pictureUrl;
     private Double rating;
     private String openingHours;
     private Integer counter;
@@ -55,6 +58,14 @@ public class POIModel extends Model {
     public String getDescription() {
         if (null == description) return "";
         return description;
+    }
+
+    public void setPictureUrl(String pictureUrl) {
+        this.pictureUrl = pictureUrl;
+    }
+
+    public String getPictureUrl() {
+        return this.pictureUrl;
     }
 
     public void setDescription(String description) {

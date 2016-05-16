@@ -1,31 +1,48 @@
 package hk.ust.cse.comp4521.taiotourism;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemViewHolder> {
 
-    private List<Item> itemList;
-    private static ItemClickListener itemClickListener;
+    private List<POIModel> itemList;
+    private static Context parentContext;
+
+    private static String POI_NAME = "name";
+    private static String POI_DESCRIPTION = "description";
+    private static String POI_PICTURE_URL = "pictureUrl";
+    private static String POI_OPENING_HOURS  = "openingHours";
+    private static String POI_RATING = "rating";
 
     // Constructor
-    public ItemListAdapter(List<Item> itemList) {
+    public ItemListAdapter(List<POIModel> itemList, Context parentContext) {
         this.itemList = itemList;
+        this.parentContext = parentContext;
     }
 
     // Setters and Getters
-    public void setItemList(List<Item> itemList) {
+    public void setItemList(List<POIModel> itemList) {
+        if (itemList == null) {
+            itemList = new ArrayList<POIModel>();
+        }
+        if (itemList == null) {
+            itemList.clear();
+        }
         this.itemList = itemList;
-    }
-
-    public void setItemClickListener(ItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -39,14 +56,17 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        Item item = itemList.get(position);
+        POIModel item = itemList.get(position);
 
-        holder.vTitle.setText(item.title);
-        //holder.vPhoto.setImage(item.photo);  // Just for test
-        holder.vOpeningHours.setText(item.openingHours);
+        holder.setItem(item);
+        holder.vTitle.setText(item.getName());
+        Picasso.with(parentContext)
+                .load(item.getPictureUrl())
+                .into(holder.vPhoto);
+        holder.vOpeningHours.setText(item.getOpeningHours());
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    // Return the size of the data set (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return itemList.size();
@@ -63,22 +83,31 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
         protected ImageView vPhoto;
         protected TextView vOpeningHours;
 
+        protected POIModel poi;
+
         public ItemViewHolder(View view) {
             super(view);
+            view.setOnClickListener(this);
 
             vTitle = (TextView) view.findViewById(R.id.item_title);
             vPhoto = (ImageView) view.findViewById(R.id.item_photo);
             vOpeningHours = (TextView) view.findViewById(R.id.item_hours);
         }
 
+        public void setItem(POIModel poi) {
+            this.poi = poi;
+        }
+
         @Override
         public void onClick(View view) {
-            itemClickListener.onItemClick(getAdapterPosition(), view);
-        }
-    }
+            Intent poiIntent = new Intent(parentContext, POIActivity.class);
+            poiIntent.putExtra(POI_NAME, poi.getName());
+            poiIntent.putExtra(POI_DESCRIPTION, poi.getDescription());
+            poiIntent.putExtra(POI_OPENING_HOURS, poi.getOpeningHours());
+            poiIntent.putExtra(POI_PICTURE_URL, poi.getPictureUrl());
+            poiIntent.putExtra(POI_RATING, poi.getRating());
 
-    // Interface for custom click on item listener
-    public interface ItemClickListener {
-        public void onItemClick(int position, View view);
+            parentContext.startActivity(poiIntent);
+        }
     }
 }

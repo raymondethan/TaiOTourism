@@ -31,5 +31,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-appindexing:8.4.0'
     compile 'com.google.code.gson:gson:2.3'
     compile 'com.strongloop:loopback-sdk-android:1.5.+'
-
+    compile files('libs/picasso-2.5.2.jar')
 }
