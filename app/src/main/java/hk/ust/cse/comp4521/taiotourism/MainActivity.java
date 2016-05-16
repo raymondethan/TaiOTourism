@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     Account mAccount;
     RestAdapter adapter;
-    
+
     private SharedPreferences mSharedPreferences;
 
     // Points to fragment that is currently displayed.
