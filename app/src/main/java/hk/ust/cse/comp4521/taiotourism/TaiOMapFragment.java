@@ -1,13 +1,24 @@
 package hk.ust.cse.comp4521.taiotourism;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -29,10 +40,18 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -53,14 +72,14 @@ import static android.provider.BaseColumns._ID;
  * Created by nickjarzembowski on 15/05/2016.
  */
 public class TaiOMapFragment extends Fragment implements View.OnClickListener, GoogleMap.OnInfoWindowClickListener,
-        OnMapReadyCallback, GoogleMap.OnMapLongClickListener,
-        GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener, LoaderManager.LoaderCallbacks<Cursor> {
+        OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener,
+        LoaderManager.LoaderCallbacks<Cursor>, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        LocationListener, ResultCallback<Status> {
 
     private View view;
     private RelativeLayout poi_peak;
     boolean poi_closed = true;
     boolean anim_stopped = true;
-    private ObjectAnimator anim;
 
     // used to define the filter setting of the map from the menu
     private static final String ARG_MAP_FILTER_SETTING = "param1";
@@ -92,6 +111,63 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     private AlertDialog selectCategoryDialog;
 
+    protected Location mLastLocation, mCurrentLocation;
+
+    // Request code to use when launching the resolution activity
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
+    // Unique tag for the error dialog fragment
+    private static final String DIALOG_ERROR = "dialog_error";
+    // Bool to track whether the app is already resolving an error
+    private boolean mResolvingError = false;
+
+    //We will want to change these values or get rid of the variables for location updates
+    /**
+     * The desired interval for location updates. Inexact. Updates may be more or less frequent.
+     */
+    public static final long UPDATE_INTERVAL_IN_MILLISECONDS = 120000;
+
+    /**
+     * The fastest rate for active location updates. Exact. Updates will never be more frequent
+     * than this value.
+     */
+    public static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
+
+    /**
+     * Stores parameters for requests to the FusedLocationProviderApi.
+     */
+    protected LocationRequest mLocationRequest;
+
+    /**
+     * Tracks the status of the location updates request. Value changes when the user presses the
+     * Start Updates and Stop Updates buttons.
+     */
+    protected Boolean mRequestingLocationUpdates;
+
+    /**
+     * Time when the location was updated represented as a String.
+     */
+    protected String mLastUpdateTime;
+
+    protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
+    protected static final String LOCATION_ADDRESS_KEY = "location-address";
+
+    /**
+     * Tracks whether the user has requested an address. Becomes true when the user requests an
+     * address and false when the address (or an error message) is delivered.
+     * The user requests an address by pressing the Fetch Address button. This may happen
+     * before GoogleApiClient connects. This activity uses this boolean to keep track of the
+     * user's intent. If the value is true, the activity tries to fetch the address as soon as
+     * GoogleApiClient connects.
+     */
+    protected boolean mAddressRequested;
+
+    /**
+     * The formatted location address.
+     */
+    protected String mPOIOutput, mLocationOutput, mAddressOutput;
+
+
     public TaiOMapFragment() {
         // Required empty public constructor
     }
@@ -116,9 +192,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             mapFilterSetting = getArguments().getString(ARG_MAP_FILTER_SETTING);
         }
 
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this.getContext()).addApi(AppIndex.API).build();
+        buildGoogleApiClient();
 
         selectCategoryDialog = createCategoryDialog();
 
@@ -131,6 +205,32 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         textToCategory.put(Constants.CATEGORY_FACILITY_TEXT, Constants.CATEGORY_FACILITY);
 
     }
+
+    protected synchronized void buildGoogleApiClient() {
+        client = new GoogleApiClient.Builder(this.getContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        createLocationRequest();
+    }
+
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+
+        // Sets the desired interval for active location updates. This interval is
+        // inexact. You may not receive updates at all if no location sources are available, or
+        // you may receive them slower than requested. You may also receive updates faster than
+        // requested if other applications are requesting location at a faster interval.
+        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        // Sets the fastest rate for active location updates. This interval is exact, and your
+        // application will never receive updates faster than this value.
+        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -147,6 +247,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.gmFragment);
         mapFragment.getMapAsync(this);
+        //mapFragment.set
 
         return view;
     }
@@ -155,6 +256,40 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_map, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onStart() {
+
+        super.onStart();
+        client.connect();
+    }
+
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        if (client.isConnected()) {
+            mRequestingLocationUpdates = true;
+            startLocationUpdates();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (client.isConnected()) {
+            mRequestingLocationUpdates = false;
+            stopLocationUpdates();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        if (client.isConnected()) {
+            client.disconnect();
+        }
+        super.onStop();
     }
 
     @Override
@@ -193,7 +328,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     }
 
     @Override
-    public void onClick(View v) {}
+    public void onClick(View v) {
+    }
 
     /**
      * Handles the POI popup animation
@@ -226,11 +362,13 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
             title.setText(marker.getTitle());
             description.setText(marker.getSnippet());
-            anim = ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight(), m.getHeight() - poi_peak.getHeight());
+            animatePopup(ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight(), m.getHeight() - poi_peak.getHeight()));
         } else {
-            anim = ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight() - poi_peak.getHeight(), m.getHeight());
+            animatePopup(ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight() - poi_peak.getHeight(), m.getHeight()));
         }
+    }
 
+    private void animatePopup(ObjectAnimator anim) {
         anim.addListener(new Animator.AnimatorListener() {
 
             @Override
@@ -264,27 +402,22 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
 
     public AlertDialog createCategoryDialog() {
-        AlertDialog dialog;
         final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT,Constants.CATEGORY_RESTAURANT_TEXT,Constants.CATEGORY_FACILITY_TEXT};
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle("Select What You Want to Filter");
-        builder.setMultiChoiceItems(categories, null,
-                new DialogInterface.OnMultiChoiceClickListener() {
+        final boolean[] checkedItems = {true,true,true};
+        builder.setMultiChoiceItems(categories, checkedItems,
+                new OnMultiChoiceClickListener() {
                     // indexSelected contains the index of item (of which checkbox checked)
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected,
                                         boolean isChecked) {
                         if (isChecked) {
-                            // If the user checked the item, add it to the selected items
-                            // write your code when user checked the checkbox
-                            Boolean removed = showItems.remove(textToCategory.get(categories[indexSelected]));
-                            hideItems.add(textToCategory.get(categories[indexSelected]));
-                        } else {
-                            // Else, if the item is already in the array, remove it
-                            // write your code when user Uchecked the checkbox
-                            Boolean removed = hideItems.remove(textToCategory.get(categories[indexSelected]));
+                            hideItems.remove(textToCategory.get(categories[indexSelected]));
                             showItems.add(textToCategory.get(categories[indexSelected]));
+                        } else {
+                            showItems.remove(textToCategory.get(categories[indexSelected]));
+                            hideItems.add(textToCategory.get(categories[indexSelected]));
                         }
                     }
                 })
@@ -381,11 +514,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     }
 
     @Override
-    public void onMapLongClick(LatLng latLng) {
-
-    }
-
-    @Override
     public boolean onMarkerClick(Marker marker) {
         OnPOITapHandler(view, marker);
         return true;
@@ -446,6 +574,167 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         //adapter.swapCursor(null);
     }
 
+    @Override
+    public void onMapClick(LatLng latLng) {
+        Log.i("On map click"," called");
+        if (!poi_closed) {
+            View m = view.findViewById(R.id.gmFragment);
+            animatePopup(ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight() - poi_peak.getHeight(), m.getHeight()));
+        }
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
+
+        if (mLastLocation != null) {
+            String message = "Last Location is: " +
+                    "  Latitude = " + String.valueOf(mLastLocation.getLatitude()) +
+                    "  Longitude = " + String.valueOf(mLastLocation.getLongitude());
+
+            mLocationOutput = message;
+            Log.i(TAG, message);
+            Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this.getContext(), R.string.no_location_detected, Toast.LENGTH_LONG).show();
+        }
+
+        // Determine whether a Geocoder is available.
+        if (!Geocoder.isPresent()) {
+            Toast.makeText(this.getContext(), R.string.no_geocoder_available, Toast.LENGTH_LONG).show();
+            return;
+        }
+        // It is possible that the user presses the button to get the address before the
+        // GoogleApiClient object successfully connects. In such a case, mAddressRequested
+        // is set to true, but no attempt is made to fetch the address (see
+        // fetchAddressButtonHandler()) . Instead, we start the intent service here if the
+        // user has requested an address, since we now have a connection to GoogleApiClient.
+//        if (mAddressRequested) {
+//            startIntentService(mLastLocation);
+//        }
+
+        if (!mRequestingLocationUpdates) {
+            mRequestingLocationUpdates = true;
+            startLocationUpdates();
+        }
+    }
+
+    /**
+     * Requests location updates from the FusedLocationApi.
+     */
+    protected void startLocationUpdates() {
+        // The final argument to {@code requestLocationUpdates()} is a LocationListener
+        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
+    }
+
+    protected void stopLocationUpdates() {
+        // It is a good practice to remove location requests when the activity is in a paused or
+        // stopped state. Doing so helps battery performance and is especially
+        // recommended in applications that request frequent location updates.
+
+        // The final argument to {@code requestLocationUpdates()} is a LocationListener
+        // (http://developer.android.com/reference/com/google/android/gms/location/LocationListener.html).
+        LocationServices.FusedLocationApi.removeLocationUpdates(client, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        // The connection to Google Play services was lost for some reason. We call connect() to
+        // attempt to re-establish the connection.
+        Log.i(TAG, "Connection suspended");
+        client.connect();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // Refer to the javadoc for ConnectionResult to see what error codes might be returned in
+        // onConnectionFailed.
+        Log.i(TAG, "Connection failed: ConnectionResult.getErrorCode() = " + connectionResult.getErrorCode());
+
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+            return;
+        } else if (connectionResult.hasResolution()) {
+            try {
+                mResolvingError = true;
+                connectionResult.startResolutionForResult(this.getActivity(), REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                client.connect();
+            }
+        } else {
+            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
+            showErrorDialog(connectionResult.getErrorCode());
+            mResolvingError = true;
+        }
+    }
+
+    /* Creates a dialog for an error message */
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_ERROR, errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getActivity().getFragmentManager(), "errordialog");
+    }
+
+    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    public void onDialogDismissed() {
+        mResolvingError = false;
+    }
+
+    /* A fragment to display an error dialog */
+    public static class ErrorDialogFragment extends DialogFragment {
+        public ErrorDialogFragment() {
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Get the error code and retrieve the appropriate dialog
+            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+            return GooglePlayServicesUtil.getErrorDialog(errorCode,
+                    this.getActivity(), REQUEST_RESOLVE_ERROR);
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            ((MapActivity) getActivity()).onDialogDismissed();
+        }
+    }
+
+    @Override
+    public void onResult(@NonNull Status status) {
+
+    }
+
     // TODO: setup interface for main activity to change content pane according to events here.
     public interface OnFragmentInteractionListener {
         void OnMapFragmentInteraction();
@@ -456,7 +745,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         mMap = googleMap;
         mapReady = true;
         mMap.setOnInfoWindowClickListener(this);
-        mMap.setOnMapLongClickListener(this);
+        mMap.setOnMapClickListener(this);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnInfoWindowClickListener(this);

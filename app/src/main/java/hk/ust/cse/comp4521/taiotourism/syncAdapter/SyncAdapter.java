@@ -247,12 +247,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
                 }
             });
 
-            for (int i = 0; i < 99; ++i) {
-                for (int j = 0; j < 999999999; ++j) {
-                    continue;
-                }
-            }
-
             Log.e(TAG, "called find all");
         } catch (Exception e) {
             Log.d(TAG, "Find all exception: " + e.getLocalizedMessage());
