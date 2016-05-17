@@ -7,13 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
 /**
- *
- * Template for fragments
- *
+ * Created by nickjarzembowski on 15/05/2016.
  */
-public class BlankFragment extends Fragment implements View.OnClickListener{
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private View view;
 
@@ -24,12 +21,12 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
 
     private OnFragmentInteractionListener mListener;
 
-    public BlankFragment() {
+    public HomeFragment() {
         // Required empty public constructor
     }
 
-    public static BlankFragment newInstance() {
-        BlankFragment fragment = new BlankFragment();
+    public static HomeFragment newInstance() {
+        HomeFragment fragment = new HomeFragment();
         return fragment;
     }
 
@@ -39,7 +36,7 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
-    // TODO: Add layout type here
+    // TODO: complete home layout
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -66,7 +63,8 @@ public class BlankFragment extends Fragment implements View.OnClickListener{
     public void onClick(View v) {
     }
 
-    // Add interface to main activity here
+    // TODO: setup interface for main activity to change content pane according to events here.
     public interface OnFragmentInteractionListener {
+        void OnHomeFragmentInteraction();
     }
 }

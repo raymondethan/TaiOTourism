@@ -45,6 +45,8 @@ public final class Constants {
     public static final String CATEGORY_RESTAURANT_TEXT = "Restaurants";
     public static final String CATEGORY_FACILITY_TEXT = "Facilities";
 
+    public static final float ZOOM_LEVEL = 12;
+
     public static final String SHAREDPREF_LAST_UPDATE = "LAST_UPDATE";
     public static final String LAST_UPDATE_DEFAULT = "1990-00-10T00:00:00.000Z";
     public static final String DATE_FORMAT = "yyyy-MM-ddhh:mm:ss:SSS";

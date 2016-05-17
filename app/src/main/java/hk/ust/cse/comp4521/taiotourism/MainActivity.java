@@ -2,15 +2,15 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -29,6 +29,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.android.gms.maps.MapFragment;
 import com.strongloop.android.loopback.callbacks.ListCallback;
 
 import java.util.List;
@@ -36,7 +38,6 @@ import java.util.List;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
-import com.google.common.collect.ImmutableMap;
 import com.strongloop.android.loopback.RestAdapter;
 import com.strongloop.android.loopback.callbacks.ListCallback;
 import com.strongloop.android.remoting.adapters.Adapter;
@@ -56,7 +57,7 @@ import java.util.Map;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
-public class MainActivity extends AppCompatActivity implements BlankFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener, TaiOMapFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
@@ -79,11 +80,16 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     private static final String POI_RATING = "rating";
 
 
-    Account mAccount;
+    public static FragmentManager fragmentManager;
 
+    Account mAccount;
     RestAdapter adapter;
 
     private SharedPreferences mSharedPreferences;
+
+    // Points to fragment that is currently displayed.
+    private Class fragmentClass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,15 +114,15 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         setupDrawerContent(nvDrawer);
 
         // Set Home page fragment
-        Class home = BlankFragment.class;
         Fragment fragment = null;
         try {
-            fragment = (Fragment) home.newInstance();
+            fragment = (Fragment) HomeFragment.class.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        setTitle("大澳 Tai O Guide");
 
 //        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.fab);
 //        myFab.setOnClickListener(new View.OnClickListener() {
@@ -147,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 }
             });
 
+        //might not need this line
+        mSharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
+
+        //Test to see if the sync adapter works
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(
                 ContentResolver.SYNC_EXTRAS_MANUAL, true);
@@ -154,9 +164,6 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
         ContentResolver.requestSync(mAccount, TaiODataContract.AUTHORITY, settingsBundle);
-
-        //might not need this line
-        mSharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
     }
 
     public RestAdapter getLoopBackAdapter() {
@@ -235,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
         Bundle bundleArgs = null;
         Fragment fragment = null;
-        Class fragmentClass;
 
 //            case R.id.action_gotomap:
 //                // User chose the "Favorite" action, mark the current item
@@ -253,22 +259,42 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 //                return true;
 //
 
+        // On Nav Drawer menu item selection
+        // Switch fragment in content pane according to selected item
+
         switch(menuItem.getItemId()) {
+
             case R.id.nav_first_fragment:
-                Intent intent = new Intent(getBaseContext(), MapActivity.class);
-                startActivity(intent);
-                return;
+                // home
+                fragmentClass = HomeFragment.class;
+                setTitle("");
+                break;
             case R.id.nav_second_fragment:
-                fragmentClass = BlankFragment.class;
+                // map
+                fragmentClass = TaiOMapFragment.class;
                 break;
             case R.id.nav_third_fragment:
-                // TODO : Just testing list
+                // tour
+                //TODO: add map filter to tour selection
+                fragmentClass = TaiOMapFragment.class;
+                break;
+            case R.id.nav_ptg_poi:
                 bundleArgs = new Bundle();
                 bundleArgs.putString(LIST_TYPE, TOUR_STOPS_LIST);
                 fragmentClass = ItemListFragment.class;
                 break;
+            case R.id.nav_ptg_restaurants:
+                bundleArgs = new Bundle();
+                bundleArgs.putString(LIST_TYPE, RESTAURANTS_LIST);
+                fragmentClass = ItemListFragment.class;
+                break;
+            case R.id.nav_ptg_facilities:
+                bundleArgs = new Bundle();
+                bundleArgs.putString(LIST_TYPE, FACILITIES_LIST);
+                fragmentClass = ItemListFragment.class;
+                break;
             default:
-                fragmentClass = BlankFragment.class;
+                fragmentClass = HomeFragment.class;
         }
 
         try {
@@ -276,6 +302,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
             if (bundleArgs != null) {
                 fragment.setArguments(bundleArgs);
             }
+
+            // Setting listener on cardViews for ItemListFragment
             if (fragment instanceof ItemListFragment) {
                 ((ItemListFragment) fragment).setItemClickListener(
                         new ItemListAdapter.ItemClickListener() {
@@ -300,6 +328,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
         menuItem.setChecked(true);
+
+        // TODO: setup get title method so can retrieve title string
         // Set action bar title
 //        setTitle(menuItem.getTitle());
         // Close the navigation drawer
@@ -308,6 +338,17 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+
+            case R.id.action_settings:
+                if (fragmentClass == TaiOMapFragment.class) {
+                    // inflate filter widget for google map
+                }
+                return true;
+        }
+
+
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
@@ -332,17 +373,21 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     }
 
     @Override
-    public void onBottomBarInteraction(int ViewId) {
-        
+    public void OnHomeFragmentInteraction() {
+
     }
 
+    @Override
+    public void OnMapFragmentInteraction() {
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_map, menu);
+        return true;
+    }
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {

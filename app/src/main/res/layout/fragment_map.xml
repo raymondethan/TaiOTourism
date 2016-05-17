@@ -3,29 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
-    android:clipToPadding="false"
-    tools:context="com.example.nickjarzembowski.navdrawerwithfragments.BlankFragment">
+    android:clipToPadding="false">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/map"
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gmFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/fragment_placeholder"
-        android:background="@drawable/map_dud"/>
-
+        tools:layout="@layout/fragment_map" />
 
     <!-- The POI Peaker -->
+
     <include
         layout="@layout/fragment_map_poi_peak"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <!-- The Bottom Navigation Bar -->
-    <!--<include-->
-        <!--layout="@layout/bottom_bar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content" />-->
 
 
 </FrameLayout>

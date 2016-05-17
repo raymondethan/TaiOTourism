@@ -201,7 +201,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
 
         // Prepare the loader.  Either re-connect with an existing one,
         // or start a new one.
-        getLoaderManager().initLoader(0, null, (LoaderManager.LoaderCallbacks<Cursor>) this);
+        getLoaderManager().initLoader(0, null, this);
 
         // Build the Google API client so that connections can be established
         buildGoogleApiClient();
@@ -444,11 +444,6 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
             Toast.makeText(this, R.string.no_geocoder_available, Toast.LENGTH_LONG).show();
             return;
         }
-        // It is possible that the user presses the button to get the address before the
-        // GoogleApiClient object successfully connects. In such a case, mAddressRequested
-        // is set to true, but no attempt is made to fetch the address (see
-        // fetchAddressButtonHandler()) . Instead, we start the intent service here if the
-        // user has requested an address, since we now have a connection to GoogleApiClient.
         if (mAddressRequested) {
             startIntentService(mLastLocation);
         }
