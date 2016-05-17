@@ -3,7 +3,6 @@ package hk.ust.cse.comp4521.taiotourism;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +19,8 @@ import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemViewHolder> {
 
     private List<POIModel> itemList;
+    private static ItemClickListener itemClickListener;
     private static Context parentContext;
-
-    private static String POI_NAME = "name";
-    private static String POI_DESCRIPTION = "description";
-    private static String POI_PICTURE_URL = "pictureUrl";
-    private static String POI_OPENING_HOURS  = "openingHours";
-    private static String POI_RATING = "rating";
 
     // Constructor
     public ItemListAdapter(List<POIModel> itemList, Context parentContext) {
@@ -43,6 +37,10 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
             itemList.clear();
         }
         this.itemList = itemList;
+    }
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -100,14 +98,20 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
 
         @Override
         public void onClick(View view) {
-            Intent poiIntent = new Intent(parentContext, POIActivity.class);
-            poiIntent.putExtra(POI_NAME, poi.getName());
-            poiIntent.putExtra(POI_DESCRIPTION, poi.getDescription());
-            poiIntent.putExtra(POI_OPENING_HOURS, poi.getOpeningHours());
-            poiIntent.putExtra(POI_PICTURE_URL, poi.getPictureUrl());
-            poiIntent.putExtra(POI_RATING, poi.getRating());
-
-            parentContext.startActivity(poiIntent);
+//            Intent poiIntent = new Intent(parentContext, POIActivity.class);
+//            poiIntent.putExtra(POI_NAME, poi.getName());
+//            poiIntent.putExtra(POI_DESCRIPTION, poi.getDescription());
+//            poiIntent.putExtra(POI_OPENING_HOURS, poi.getOpeningHours());
+//            poiIntent.putExtra(POI_PICTURE_URL, poi.getPictureUrl());
+//            poiIntent.putExtra(POI_RATING, poi.getRating());
+//
+//            parentContext.startActivity(poiIntent);
+            itemClickListener.onItemClickListener(poi);
         }
     }
+
+    public interface ItemClickListener {
+        void onItemClickListener(POIModel item);
+    }
+
 }

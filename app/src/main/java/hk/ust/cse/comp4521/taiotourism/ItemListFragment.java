@@ -1,6 +1,5 @@
 package hk.ust.cse.comp4521.taiotourism;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +21,41 @@ public class ItemListFragment extends Fragment {
     private RecyclerView mRecyclerViewList;
     private ItemListAdapter mItemListAdapter;
     private LinearLayoutManager mLayoutManager;
+    private ItemListAdapter.ItemClickListener mItemClickListener;
 
     private List<POIModel> itemList;
+    private static final String LIST_TYPE = "listType";
+    private static final String TOUR_STOPS_LIST = "tourStops";
+    private static final String RESTAURANTS_LIST = "restaurants";
+    private static final String FACILITIES_LIST = "facilities";
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    // Setters
+    public void setItemClickListener(ItemListAdapter.ItemClickListener itemClickListener) {
+        this.mItemClickListener = itemClickListener;
+    }
+
+    // ************************************************************************
+    //                           LIFECYCLE CALLBACKS
+    // ************************************************************************
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         mRecyclerViewList = (RecyclerView) rootView.findViewById(R.id.card_recycler_view);
 
+        // Initialize list of POIs to be displayed
+        Bundle bundleArgs = this.getArguments();
+        String listType = bundleArgs.getString(LIST_TYPE);
+
+        switch (listType) {
+            case TOUR_STOPS_LIST:
+                break;
+            case RESTAURANTS_LIST:
+                break;
+            case FACILITIES_LIST:
+                break;
+            default:
+                break;
+        }
         // TODO : for testing, mock-up data
         POIModel item1 = new POIModel();
         item1.setName("Tour stop 1");
@@ -65,10 +91,12 @@ public class ItemListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         mItemListAdapter = new ItemListAdapter(itemList, getContext());
+        mItemListAdapter.setItemClickListener(mItemClickListener);
+
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         mRecyclerViewList.setHasFixedSize(true);
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerViewList.setAdapter(mItemListAdapter);
         mRecyclerViewList.setLayoutManager(mLayoutManager);
     }

@@ -67,6 +67,17 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
     public static final String ACCOUNT_TYPE = "hk.ust.cse.comp4521.datasync";
     // The account name
     public static final String ACCOUNT = "dummyaccount";
+    private static final String LIST_TYPE = "listType";
+    private static final String TOUR_STOPS_LIST = "tourStops";
+    private static final String RESTAURANTS_LIST = "restaurants";
+    private static final String FACILITIES_LIST = "facilities";
+
+    private static final String POI_NAME = "name";
+    private static final String POI_DESCRIPTION = "description";
+    private static final String POI_PICTURE_URL = "pictureUrl";
+    private static final String POI_OPENING_HOURS = "openingHours";
+    private static final String POI_RATING = "rating";
+
 
     Account mAccount;
 
@@ -222,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
     public void selectDrawerItem(MenuItem menuItem) {
 
+        Bundle bundleArgs = null;
         Fragment fragment = null;
         Class fragmentClass;
 
@@ -251,6 +263,8 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
                 break;
             case R.id.nav_third_fragment:
                 // TODO : Just testing list
+                bundleArgs = new Bundle();
+                bundleArgs.putString(LIST_TYPE, TOUR_STOPS_LIST);
                 fragmentClass = ItemListFragment.class;
                 break;
             default:
@@ -259,6 +273,24 @@ public class MainActivity extends AppCompatActivity implements BlankFragment.OnF
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
+            if (bundleArgs != null) {
+                fragment.setArguments(bundleArgs);
+            }
+            if (fragment instanceof ItemListFragment) {
+                ((ItemListFragment) fragment).setItemClickListener(
+                        new ItemListAdapter.ItemClickListener() {
+                            @Override
+                            public void onItemClickListener(POIModel poi) {
+                                Fragment poiFragment = (Fragment) POIFragment.newInstance(
+                                        poi.getName(), poi.getDescription(), poi.getPictureUrl(),
+                                        poi.getOpeningHours(), poi.getRating());
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.flContent, poiFragment).commit();
+                            }
+                        }
+                );
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
