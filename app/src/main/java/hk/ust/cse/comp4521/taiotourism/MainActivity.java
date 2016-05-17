@@ -68,6 +68,17 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     public static final String ACCOUNT_TYPE = "hk.ust.cse.comp4521.datasync";
     // The account name
     public static final String ACCOUNT = "dummyaccount";
+    private static final String LIST_TYPE = "listType";
+    private static final String TOUR_STOPS_LIST = "tourStops";
+    private static final String RESTAURANTS_LIST = "restaurants";
+    private static final String FACILITIES_LIST = "facilities";
+
+    private static final String POI_NAME = "name";
+    private static final String POI_DESCRIPTION = "description";
+    private static final String POI_PICTURE_URL = "pictureUrl";
+    private static final String POI_OPENING_HOURS = "openingHours";
+    private static final String POI_RATING = "rating";
+
 
     public static FragmentManager fragmentManager;
 
@@ -144,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         //might not need this line
         mSharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
+
         //Test to see if the sync adapter works
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(
@@ -152,7 +164,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
         ContentResolver.requestSync(mAccount, TaiODataContract.AUTHORITY, settingsBundle);
-
     }
 
     public RestAdapter getLoopBackAdapter() {
@@ -229,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     public void selectDrawerItem(MenuItem menuItem) {
 
+        Bundle bundleArgs = null;
         Fragment fragment = null;
 
 //            case R.id.action_gotomap:
@@ -266,24 +278,47 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 //TODO: add map filter to tour selection
                 fragmentClass = TaiOMapFragment.class;
                 break;
-
-            // TODO: change these fragments
             case R.id.nav_ptg_poi:
-                fragmentClass = TaiOMapFragment.class;
+                bundleArgs = new Bundle();
+                bundleArgs.putString(LIST_TYPE, TOUR_STOPS_LIST);
+                fragmentClass = ItemListFragment.class;
                 break;
             case R.id.nav_ptg_restaurants:
-                fragmentClass = TaiOMapFragment.class;
+                bundleArgs = new Bundle();
+                bundleArgs.putString(LIST_TYPE, RESTAURANTS_LIST);
+                fragmentClass = ItemListFragment.class;
                 break;
             case R.id.nav_ptg_facilities:
-                fragmentClass = TaiOMapFragment.class;
+                bundleArgs = new Bundle();
+                bundleArgs.putString(LIST_TYPE, FACILITIES_LIST);
+                fragmentClass = ItemListFragment.class;
                 break;
-
             default:
                 fragmentClass = HomeFragment.class;
         }
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
+            if (bundleArgs != null) {
+                fragment.setArguments(bundleArgs);
+            }
+
+            // Setting listener on cardViews for ItemListFragment
+            if (fragment instanceof ItemListFragment) {
+                ((ItemListFragment) fragment).setItemClickListener(
+                        new ItemListAdapter.ItemClickListener() {
+                            @Override
+                            public void onItemClickListener(POIModel poi) {
+                                Fragment poiFragment = (Fragment) POIFragment.newInstance(
+                                        poi.getName(), poi.getDescription(), poi.getPictureUrl(),
+                                        poi.getOpeningHours(), poi.getRating());
+                                FragmentManager fragmentManager = getSupportFragmentManager();
+                                fragmentManager.beginTransaction()
+                                        .replace(R.id.flContent, poiFragment).commit();
+                            }
+                        }
+                );
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
