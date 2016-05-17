@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * Created by nickjarzembowski on 15/05/2016.
@@ -38,8 +39,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     // TODO: complete home layout
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // Add click listeners to home screen buttons
+        Button home_map_button = (Button) view.findViewById(R.id.home_screen_map_button);
+        Button home_tour_button = (Button) view.findViewById(R.id.home_screen_tour_button);
+        Button home_places_button = (Button) view.findViewById(R.id.home_screen_places_button);
+        Button home_transport_button = (Button) view.findViewById(R.id.home_screen_transport_button);
+
+        home_map_button.setOnClickListener(this);
+        home_tour_button.setOnClickListener(this);
+        home_places_button.setOnClickListener(this);
+        home_transport_button.setOnClickListener(this);
+
         return view;
     }
 
@@ -61,10 +75,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        mListener.OnHomeFragmentInteraction(v);
     }
 
     // TODO: setup interface for main activity to change content pane according to events here.
     public interface OnFragmentInteractionListener {
-        void OnHomeFragmentInteraction();
+        void OnHomeFragmentInteraction(View view);
     }
 }

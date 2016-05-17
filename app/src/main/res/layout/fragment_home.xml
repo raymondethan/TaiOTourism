@@ -4,78 +4,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/home_bg_8">
 
-
-    <!--<LinearLayout-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="100dp"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:layout_marginTop="25dp">-->
-
-        <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:gravity="center"-->
-            <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
-            <!--android:text="Explore Tai O..."-->
-            <!--android:id="@+id/textView2" />-->
-    <!--</LinearLayout>-->
-
-    <!--<LinearLayout-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="center_horizontal"-->
-        <!--android:layout_marginTop="0dp"-->
-        <!--android:padding="10dp"-->
-        <!--android:gravity="center_horizontal">-->
-
-        <!--<LinearLayout-->
-            <!--android:orientation="horizontal"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"></LinearLayout>-->
-
-        <!--<GridLayout-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_gravity="center_horizontal"-->
-            <!--android:orientation="horizontal">-->
-
-            <!--&lt;!&ndash;<ImageButton&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_width="160dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_height="150dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:id="@+id/imageButton"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_row="0"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_column="0"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:width="160dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:height="150dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:background="@drawable/square_img_1"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:adjustViewBounds="true"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:scaleType="centerInside"&ndash;&gt;-->
-                <!--&lt;!&ndash;/>&ndash;&gt;-->
-
-            <!-- -->
-
-            <!--&lt;!&ndash;<Button&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:text="Tour"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_row="0"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_column="1"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:width="160dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:height="150dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:alpha="1"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:drawableTop="@android:drawable/ic_menu_search"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:textColor="#000000"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:elevation="1dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:radius="50dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:padding="40dp"&ndash;&gt;-->
-                <!--&lt;!&ndash;android:layout_margin="10dp"/>&ndash;&gt;-->
-
-
-        <!--</GridLayout>-->
-    <!--</LinearLayout>-->
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,17 +18,17 @@
             android:orientation="vertical"
             android:layout_width="230dp"
             android:layout_height="match_parent"
-            android:paddingLeft="25dp">
+            android:paddingTop="5dp"
+            android:paddingLeft="15dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="大澳"
-                android:id="@+id/textView2"
+                android:id="@+id/home_screen_headerText"
                 android:textSize="100dp"
-                android:textColor="#ffffff"
-                android:paddingTop="40dp" />
+                android:textColor="#ffffff" />
 
         </LinearLayout>
 
@@ -108,123 +36,56 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="50dp"
-            android:paddingLeft="20dp">
-
-            <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
-                <!--android:text="Tai O Guide"-->
-                <!--android:id="@+id/textView2"-->
-                <!--android:textSize="45dp"-->
-                <!--android:textIsSelectable="false"-->
-                <!--android:textStyle="normal|bold"-->
-                <!--android:textColor="#ffffff"-->
-                <!--android:gravity="right"-->
-                <!--android:paddingRight="20dp"-->
-                <!--android:layout_marginTop="10dp">-->
-            <!--</TextView>-->
-
-            <!--<Button-->
-                <!--android:layout_width="100dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:drawableRight="@android:drawable/ic_menu_mapmode"-->
-                <!--android:paddingBottom="5dp"-->
-                <!--android:paddingLeft="16dp"-->
-                <!--android:paddingRight="16dp"-->
-                <!--android:paddingTop="8dp"-->
-                <!--android:text="Map "-->
-                <!--android:textColor="#e8e9e9"-->
-                <!--android:layout_marginTop="15dp"-->
-                <!--android:background="#A94CAF50"-->
-                <!--android:singleLine="false"-->
-                <!--android:gravity="center_vertical|right" />-->
-
-            <!--<Button-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:drawableRight="@android:drawable/ic_menu_directions"-->
-                <!--android:paddingBottom="5dp"-->
-                <!--android:paddingLeft="16dp"-->
-                <!--android:paddingRight="16dp"-->
-                <!--android:paddingTop="8dp"-->
-                <!--android:text="Tour "-->
-                <!--android:textColor="#e8e9e9"-->
-                <!--android:layout_marginTop="15dp"-->
-                <!--android:background="#A94CAF50"-->
-                <!--android:gravity="center_vertical|right" />-->
-
-            <!--<Button-->
-                <!--android:layout_width="170dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:drawableRight="@android:drawable/ic_menu_search"-->
-                <!--android:paddingBottom="5dp"-->
-                <!--android:paddingLeft="16dp"-->
-                <!--android:paddingRight="16dp"-->
-                <!--android:paddingTop="8dp"-->
-                <!--android:text="Places to Go "-->
-                <!--android:textColor="#e8e9e9"-->
-                <!--android:layout_marginTop="15dp"-->
-                <!--android:background="#A94CAF50"-->
-                <!--android:gravity="center_vertical|right" />-->
+            android:gravity="center_vertical|right"
+            android:paddingBottom="60dp">
 
             <Button
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:drawableTop="@android:drawable/ic_menu_mapmode"
-                android:paddingBottom="20dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="20dp"
                 android:text="Map"
+                android:id="@+id/home_screen_map_button"
                 android:textColor="#e8e9e9"
+                android:layout_marginTop="15dp"
                 android:background="#4CAF50"
-                android:textSize="11dp"
-                android:longClickable="false"
-                android:elevation="@dimen/abc_action_bar_stacked_max_height" />
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
 
             <Button
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:drawableTop="@android:drawable/ic_menu_directions"
-                android:paddingBottom="20dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="20dp"
                 android:text="Tour"
+                android:id="@+id/home_screen_tour_button"
                 android:textColor="#e8e9e9"
-                android:textSize="11dp"
                 android:layout_marginTop="15dp"
-                android:background="#4CAF50" />
+                android:background="#4CAF50"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
 
             <Button
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:drawableTop="@android:drawable/ic_menu_search"
-                android:paddingBottom="20dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="20dp"
                 android:text="Places"
+                android:id="@+id/home_screen_places_button"
                 android:textColor="#e8e9e9"
                 android:layout_marginTop="15dp"
-                android:textSize="11dp"
-                android:background="#4CAF50" />
+                android:background="#4CAF50"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
 
             <Button
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:drawableTop="@android:drawable/ic_menu_info_details"
-                android:paddingBottom="20dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="20dp"
-                android:text="Transport"
+                android:text="Travel"
+                android:id="@+id/home_screen_transport_button"
                 android:textColor="#e8e9e9"
-                android:textSize="11dp"
                 android:layout_marginTop="15dp"
-                android:background="#E94CAF50" />
+                android:background="#E94CAF50"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp" />
 
         </LinearLayout>
 

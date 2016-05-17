@@ -142,7 +142,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
      * Tracks the status of the location updates request. Value changes when the user presses the
      * Start Updates and Stop Updates buttons.
      */
-    protected Boolean mRequestingLocationUpdates;
+    protected Boolean mRequestingLocationUpdates = false;
 
     /**
      * Time when the location was updated represented as a String.
