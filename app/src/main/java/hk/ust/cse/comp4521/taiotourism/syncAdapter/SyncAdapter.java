@@ -125,7 +125,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Looper.prepare();
             Log.i(TAG, "trying get all places");
             getUpdatedPois(formatter.format(lastUpdate));
-
+            setLastUpdatPreference();
             //getAllPlaces();
             //2016-05-10T00:00:00.000Z
         }
@@ -133,8 +133,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             syncResult.hasHardError();
             Log.e(TAG, e.getMessage(), e);
         }
-
-        setLastUpdatPreference();
 
         Log.i(TAG, "done sync");
     }
