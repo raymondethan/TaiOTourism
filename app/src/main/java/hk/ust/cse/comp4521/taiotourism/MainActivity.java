@@ -140,18 +140,18 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         adapter = getLoopBackAdapter();
         SyncAdapter.POIRepository POIRepo = adapter.createRepository(SyncAdapter.POIRepository.class);
 
-        POIRepo.findAll(new ListCallback<POIModel>() {
-                @Override
-                public void onSuccess(List<POIModel> objects) {
-                    Log.i("Main Activity", "First result from server is " + objects.get(0).getName());
-                    Log.e("Main Activity", "Successfullly fetched data!");
-                }
-
-                @Override
-                public void onError(Throwable t) {
-                    Log.e("Main Activity", "Failed to fetch data!");
-                }
-            });
+//        POIRepo.findAll(new ListCallback<POIModel>() {
+//                @Override
+//                public void onSuccess(List<POIModel> objects) {
+//                    Log.i("Main Activity", "First result from server is " + objects.get(0).getName());
+//                    Log.e("Main Activity", "Successfullly fetched data!");
+//                }
+//
+//                @Override
+//                public void onError(Throwable t) {
+//                    Log.e("Main Activity", "Failed to fetch data!");
+//                }
+//            });
 
         //might not need this line
         mSharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
@@ -242,22 +242,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         Bundle bundleArgs = null;
         Fragment fragment = null;
-
-//            case R.id.action_gotomap:
-//                // User chose the "Favorite" action, mark the current item
-//                // as a favorite...
-//                Bundle settingsBundle = new Bundle();
-//                settingsBundle.putBoolean(
-//                        ContentResolver.SYNC_EXTRAS_MANUAL, true);
-//                settingsBundle.putBoolean(
-//                        ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-//        /*
-//         * Request the sync for the default account, authority, and
-//         * manual sync settings
-//         */
-//                ContentResolver.requestSync(mAccount, TaiODataContract.AUTHORITY, settingsBundle);
-//                return true;
-//
 
         // On Nav Drawer menu item selection
         // Switch fragment in content pane according to selected item
@@ -388,29 +372,4 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         getMenuInflater().inflate(R.menu.menu_map, menu);
         return true;
     }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        switch (item.getItemId()) {
-////            case R.id.action_settings:
-////                // User chose the "Settings" item, show the app settings UI...
-////                return true;
-//
-//            case R.id.action_gotomap:
-//                // User chose the "Favorite" action, mark the current item
-//                // as a favorite...
-//                Intent intent = new Intent(this, MapActivity.class);
-//                startActivity(intent);
-//                return true;
-//
-//            default:
-//                // If we got here, the user's action was not recognized.
-//                // Invoke the superclass to handle it.
-//                return super.onOptionsItemSelected(item);
-//
-//        }
-//    }
 }

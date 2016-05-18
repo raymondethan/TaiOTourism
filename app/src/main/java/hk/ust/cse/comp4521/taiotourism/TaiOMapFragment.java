@@ -262,6 +262,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         mapFragment.getMapAsync(this);
         //mapFragment.set
 
+        Log.i("oncreateview",mLastLocation.toString());
         return view;
     }
 
@@ -675,6 +676,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             Log.i("startlocationupdates","still don't have permissions");
             return;
         }
+        Log.i("startlocationupdates","called");
         LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
     }
 
@@ -698,6 +700,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.i("onlocationchanged","called");
         mCurrentLocation = location;
         mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
         String message = "Current Location is: " +
