@@ -26,6 +26,7 @@ public class TaiODataContract {
         public static final String COLUMN_OPENING_HOURS = "openingHours";
         public static final String COLUMN_VISIT_COUNTER = "counter";
         public static final String COLUMN_LAST_MODIFIED = "lastModified";
+        public static final String COLUMN_PICTURE_URL = "pictureUrl";
     }
 
     public static abstract class ReviewEntry implements BaseColumns {

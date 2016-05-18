@@ -206,6 +206,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         buildGoogleApiClient();
         mRequestingLocationUpdates = false;
         mLastUpdateTime = "";
+        mLastLocation = new Location(String.valueOf(new LatLng(22.253155, 113.858185)));
 
         selectCategoryDialog = createCategoryDialog();
 
