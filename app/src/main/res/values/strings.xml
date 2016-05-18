@@ -4,13 +4,16 @@
     <string name="app_name">大澳 Tai O Guide</string>
     <string name="tai_o">大澳 Tai O</string>
 
+    <!--toolbar title-->
+    <string name="toolbar_home">大澳 Tai O</string>
+    <string name="toolbar_map">大澳 Tai O</string>
+
     <!--fragments-->
     <string name="fragment_placeholder">Place holder fragment text.</string>
 
     <!--nav drawer-->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-
 
     <string name="action_settings">Settings</string>
     <string name="title_activity_poi">POIActivity</string>

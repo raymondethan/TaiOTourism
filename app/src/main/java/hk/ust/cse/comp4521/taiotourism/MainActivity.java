@@ -23,11 +23,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.android.gms.maps.MapFragment;
@@ -88,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     private SharedPreferences mSharedPreferences;
 
     // Points to fragment that is currently displayed.
-    private Class fragmentClass;
+    private Class fragmentClass = HomeFragment.class;
 
 
     @Override
@@ -110,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         // Find our drawer view
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
+
         // Setup drawer view
         setupDrawerContent(nvDrawer);
 
@@ -120,9 +126,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // load fragment
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle("大澳 Tai O Guide");
+
 
 //        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.fab);
 //        myFab.setOnClickListener(new View.OnClickListener() {
@@ -246,21 +255,26 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         // On Nav Drawer menu item selection
         // Switch fragment in content pane according to selected item
 
+        // Toolbar title
+        String title = "";
+
         switch(menuItem.getItemId()) {
 
             case R.id.nav_first_fragment:
                 // home
                 fragmentClass = HomeFragment.class;
-                setTitle("");
+                title = getResources().getString(R.string.toolbar_home);
                 break;
             case R.id.nav_second_fragment:
                 // map
                 fragmentClass = TaiOMapFragment.class;
+                title = getResources().getString(R.string.toolbar_map);
                 break;
             case R.id.nav_third_fragment:
                 // tour
                 //TODO: add map filter to tour selection
                 fragmentClass = TaiOMapFragment.class;
+                title = getResources().getString(R.string.toolbar_home);
                 break;
             case R.id.nav_ptg_poi:
                 bundleArgs = new Bundle();
@@ -313,9 +327,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         menuItem.setChecked(true);
 
-        // TODO: setup get title method so can retrieve title string
         // Set action bar title
-//        setTitle(menuItem.getTitle());
+        setTitle(title);
+
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }
@@ -325,13 +339,24 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         switch (item.getItemId()) {
 
-            case R.id.action_settings:
-                if (fragmentClass == TaiOMapFragment.class) {
-                    // inflate filter widget for google map
-                }
-                return true;
-        }
+            /*
+                Handle toolbar -> action settings event
+             */
 
+            case R.id.action_settings:
+
+                    // only show popup on home
+                    if (fragmentClass == HomeFragment.class) {
+                        // inflate filter widget for google map
+                        // TODO: fix position under tool bar
+                        PopupMenu popup = new PopupMenu(this, findViewById(R.id.flContent), Gravity.RIGHT);
+                        MenuInflater inflater = popup.getMenuInflater();
+                        inflater.inflate(R.menu.settings_home, popup.getMenu());
+                        popup.show();
+                    }
+
+                break;
+        }
 
         if (drawerToggle.onOptionsItemSelected(item)) {
             return true;
@@ -357,7 +382,44 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     }
 
     @Override
-    public void OnHomeFragmentInteraction() {
+    public void OnHomeFragmentInteraction(View view) {
+
+        Fragment fragment = null;
+
+        nvDrawer.getMenu().getItem(0).setChecked(false);
+
+        switch(view.getId()) {
+
+            // Handle OnClick methods for HomeScreen buttons
+            case R.id.home_screen_map_button:
+                fragmentClass = TaiOMapFragment.class;
+                nvDrawer.getMenu().getItem(1).setChecked(true);
+                break;
+            case R.id.home_screen_tour_button:
+                // TODO: pass parameters to fragment to filter tour stops only.
+                fragmentClass = TaiOMapFragment.class;
+                nvDrawer.setCheckedItem(R.id.nav_map);
+                nvDrawer.getMenu().getItem(1).setChecked(true);
+                break;
+            case R.id.home_screen_places_button:
+                // TODO: Add fragment class for POI list view
+                return;
+            case R.id.home_screen_transport_button:
+                // TODO: Add fragment class for Transport fragment
+                return;
+            default:
+                fragmentClass = HomeFragment.class;
+        }
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Swap fragments
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
     }
 
