@@ -81,8 +81,8 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
             TaiODataContract.POIEntry._ID, TaiODataContract.POIEntry.COLUMN_NAME,
             TaiODataContract.POIEntry.COLUMN_CATEGORY, TaiODataContract.POIEntry.COLUMN_TOUR_ORDER,
             TaiODataContract.POIEntry.COLUMN_DESCRIPTION, TaiODataContract.POIEntry.COLUMN_RATING,
-            TaiODataContract.POIEntry.COLUMN_OPENING_HOURS};//,
-            //TaiODataContract.POIEntry.COLUMN_PICTURE_URL};
+            TaiODataContract.POIEntry.COLUMN_OPENING_HOURS,
+            TaiODataContract.POIEntry.COLUMN_PICTURE_URL};
 
         String selection = TaiODataContract.POIEntry.COLUMN_CATEGORY + "=?";
         String[] selectionArgs = new String[1];
@@ -144,8 +144,8 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
                         TaiODataContract.POIEntry.COLUMN_DESCRIPTION)));
                 item.setOpeningHours(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
                         TaiODataContract.POIEntry.COLUMN_OPENING_HOURS)));
-//                item.setPictureUrl(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
-//                        TaiODataContract.POIEntry.COLUMN_PICTURE_URL)));
+                item.setPictureUrl(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                        TaiODataContract.POIEntry.COLUMN_PICTURE_URL)));
                 item.setRating(itemCursor.getDouble(itemCursor.getColumnIndexOrThrow(
                         TaiODataContract.POIEntry.COLUMN_RATING)));
 
