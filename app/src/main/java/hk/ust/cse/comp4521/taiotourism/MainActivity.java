@@ -97,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle("");
 
+
+
         // Create the dummy account
         mAccount = GetSyncAccount(this);
 
@@ -357,20 +359,20 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         switch(view.getId()) {
 
             // Handle OnClick methods for HomeScreen buttons
-            case R.id.home_screen_map_button:
+            case R.id.home_map_button:
                 fragmentClass = TaiOMapFragment.class;
                 nvDrawer.getMenu().getItem(1).setChecked(true);
                 break;
-            case R.id.home_screen_tour_button:
+            case R.id.home_tour_button:
                 // TODO: pass parameters to fragment to filter tour stops only.
                 fragmentClass = TaiOMapFragment.class;
                 nvDrawer.setCheckedItem(R.id.nav_map);
                 nvDrawer.getMenu().getItem(1).setChecked(true);
                 break;
-            case R.id.home_screen_places_button:
+            case R.id.home_transport_button:
                 // TODO: Add fragment class for POI list view
                 return;
-            case R.id.home_screen_transport_button:
+            case R.id.home_about_button:
                 // TODO: Add fragment class for Transport fragment
                 return;
             default:
