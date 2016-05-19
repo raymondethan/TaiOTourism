@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +62,13 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mItemListAdapter = new ItemListAdapter(itemList, getActivity());
+        // Get the screen width for picasso to display image correctly
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+
+        // Set adapters, layout manager and recycler view for list
+        mItemListAdapter = new ItemListAdapter(itemList, getActivity(), width);
         mItemListAdapter.setItemClickListener(mItemClickListener);
 
         mLayoutManager = new LinearLayoutManager(getActivity());

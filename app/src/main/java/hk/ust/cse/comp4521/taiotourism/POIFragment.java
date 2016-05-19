@@ -2,6 +2,7 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,10 @@ public class POIFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Get the screen width for picasso to display image correctly
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int screenWidth = metrics.widthPixels;
 
         // Inflate views
         View rootView = inflater.inflate(R.layout.fragment_poi, container, false);
@@ -89,6 +94,7 @@ public class POIFragment extends Fragment {
 
         Picasso.with(getContext())
                 .load(poiPictureUrl)
+                .resize(screenWidth, 0)
                 .into(vPicture);
 
         if (poiRating != null) {

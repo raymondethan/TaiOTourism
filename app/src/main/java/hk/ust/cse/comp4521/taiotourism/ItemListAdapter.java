@@ -1,7 +1,6 @@
 package hk.ust.cse.comp4521.taiotourism;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +18,17 @@ import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemViewHolder> {
 
     private List<POIModel> itemList;
+    private int screenWidth = 0;
     private static ItemClickListener itemClickListener;
     private static Context parentContext;
 
     // Constructor
-    public ItemListAdapter(List<POIModel> itemList, Context parentContext) {
+    public ItemListAdapter(List<POIModel> itemList, Context parentContext, int screenWidth) {
         this.itemList = itemList;
         this.parentContext = parentContext;
+        if(screenWidth > 0) {
+            this.screenWidth = screenWidth;
+        }
     }
 
     // Setters and Getters
@@ -60,6 +63,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
         holder.vTitle.setText(item.getName());
         Picasso.with(parentContext)
                 .load(item.getPictureUrl())
+                .resize(screenWidth, 0)
                 .into(holder.vPhoto);
         holder.vOpeningHours.setText(item.getOpeningHours());
     }
