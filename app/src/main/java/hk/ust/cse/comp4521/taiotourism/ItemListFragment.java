@@ -84,18 +84,18 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
             TaiODataContract.POIEntry.COLUMN_OPENING_HOURS};//,
             //TaiODataContract.POIEntry.COLUMN_PICTURE_URL};
 
-        String selection = TaiODataContract.POIEntry.COLUMN_CATEGORY;
+        String selection = TaiODataContract.POIEntry.COLUMN_CATEGORY + "=?";
+        String[] selectionArgs = new String[1];
 
-        String[] selectionArgs = {TaiODataContract.POIEntry.COLUMN_CATEGORY + "="};
         switch (listType) {
             case TOUR_STOPS_LIST:
-                selectionArgs[0] += Constants.CATEGORY_TOUR_STOP;
+                selectionArgs[0]  = Constants.CATEGORY_TOUR_STOP;
                 break;
             case RESTAURANTS_LIST:
-                selectionArgs[0] += Constants.CATEGORY_RESTAURANT;
+                selectionArgs[0] = Constants.CATEGORY_RESTAURANT;
                 break;
             case FACILITIES_LIST:
-                selectionArgs[0] += Constants.CATEGORY_FACILITY;
+                selectionArgs[0] = Constants.CATEGORY_FACILITY;
                 break;
             default:
                 // Retrieve all
@@ -130,19 +130,33 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     private void setUpList(Cursor itemCursor) {
-        // Initialise the cursor to the first row
+        // Initialise the cursor to the first row and the list
+        itemList.clear();
         itemCursor.moveToFirst();
 
+        // Populate the list
         if (!itemCursor.isAfterLast()) {
             do {
+                POIModel item = new POIModel();
+                item.setName(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                        TaiODataContract.POIEntry.COLUMN_NAME)));
+                item.setDescription(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                        TaiODataContract.POIEntry.COLUMN_DESCRIPTION)));
+                item.setOpeningHours(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                        TaiODataContract.POIEntry.COLUMN_OPENING_HOURS)));
+//                item.setPictureUrl(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+//                        TaiODataContract.POIEntry.COLUMN_PICTURE_URL)));
+                item.setRating(itemCursor.getDouble(itemCursor.getColumnIndexOrThrow(
+                        TaiODataContract.POIEntry.COLUMN_RATING)));
 
+                itemList.add(item);
             }
             while (itemCursor.moveToNext());
         }
         itemCursor.close();
 
 
-        // TODO : for testing, mock-up data
+        // TODO : delete, for testing mock-up data
         POIModel item1 = new POIModel();
         item1.setName("Tour stop 1");
         item1.setDescription("detailed description of the tour stop");
