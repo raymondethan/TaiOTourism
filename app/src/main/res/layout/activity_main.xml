@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- The ActionBar displayed at the top -->
+        <!--&lt;!&ndash; The ActionBar displayed at the top &ndash;&gt;-->
         <include
             layout="@layout/toolbar"
             android:layout_width="match_parent"

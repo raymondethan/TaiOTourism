@@ -2,22 +2,13 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.FragmentTransaction;
 import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
-import android.database.Cursor;
-import android.net.Uri;
-
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -31,36 +22,11 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.FrameLayout;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.android.gms.maps.MapFragment;
-import com.strongloop.android.loopback.callbacks.ListCallback;
-
-import java.util.List;
 
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
 import com.strongloop.android.loopback.RestAdapter;
-import com.strongloop.android.loopback.callbacks.ListCallback;
-import com.strongloop.android.remoting.adapters.Adapter;
-
-import org.json.JSONArray;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
-import java.util.Map;
-
-import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
-import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener, TaiOMapFragment.OnFragmentInteractionListener {
 
@@ -96,6 +62,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     private Class fragmentClass = HomeFragment.class;
 
 
+    public void setToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -127,19 +96,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             e.printStackTrace();
         }
 
-        // load fragment
+        // load home fragment onCreate
         fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        setTitle("大澳 Tai O Guide");
-
-
-//        FloatingActionButton myFab = (FloatingActionButton) findViewById(R.id.fab);
-//        myFab.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getBaseContext(), MapActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        setTitle("");
 
         // Create the dummy account
         mAccount = GetSyncAccount(this);
@@ -310,9 +270,21 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                                 Fragment poiFragment = (Fragment) POIFragment.newInstance(
                                         poi.getName(), poi.getDescription(), poi.getPictureUrl(),
                                         poi.getOpeningHours(), poi.getRating());
-                                FragmentManager fragmentManager = getSupportFragmentManager();
-                                fragmentManager.beginTransaction()
-                                        .replace(R.id.flContent, poiFragment).commit();
+                                SwapFragment(poiFragment);
+
+                                // Hide hamburger in toolbar and replace with back button
+                                drawerToggle.setDrawerIndicatorEnabled(false);
+                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+                                drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        onBackPressed();
+                                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                                        drawerToggle.setDrawerIndicatorEnabled(true);
+                                    }
+                                });
+
                             }
                         }
                 );
@@ -321,14 +293,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             e.printStackTrace();
         }
 
-        // Swap fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        SwapFragment(fragment);
 
         menuItem.setChecked(true);
 
         // Set action bar title
-        setTitle(title);
+//        setTitle(title);
 
         // Close the navigation drawer
         mDrawer.closeDrawers();
@@ -417,10 +387,22 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             e.printStackTrace();
         }
 
-        // Swap fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        SwapFragment(fragment);
 
+    }
+
+    private void SwapFragment(Fragment fragment) {
+        fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+
+        // Execute slide in/out animation only for List view to POI
+        if (fragment.getClass().getSimpleName().equals("POIFragment")) {
+            ft.setCustomAnimations(R.anim.slide_left_0, R.anim.slide_left_1, R.anim.slide_right_1,R.anim.slide_right_0);
+        }
+
+        ft.replace(R.id.flContent, fragment);
+        ft.addToBackStack(fragment.getClass().getSimpleName());
+        ft.commit();
     }
 
     @Override
@@ -433,5 +415,19 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_map, menu);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            getFragmentManager().popBackStack();
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            drawerToggle.setDrawerIndicatorEnabled(true);
+
+        } else {
+            super.onBackPressed();
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        drawerToggle.setDrawerIndicatorEnabled(true);
     }
 }
