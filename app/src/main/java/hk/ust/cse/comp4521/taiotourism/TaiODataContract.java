@@ -17,11 +17,13 @@ public class TaiODataContract {
     public static abstract class POIEntry implements BaseColumns {
         public static final String TABLE_NAME = "POI";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_NAME_CH = "nameCH";
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
         public static final String COLUMN_CATEGORY = "category";
         public static final String COLUMN_TOUR_ORDER = "tourOrder";
         public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_DESCRIPTION_CH = "descriptionCH";
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_OPENING_HOURS = "openingHours";
         public static final String COLUMN_VISIT_COUNTER = "counter";

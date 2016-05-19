@@ -21,11 +21,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TaiODataContract.POIEntry.TABLE_NAME + " (" +
                     TaiODataContract.POIEntry._ID + PRIMARY_KEY + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_NAME_CH + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_LATITUDE + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_LONGITUDE + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_CATEGORY + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_TOUR_ORDER + INT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_DESCRIPTION_CH + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_RATING + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_OPENING_HOURS + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER + INT_TYPE + COMMA_SEP +
