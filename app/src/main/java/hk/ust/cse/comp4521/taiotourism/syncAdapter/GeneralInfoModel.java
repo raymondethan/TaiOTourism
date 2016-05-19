@@ -12,6 +12,7 @@ public class GeneralInfoModel extends Model {
     private String ywcaDesciptionCH;
     private String taiODescription;
     private String taiODescriptionCH;
+    private String lastModified;
 
     GeneralInfoModel() {};
 
@@ -45,6 +46,14 @@ public class GeneralInfoModel extends Model {
 
     public void setTaiODescriptionCH(String taiODescriptionCH) {
         this.taiODescriptionCH = taiODescriptionCH;
+    }
+
+    public String getLastModified() {
+        return lastModified;
+    }
+
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
     }
 
 //    public String getId() {

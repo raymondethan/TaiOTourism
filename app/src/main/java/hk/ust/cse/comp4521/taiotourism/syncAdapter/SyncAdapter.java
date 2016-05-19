@@ -127,6 +127,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             String lastUpdateTmp = "2016-03-1900:00:00:000";
             getUpdate(lastUpdateTmp,getUpdateUrl);
             //getUpdate(formatter.format(lastUpdate),getGenInfoUpdateUrl);
+            getUpdate(lastUpdateTmp,getGenInfoUpdateUrl);
             setLastUpdatPreference();
             //getAllPlaces();
             //2016-05-10T00:00:00.000Z
@@ -209,7 +210,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         values.put(TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO_CH, genInfo.getTaiODescriptionCH());
         values.put(TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO, genInfo.getYwcaDesciption());
         values.put(TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO, genInfo.getYwcaDesciptionCH());
-        Uri contractUri = mContentResolver.insert(TaiODataProvider.POIENTRY_URI, values);
+        Uri contractUri = mContentResolver.insert(TaiODataProvider.GENERALINFO_URI, values);
         long rawContactId = ContentUris.parseId(contractUri);
         Log.i("Inserted ID: ", String.valueOf(rawContactId));
     }
