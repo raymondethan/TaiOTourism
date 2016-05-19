@@ -251,7 +251,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    //TODO: BIG ERROR: DATABASE ROUNDS LAT LONG TO INTEGER
     public void getData() {
         InputStream inputStream;
         HttpURLConnection urlConnection;
