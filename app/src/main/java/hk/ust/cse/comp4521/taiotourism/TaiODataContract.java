@@ -35,12 +35,16 @@ public class TaiODataContract {
         public static final String TABLE_NAME = "Review";
         public static final String COLUMN_RATING = "rating";
         public static final String COLUMN_COMMENT = "comment";
+        public static final String COLUMN_DATE = "date";
     }
 
     public static abstract class GeneralInfo implements BaseColumns {
         public static final String TABLE_NAME = "GeneralInfo";
         public static final String COLUMN_NAME = "name";
-        public static final String COLUMN_INFO = "info";
+        public static final String COLUMN_YWCA_INFO = "ywcaDesciption";
+        public static final String COLUMN_YWCA_INFO_CH = "ywcaDesciptionCH";
+        public static final String COLUMN_TAIO_INFO = "taiODescription";
+        public static final String COLUMN_TAIO_INFO_CH = "taiODescriptionCH";
     }
 
     //We might not need this abstract class

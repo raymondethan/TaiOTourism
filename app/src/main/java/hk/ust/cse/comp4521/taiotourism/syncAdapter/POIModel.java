@@ -27,7 +27,7 @@ public class POIModel extends Model {
     private String openingHours;
     private Integer counter;
     private String lastModified;
-    //private Integer id;
+//    private String id;
 
     public String getCategory() {
 
@@ -50,7 +50,7 @@ public class POIModel extends Model {
     }
 
     public void setNameCH(String name) {
-        this.name = nameCH;
+        this.nameCH = name;
     }
 
     public void setCategory(String category) {
@@ -137,11 +137,11 @@ public class POIModel extends Model {
     }
 
 //    @Override
-//    public Integer getId() {
+//    public String getId() {
 //        return id;
 //    }
 //
-//    public void setId(Integer id) {
+//    public void setId(String id) {
 //        this.id = id;
 //    }
 }

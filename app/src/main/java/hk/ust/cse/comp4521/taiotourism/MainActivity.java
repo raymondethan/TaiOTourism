@@ -146,8 +146,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         if (mAccount != null) getContentResolver().setSyncAutomatically(mAccount, TaiODataContract.AUTHORITY, true);
 
-        adapter = getLoopBackAdapter();
-        SyncAdapter.POIRepository POIRepo = adapter.createRepository(SyncAdapter.POIRepository.class);
+//        adapter = getLoopBackAdapter();
+//        SyncAdapter.POIRepository POIRepo = adapter.createRepository(SyncAdapter.POIRepository.class);
 
 //        POIRepo.findAll(new ListCallback<POIModel>() {
 //                @Override
