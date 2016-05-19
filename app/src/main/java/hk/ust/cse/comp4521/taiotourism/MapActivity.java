@@ -336,7 +336,7 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         mGoogleApiClient.connect();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // ATTENTION: This was auto-generated to implement the App  Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         Action viewAction = Action.newAction(
                 Action.TYPE_VIEW, // TODO: choose an action type.

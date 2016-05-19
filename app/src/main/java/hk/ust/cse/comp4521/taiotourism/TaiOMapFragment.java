@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -56,11 +57,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -165,8 +169,15 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     /**
      * The formatted location address.
      */
-    protected String mPOIOutput, mLocationOutput, mAddressOutput;
+    protected String mLocationOutput;
 
+    private Marker meMarker;
+
+    private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
+    //private final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1;
+
+    //assume its true and only set it to false if we realize we don't have permission
+    //private Boolean location_permission_granted = true;
 
     public TaiOMapFragment() {
         // Required empty public constructor
@@ -193,6 +204,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         }
 
         buildGoogleApiClient();
+        mRequestingLocationUpdates = false;
+        mLastUpdateTime = "";
+        mLastLocation = new Location(String.valueOf(new LatLng(22.253155, 113.858185)));
 
         selectCategoryDialog = createCategoryDialog();
 
@@ -249,6 +263,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         mapFragment.getMapAsync(this);
         //mapFragment.set
 
+        Log.i("oncreateview",mLastLocation.toString());
         return view;
     }
 
@@ -262,6 +277,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public void onStart() {
 
         super.onStart();
+        Log.i("frag","called onstart");
         client.connect();
     }
 
@@ -586,6 +602,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.i("onconnect", "called");
         if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -594,6 +611,19 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this.getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+//            ActivityCompat.requestPermissions(this.getActivity(),
+//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+//                    MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+
+
+            Log.i("on connect","need permission");
+            Log.i("permission", String.valueOf(ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)));
+            Log.i("permission", String.valueOf(ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)));
+            Log.i("permission granted", String.valueOf(PackageManager.PERMISSION_GRANTED));
             return;
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
@@ -644,8 +674,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            Log.i("startlocationupdates","still don't have permissions");
             return;
         }
+        Log.i("startlocationupdates","called");
         LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
     }
 
@@ -669,7 +701,28 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.i("onlocationchanged","called");
+        mCurrentLocation = location;
+        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        String message = "Current Location is: " +
+                "  Latitude = " + String.valueOf(mCurrentLocation.getLatitude()) +
+                "  Longitude = " + String.valueOf(mCurrentLocation.getLongitude() +
+                "\nLast Updated = " + mLastUpdateTime);
 
+        // If GoogleApiClient isn't connected, we process the user's request by setting
+        // mAddressRequested to true. Later, when GoogleApiClient connects, we launch the service to
+        // fetch the address. As far as the user is concerned, pressing the Fetch Address button
+        // immediately kicks off the process of getting the address.
+        mAddressRequested = true;
+
+        if (meMarker != null)
+            meMarker.remove();
+
+        MarkerOptions markCur = new MarkerOptions()
+                .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
+                .title("Me");
+
+        meMarker = mMap.addMarker(markCur);
     }
 
     @Override
@@ -750,5 +803,31 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnInfoWindowClickListener(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    client.connect();
+
+                } else {
+
+                    Log.i("onrequestpermission","Cannot show user location, won't try to connect");
+                    //location_permission_granted = false;
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 }
