@@ -84,18 +84,18 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
             TaiODataContract.POIEntry.COLUMN_OPENING_HOURS};//,
             //TaiODataContract.POIEntry.COLUMN_PICTURE_URL};
 
-        String selection = TaiODataContract.POIEntry.COLUMN_CATEGORY;
+        String selection = TaiODataContract.POIEntry.COLUMN_CATEGORY + "=?";
 
-        String[] selectionArgs = {TaiODataContract.POIEntry.COLUMN_CATEGORY + "="};
+        String[] selectionArgs = {""};
         switch (listType) {
             case TOUR_STOPS_LIST:
-                selectionArgs[0] += Constants.CATEGORY_TOUR_STOP;
+                selectionArgs[0] = Constants.CATEGORY_TOUR_STOP;
                 break;
             case RESTAURANTS_LIST:
-                selectionArgs[0] += Constants.CATEGORY_RESTAURANT;
+                selectionArgs[0] = Constants.CATEGORY_RESTAURANT;
                 break;
             case FACILITIES_LIST:
-                selectionArgs[0] += Constants.CATEGORY_FACILITY;
+                selectionArgs[0] = Constants.CATEGORY_FACILITY;
                 break;
             default:
                 // Retrieve all
@@ -135,7 +135,7 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
         if (!itemCursor.isAfterLast()) {
             do {
-
+                Log.i("Set up list", itemCursor.getString(itemCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME)));
             }
             while (itemCursor.moveToNext());
         }
