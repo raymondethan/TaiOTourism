@@ -196,7 +196,11 @@ public class MapActivity extends AppCompatActivity implements LoaderManager.Load
         setContentView(R.layout.activity_map);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        try {
+            toolbar.setTitle("Map");
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
         setSupportActionBar(toolbar);
 
         // Prepare the loader.  Either re-connect with an existing one,
