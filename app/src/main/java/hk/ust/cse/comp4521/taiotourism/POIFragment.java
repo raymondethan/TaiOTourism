@@ -2,6 +2,7 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,6 +70,9 @@ public class POIFragment extends Fragment {
             poiOpeningHours = getArguments().getString(POI_OPENING_HOURS);
             poiRating = getArguments().getDouble(POI_RATING);
         }
+
+        // Set toolbar title
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(poiName);
     }
 
     @Override

@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     public static final String ACCOUNT_TYPE = "hk.ust.cse.comp4521.datasync";
     // The account name
     public static final String ACCOUNT = "dummyaccount";
-    private static final String LIST_TYPE = "listType";
-    private static final String TOUR_STOPS_LIST = "tourStops";
-    private static final String RESTAURANTS_LIST = "restaurants";
-    private static final String FACILITIES_LIST = "facilities";
 
     private static final String POI_NAME = "name";
     private static final String POI_DESCRIPTION = "description";
@@ -238,17 +234,17 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 break;
             case R.id.nav_ptg_poi:
                 bundleArgs = new Bundle();
-                bundleArgs.putString(LIST_TYPE, TOUR_STOPS_LIST);
+                bundleArgs.putString(Constants.LIST_CATEGORY, Constants.CATEGORY_TOUR_STOP);
                 fragmentClass = ItemListFragment.class;
                 break;
             case R.id.nav_ptg_restaurants:
                 bundleArgs = new Bundle();
-                bundleArgs.putString(LIST_TYPE, RESTAURANTS_LIST);
+                bundleArgs.putString(Constants.LIST_CATEGORY, Constants.CATEGORY_RESTAURANT);
                 fragmentClass = ItemListFragment.class;
                 break;
             case R.id.nav_ptg_facilities:
                 bundleArgs = new Bundle();
-                bundleArgs.putString(LIST_TYPE, FACILITIES_LIST);
+                bundleArgs.putString(Constants.LIST_CATEGORY, Constants.CATEGORY_FACILITY);
                 fragmentClass = ItemListFragment.class;
                 break;
             default:

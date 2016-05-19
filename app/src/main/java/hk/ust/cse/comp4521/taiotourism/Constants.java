@@ -37,6 +37,7 @@ public final class Constants {
             GEOFENCE_EXPIRATION_IN_HOURS * 60 * 60 * 1000;
     public static final float GEOFENCE_RADIUS_IN_METERS = 50;
 
+    public static final String LIST_CATEGORY = "listCategory";
     public static final String CATEGORY_TOUR_STOP = "Tour_Stop";
     public static final String CATEGORY_RESTAURANT = "Restaurant";
     public static final String CATEGORY_FACILITY = "Facility";

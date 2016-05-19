@@ -6,6 +6,7 @@ import android.support.v4.content.Loader;
 import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -23,6 +24,7 @@ import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
  * Created by amanda on 20/04/16.
  */
 public class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final String TAG = "ItemListFragment";
 
     private RecyclerView mRecyclerViewList;
     private ItemListAdapter mItemListAdapter;
@@ -31,10 +33,6 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
     private List<POIModel> itemList = new ArrayList<POIModel>();
     private String listType = null;
-    private static final String LIST_TYPE = "listType";
-    private static final String TOUR_STOPS_LIST = "tourStops";
-    private static final String RESTAURANTS_LIST = "restaurants";
-    private static final String FACILITIES_LIST = "facilities";
     private static final int ID_LOADER = 0;
 
     // Setters
@@ -52,8 +50,30 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
         // Initialize list of POIs to be displayed
         Bundle bundleArgs = this.getArguments();
-        listType = bundleArgs.getString(LIST_TYPE);
+        listType = bundleArgs.getString(Constants.LIST_CATEGORY);
         getLoaderManager().initLoader(ID_LOADER, null, this);
+
+        // Set toolbar title
+        String toolbarTitle;
+        switch (listType) {
+            case Constants.CATEGORY_TOUR_STOP:
+                toolbarTitle = Constants.CATEGORY_TOUR_STOP_TEXT;
+                break;
+            case Constants.CATEGORY_RESTAURANT:
+                toolbarTitle = Constants.CATEGORY_RESTAURANT_TEXT;
+                break;
+            case Constants.CATEGORY_FACILITY:
+                toolbarTitle = Constants.CATEGORY_FACILITY_TEXT;
+                break;
+            default:
+                toolbarTitle = "";
+                break;
+        }
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(toolbarTitle);
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
 
         return rootView;
     }
@@ -92,24 +112,7 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
             TaiODataContract.POIEntry.COLUMN_PICTURE_URL};
 
         String selection = TaiODataContract.POIEntry.COLUMN_CATEGORY + "=?";
-        String[] selectionArgs = new String[1];
-
-        switch (listType) {
-            case TOUR_STOPS_LIST:
-                selectionArgs[0]  = Constants.CATEGORY_TOUR_STOP;
-                break;
-            case RESTAURANTS_LIST:
-                selectionArgs[0] = Constants.CATEGORY_RESTAURANT;
-                break;
-            case FACILITIES_LIST:
-                selectionArgs[0] = Constants.CATEGORY_FACILITY;
-                break;
-            default:
-                // Retrieve all
-                selection = null;
-                selectionArgs = null;
-                break;
-        }
+        String[] selectionArgs = {listType};
 
         if (id == ID_LOADER) {
             return new CursorLoader(
