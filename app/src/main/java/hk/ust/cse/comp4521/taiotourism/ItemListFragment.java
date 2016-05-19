@@ -1,9 +1,14 @@
 package hk.ust.cse.comp4521.taiotourism;
 
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.database.Cursor;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +21,20 @@ import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 /**
  * Created by amanda on 20/04/16.
  */
-public class ItemListFragment extends Fragment {
+public class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private RecyclerView mRecyclerViewList;
     private ItemListAdapter mItemListAdapter;
     private LinearLayoutManager mLayoutManager;
     private ItemListAdapter.ItemClickListener mItemClickListener;
 
-    private List<POIModel> itemList;
+    private List<POIModel> itemList = new ArrayList<POIModel>();
+    private String listType = null;
     private static final String LIST_TYPE = "listType";
     private static final String TOUR_STOPS_LIST = "tourStops";
     private static final String RESTAURANTS_LIST = "restaurants";
     private static final String FACILITIES_LIST = "facilities";
+    private static final int ID_LOADER = 0;
 
     // Setters
     public void setItemClickListener(ItemListAdapter.ItemClickListener itemClickListener) {
@@ -44,18 +51,97 @@ public class ItemListFragment extends Fragment {
 
         // Initialize list of POIs to be displayed
         Bundle bundleArgs = this.getArguments();
-        String listType = bundleArgs.getString(LIST_TYPE);
+        listType = bundleArgs.getString(LIST_TYPE);
+        getLoaderManager().initLoader(ID_LOADER, null, this);
 
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        mItemListAdapter = new ItemListAdapter(itemList, getActivity());
+        mItemListAdapter.setItemClickListener(mItemClickListener);
+
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        mRecyclerViewList.setHasFixedSize(true);
+        mRecyclerViewList.setAdapter(mItemListAdapter);
+        mRecyclerViewList.setLayoutManager(mLayoutManager);
+    }
+
+    // ************************************************************************
+    //                          LOADING DATA METHODS
+    // ************************************************************************
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        // Takes action based on the ID of the Loader that's being created
+        String[] projection = {
+            TaiODataContract.POIEntry._ID, TaiODataContract.POIEntry.COLUMN_NAME,
+            TaiODataContract.POIEntry.COLUMN_CATEGORY, TaiODataContract.POIEntry.COLUMN_TOUR_ORDER,
+            TaiODataContract.POIEntry.COLUMN_DESCRIPTION, TaiODataContract.POIEntry.COLUMN_RATING,
+            TaiODataContract.POIEntry.COLUMN_OPENING_HOURS};//,
+            //TaiODataContract.POIEntry.COLUMN_PICTURE_URL};
+
+        String selection = TaiODataContract.POIEntry.COLUMN_CATEGORY + "=?";
+
+        String[] selectionArgs = {""};
         switch (listType) {
             case TOUR_STOPS_LIST:
+                selectionArgs[0] = Constants.CATEGORY_TOUR_STOP;
                 break;
             case RESTAURANTS_LIST:
+                selectionArgs[0] = Constants.CATEGORY_RESTAURANT;
                 break;
             case FACILITIES_LIST:
+                selectionArgs[0] = Constants.CATEGORY_FACILITY;
                 break;
             default:
+                // Retrieve all
+                selection = null;
+                selectionArgs = null;
                 break;
         }
+
+        if (id == ID_LOADER) {
+            return new CursorLoader(
+                    getActivity(),                  // Parent activity context
+                    TaiODataProvider.POIENTRY_URI,  // Table to query
+                    projection,                     // Projection to return
+                    selection,                      // No selection clause
+                    selectionArgs,                  // No selection arguments
+                    null                            // Default sort order
+            );
+        }
+        // If wrong loader id.
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        setUpList(data);
+        mItemListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    private void setUpList(Cursor itemCursor) {
+        // Initialise the cursor to the first row
+        itemCursor.moveToFirst();
+
+        if (!itemCursor.isAfterLast()) {
+            do {
+                Log.i("Set up list", itemCursor.getString(itemCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME)));
+            }
+            while (itemCursor.moveToNext());
+        }
+        itemCursor.close();
+
+
         // TODO : for testing, mock-up data
         POIModel item1 = new POIModel();
         item1.setName("Tour stop 1");
@@ -75,29 +161,12 @@ public class ItemListFragment extends Fragment {
         item3.setOpeningHours("9:00-00:00");
         item3.setPictureUrl(
                 "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Food_stalls_in_Tai_O_village%2C_Hong_Kong_%286847729712%29.jpg/1024px-Food_stalls_in_Tai_O_village%2C_Hong_Kong_%286847729712%29.jpg");
-        itemList = new ArrayList<POIModel>();
+        itemList.clear();
         itemList.add(item1);
         itemList.add(item2);
         itemList.add(item3);
         itemList.add(item1);
         itemList.add(item2);
         itemList.add(item3);
-
-        return rootView;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        mItemListAdapter = new ItemListAdapter(itemList, getContext());
-        mItemListAdapter.setItemClickListener(mItemClickListener);
-
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        mLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        mRecyclerViewList.setHasFixedSize(true);
-        mRecyclerViewList.setAdapter(mItemListAdapter);
-        mRecyclerViewList.setLayoutManager(mLayoutManager);
     }
 }

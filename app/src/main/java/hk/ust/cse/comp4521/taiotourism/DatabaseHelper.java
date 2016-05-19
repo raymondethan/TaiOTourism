@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private	static final String	DATABASE_NAME =	"POIdata";
-    private	static final int DATABASE_VERSION =	5;
+    private	static final int DATABASE_VERSION =	6;
 
     private static final String TEXT_TYPE = " TEXT";
     private static final String PRIMARY_KEY = " INTEGER PRIMARY KEY";
@@ -21,27 +21,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + TaiODataContract.POIEntry.TABLE_NAME + " (" +
                     TaiODataContract.POIEntry._ID + PRIMARY_KEY + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_NAME_CH + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_LATITUDE + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_LONGITUDE + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_CATEGORY + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_TOUR_ORDER + INT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_DESCRIPTION_CH + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_RATING + REAL_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_OPENING_HOURS + TEXT_TYPE + COMMA_SEP +
                     TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER + INT_TYPE + COMMA_SEP +
-                    TaiODataContract.POIEntry.COLUMN_LAST_MODIFIED + TEXT_TYPE + " )";
+                    TaiODataContract.POIEntry.COLUMN_LAST_MODIFIED + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.POIEntry.COLUMN_PICTURE_URL + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_ReviewEntries =
             "CREATE TABLE " + TaiODataContract.ReviewEntry.TABLE_NAME + " (" +
                     TaiODataContract.ReviewEntry._ID + PRIMARY_KEY + COMMA_SEP +
                     TaiODataContract.ReviewEntry.COLUMN_RATING + REAL_TYPE + COMMA_SEP +
-                    TaiODataContract.ReviewEntry.COLUMN_COMMENT + TEXT_TYPE + " )";
+                    TaiODataContract.ReviewEntry.COLUMN_COMMENT + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.ReviewEntry.COLUMN_DATE + TEXT_TYPE + " )";
 
     private static final String SQL_CREATE_GeneralInfo =
             "CREATE TABLE " + TaiODataContract.GeneralInfo.TABLE_NAME + " (" +
                     TaiODataContract.GeneralInfo._ID + PRIMARY_KEY + COMMA_SEP +
                     TaiODataContract.GeneralInfo.COLUMN_NAME + TEXT_TYPE + COMMA_SEP +
-                    TaiODataContract.GeneralInfo.COLUMN_INFO + TEXT_TYPE + " )";
+                    TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO_CH + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO + TEXT_TYPE + COMMA_SEP +
+                    TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO_CH + TEXT_TYPE + " )";
 
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + TaiODataContract.POIEntry.TABLE_NAME;

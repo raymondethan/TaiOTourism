@@ -16,16 +16,24 @@ import java.util.Locale;
 public class POIModel extends Model {
 
     private String name;
+    private String nameCH;
     private GeoPoint coordinates;
     private String category;
     private Integer tourOrder;
     private String description;
+    private String descriptionCH;
     private String pictureUrl;
     private Double rating;
     private String openingHours;
     private Integer counter;
     private String lastModified;
-    //private Integer id;
+//    private String id;
+
+    public String getCategory() {
+
+        if (null == category) return "Unknown Category";
+        return category;
+    }
 
     public String getName() {
         if (null == name) return "No Name";
@@ -36,10 +44,13 @@ public class POIModel extends Model {
         this.name = name;
     }
 
-    public String getCategory() {
+    public String getNameCH() {
+        if (null == nameCH) return "No Name";
+        return nameCH;
+    }
 
-        if (null == category) return "Unknown Category";
-        return category;
+    public void setNameCH(String name) {
+        this.nameCH = name;
     }
 
     public void setCategory(String category) {
@@ -58,6 +69,15 @@ public class POIModel extends Model {
     public String getDescription() {
         if (null == description) return "";
         return description;
+    }
+
+    public String getDescriptionCH() {
+        if (null == descriptionCH) return "";
+        return descriptionCH;
+    }
+
+    public void setDescriptionCH(String descriptionCH) {
+        this.descriptionCH = descriptionCH;
     }
 
     public void setPictureUrl(String pictureUrl) {
@@ -117,11 +137,11 @@ public class POIModel extends Model {
     }
 
 //    @Override
-//    public Integer getId() {
+//    public String getId() {
 //        return id;
 //    }
 //
-//    public void setId(Integer id) {
+//    public void setId(String id) {
 //        this.id = id;
 //    }
 }
