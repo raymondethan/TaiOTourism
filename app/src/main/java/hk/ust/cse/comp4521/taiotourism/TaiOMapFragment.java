@@ -18,6 +18,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -262,6 +263,18 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 .findFragmentById(R.id.gmFragment);
         mapFragment.getMapAsync(this);
         //mapFragment.set
+
+        FloatingActionButton myFab = (FloatingActionButton)  view.findViewById(R.id.fab);
+        final Context context = this.getContext();
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (null != mLastLocation && null != (Double) mLastLocation.getLatitude() && null != (Double) mLastLocation.getLongitude()) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()),Constants.ZOOM_LEVEL));
+                } else {
+                    Toast.makeText(context, R.string.no_location_detected, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         Log.i("oncreateview",mLastLocation.toString());
         return view;
@@ -628,17 +641,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
 
-        if (mLastLocation != null) {
-            String message = "Last Location is: " +
-                    "  Latitude = " + String.valueOf(mLastLocation.getLatitude()) +
-                    "  Longitude = " + String.valueOf(mLastLocation.getLongitude());
-
-            mLocationOutput = message;
-            Log.i(TAG, message);
-            Toast.makeText(this.getContext(), message, Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this.getContext(), R.string.no_location_detected, Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(this.getContext(), R.string.no_location_detected, Toast.LENGTH_LONG).show();
 
         // Determine whether a Geocoder is available.
         if (!Geocoder.isPresent()) {
