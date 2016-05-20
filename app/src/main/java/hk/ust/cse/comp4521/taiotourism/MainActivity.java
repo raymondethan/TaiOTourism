@@ -40,13 +40,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     // The account name
     public static final String ACCOUNT = "dummyaccount";
 
-    private static final String POI_NAME = "name";
-    private static final String POI_DESCRIPTION = "description";
-    private static final String POI_PICTURE_URL = "pictureUrl";
-    private static final String POI_OPENING_HOURS = "openingHours";
-    private static final String POI_RATING = "rating";
-
-
     public static FragmentManager fragmentManager;
 
     Account mAccount;
@@ -265,7 +258,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                         new ItemListAdapter.ItemClickListener() {
                             @Override
                             public void onItemClickListener(POIModel poi) {
-                                Fragment poiFragment = (Fragment) POIFragment.newInstance(
+                                Fragment poiFragment = POIFragment.newInstance(
                                         poi.getName(), poi.getDescription(), poi.getPictureUrl(),
                                         poi.getOpeningHours(), poi.getRating());
                                 SwapFragment(poiFragment);
@@ -296,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         menuItem.setChecked(true);
 
         // Set action bar title
-//        setTitle(title);
+//        setTitle(title);  // Doesn't work
 
         // Close the navigation drawer
         mDrawer.closeDrawers();

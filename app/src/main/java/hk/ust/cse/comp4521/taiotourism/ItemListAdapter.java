@@ -65,7 +65,8 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
                 .load(item.getPictureUrl())
                 .resize(screenWidth, 0)
                 .into(holder.vPhoto);
-        holder.vOpeningHours.setText(item.getOpeningHours());
+        holder.vOpeningHours.setText(
+                parentContext.getString(R.string.opening_hours, item.getOpeningHours()));
     }
 
     // Return the size of the data set (invoked by the layout manager)
@@ -102,14 +103,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
 
         @Override
         public void onClick(View view) {
-//            Intent poiIntent = new Intent(parentContext, POIActivity.class);
-//            poiIntent.putExtra(POI_NAME, poi.getName());
-//            poiIntent.putExtra(POI_DESCRIPTION, poi.getDescription());
-//            poiIntent.putExtra(POI_OPENING_HOURS, poi.getOpeningHours());
-//            poiIntent.putExtra(POI_PICTURE_URL, poi.getPictureUrl());
-//            poiIntent.putExtra(POI_RATING, poi.getRating());
-//
-//            parentContext.startActivity(poiIntent);
             itemClickListener.onItemClickListener(poi);
         }
     }
