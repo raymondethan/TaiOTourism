@@ -263,7 +263,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 .findFragmentById(R.id.gmFragment);
         mapFragment.getMapAsync(this);
 
-        Log.i("oncreateview", mLastLocation.toString());
+        Log.i(TAG + " onCreateView", mLastLocation.toString());
         return view;
     }
 
@@ -277,7 +277,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public void onStart() {
 
         super.onStart();
-        Log.i("frag", "called onstart");
+        Log.i(TAG, "frag: called onStart");
         client.connect();
     }
 
@@ -329,7 +329,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        Log.i("menu item clicked", String.valueOf(item.getItemId()));
+        Log.i(TAG + "menu item clicked", String.valueOf(item.getItemId()));
         switch (item.getItemId()) {
             case R.id.action_settings:
                 selectCategoryDialog.show();
@@ -421,7 +421,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public AlertDialog createCategoryDialog() {
         final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT, Constants.CATEGORY_RESTAURANT_TEXT, Constants.CATEGORY_FACILITY_TEXT};
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle("Select What You Want to Filter");
+        builder.setTitle(R.string.map_select_filters);
         final boolean[] checkedItems = {true, true, true};
         builder.setMultiChoiceItems(categories, checkedItems,
                 new OnMultiChoiceClickListener() {
@@ -439,7 +439,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                     }
                 })
                 // Set the action buttons
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.btn_ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         //  Code when user clicked on OK
@@ -449,7 +449,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         //  Your code when user clicked on Cancel
@@ -461,7 +461,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     }
 
     private void filterMarkers(Set<String> categories, Boolean setVisible) {
-        Log.i("filter markers", categories.toString() + "\n" + setVisible.toString());
+        Log.i(TAG, "filter markers: " + categories.toString() + "\n" + setVisible.toString());
+
         for (Marker marker : markers) {
             if (categories.contains(markerCategories.get(marker))) {
                 marker.setVisible(setVisible);
@@ -489,7 +490,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         int count;
 
         while (!mapReady) {
-            Log.d("Map-", "map not ready");
+            Log.d(TAG, "map not ready");
         }
         //Move to the first row in the cursor
         markerCursor.moveToFirst();
@@ -593,7 +594,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Log.i("On map click", " called");
+        Log.i(TAG, "onMapClick: called");
         if (!poi_closed) {
             View m = view.findViewById(R.id.gmFragment);
             animatePopup(ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight() - poi_peak.getHeight(), m.getHeight()));
@@ -602,7 +603,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.i("onconnect", "called");
+        Log.i(TAG, "onConnected: called");
         if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -658,10 +659,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            Log.i("startlocationupdates", "still don't have permissions");
+            Log.i(TAG, "startLocationUpdates: still don't have permissions");
             return;
         }
-        Log.i("startlocationupdates", "called");
+        Log.i(TAG, "startLocationUpdates: called");
         LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
     }
 
@@ -685,7 +686,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.i("onlocationchanged", "called");
+        Log.i(TAG,"onLocationChanged: called");
         mCurrentLocation = location;
     }
 
@@ -806,7 +807,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
                 } else {
 
-                    Log.i("onrequestpermission","Cannot show user location, won't try to connect");
+                    Log.i(TAG, "onRequestPermission: Cannot show user location, won't try to connect");
                     //location_permission_granted = false;
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.

@@ -3,6 +3,8 @@
     <!--app global-->
     <string name="app_name">大澳 Tai O Guide</string>
     <string name="tai_o">大澳 Tai O</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_cancel">Cancel</string>
 
     <!--toolbar title-->
     <string name="toolbar_home">大澳 Tai O</string>
@@ -14,6 +16,9 @@
     <!--fragments list and poi-->
     <string name="opening_hours">Opening hours: %s</string>
     <string name="rating">Rating: %.01f</string>
+
+    <!--<fragment map>-->
+    <string name="map_select_filters">Select what you want to filter</string>
 
     <!--nav drawer-->
     <string name="drawer_open">Open navigation drawer</string>
