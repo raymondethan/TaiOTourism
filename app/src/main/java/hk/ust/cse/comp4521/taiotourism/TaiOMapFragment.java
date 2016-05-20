@@ -724,13 +724,14 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         dialogFragment.show(getActivity().getFragmentManager(), "errordialog");
     }
 
+
     /* Called from ErrorDialogFragment when the dialog is dismissed. */
     public void onDialogDismissed() {
         mResolvingError = false;
     }
 
     /* A fragment to display an error dialog */
-    public static class ErrorDialogFragment extends DialogFragment {
+    public class ErrorDialogFragment extends DialogFragment {
         public ErrorDialogFragment() {
         }
 
@@ -744,7 +745,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         @Override
         public void onDismiss(DialogInterface dialog) {
-            ((MapActivity) getActivity()).onDialogDismissed();
+            onDialogDismissed();
         }
     }
 
