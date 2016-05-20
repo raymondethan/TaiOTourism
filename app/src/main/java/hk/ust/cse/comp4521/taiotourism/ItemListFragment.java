@@ -136,10 +136,11 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        mItemListAdapter.notifyDataSetChanged();
     }
 
     private void setUpList(Cursor itemCursor) {
+        if (itemCursor.isClosed()) return;
         // Initialise the cursor to the first row and the list
         itemList.clear();
         itemCursor.moveToFirst();

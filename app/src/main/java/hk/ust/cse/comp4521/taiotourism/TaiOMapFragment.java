@@ -105,10 +105,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     private static final int URL_LOADER = 0;
 
-    final HashMap<String,String> textToCategory = new HashMap<String, String>();
+    final HashMap<String, String> textToCategory = new HashMap<String, String>();
 
     private ArrayList<Marker> markers = new ArrayList<Marker>();
-    private HashMap<Marker,String> markerCategories = new HashMap();
+    private HashMap<Marker, String> markerCategories = new HashMap();
 
     private ImageButton category_selector;
     private HashSet<String> hideItems = new HashSet();
@@ -149,11 +149,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
      */
     protected Boolean mRequestingLocationUpdates = false;
 
-    /**
-     * Time when the location was updated represented as a String.
-     */
-    protected String mLastUpdateTime;
-
     protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
     protected static final String LOCATION_ADDRESS_KEY = "location-address";
 
@@ -171,8 +166,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
      * The formatted location address.
      */
     protected String mLocationOutput;
-
-    private Marker meMarker;
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     //private final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1;
@@ -206,7 +199,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         buildGoogleApiClient();
         mRequestingLocationUpdates = false;
-        mLastUpdateTime = "";
         mLastLocation = new Location(String.valueOf(new LatLng(22.253155, 113.858185)));
 
         selectCategoryDialog = createCategoryDialog();
@@ -259,24 +251,19 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Get POI peak details container
         poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
 
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
-                .findFragmentById(R.id.gmFragment);
-        mapFragment.getMapAsync(this);
-        //mapFragment.set
+        poi_peak.setOnClickListener(new View.OnClickListener() {
 
-        FloatingActionButton myFab = (FloatingActionButton)  view.findViewById(R.id.fab);
-        final Context context = this.getContext();
-        myFab.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                if (null != mLastLocation && null != (Double) mLastLocation.getLatitude() && null != (Double) mLastLocation.getLongitude()) {
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude()),Constants.ZOOM_LEVEL));
-                } else {
-                    Toast.makeText(context, R.string.no_location_detected, Toast.LENGTH_LONG).show();
-                }
+
             }
         });
 
-        Log.i("oncreateview",mLastLocation.toString());
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
+                .findFragmentById(R.id.gmFragment);
+        mapFragment.getMapAsync(this);
+
+        Log.i("oncreateview", mLastLocation.toString());
         return view;
     }
 
@@ -290,7 +277,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public void onStart() {
 
         super.onStart();
-        Log.i("frag","called onstart");
+        Log.i("frag", "called onstart");
         client.connect();
     }
 
@@ -432,10 +419,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
 
     public AlertDialog createCategoryDialog() {
-        final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT,Constants.CATEGORY_RESTAURANT_TEXT,Constants.CATEGORY_FACILITY_TEXT};
+        final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT, Constants.CATEGORY_RESTAURANT_TEXT, Constants.CATEGORY_FACILITY_TEXT};
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle("Select What You Want to Filter");
-        final boolean[] checkedItems = {true,true,true};
+        final boolean[] checkedItems = {true, true, true};
         builder.setMultiChoiceItems(categories, checkedItems,
                 new OnMultiChoiceClickListener() {
                     // indexSelected contains the index of item (of which checkbox checked)
@@ -457,8 +444,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                     public void onClick(DialogInterface dialog, int id) {
                         //  Code when user clicked on OK
                         //  Tell the controller to edit the map
-                        filterMarkers(hideItems,false);
-                        filterMarkers(showItems,true);
+                        filterMarkers(hideItems, false);
+                        filterMarkers(showItems, true);
 
                     }
                 })
@@ -474,7 +461,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     }
 
     private void filterMarkers(Set<String> categories, Boolean setVisible) {
-        Log.i("filter markers",categories.toString() + "\n" + setVisible.toString());
+        Log.i("filter markers", categories.toString() + "\n" + setVisible.toString());
         for (Marker marker : markers) {
             if (categories.contains(markerCategories.get(marker))) {
                 marker.setVisible(setVisible);
@@ -502,7 +489,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         int count;
 
         while (!mapReady) {
-            Log.d("Map-","map not ready");
+            Log.d("Map-", "map not ready");
         }
         //Move to the first row in the cursor
         markerCursor.moveToFirst();
@@ -529,7 +516,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
                 Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
                 markers.add(m);
-                markerCategories.put(m,category);
+                markerCategories.put(m, category);
 
             }
             while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
@@ -595,7 +582,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         setUpMarkers(data);
         Log.d("******LOADER MANAGER: ", "called initLoader");
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185),Constants.ZOOM_LEVEL));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185), Constants.ZOOM_LEVEL));
 
     }
 
@@ -606,7 +593,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Log.i("On map click"," called");
+        Log.i("On map click", " called");
         if (!poi_closed) {
             View m = view.findViewById(R.id.gmFragment);
             animatePopup(ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight() - poi_peak.getHeight(), m.getHeight()));
@@ -633,7 +620,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 //                    MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
 
 
-            Log.i("on connect","need permission");
+            Log.i("on connect", "need permission");
             Log.i("permission", String.valueOf(ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION)));
             Log.i("permission", String.valueOf(ContextCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION)));
             Log.i("permission granted", String.valueOf(PackageManager.PERMISSION_GRANTED));
@@ -641,21 +628,15 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         }
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(client);
 
-        Toast.makeText(this.getContext(), R.string.no_location_detected, Toast.LENGTH_LONG).show();
+        if (null == mLastLocation) {
+            Toast.makeText(this.getContext(), R.string.no_location_detected, Toast.LENGTH_LONG).show();
+        }
 
         // Determine whether a Geocoder is available.
         if (!Geocoder.isPresent()) {
             Toast.makeText(this.getContext(), R.string.no_geocoder_available, Toast.LENGTH_LONG).show();
             return;
         }
-        // It is possible that the user presses the button to get the address before the
-        // GoogleApiClient object successfully connects. In such a case, mAddressRequested
-        // is set to true, but no attempt is made to fetch the address (see
-        // fetchAddressButtonHandler()) . Instead, we start the intent service here if the
-        // user has requested an address, since we now have a connection to GoogleApiClient.
-//        if (mAddressRequested) {
-//            startIntentService(mLastLocation);
-//        }
 
         if (!mRequestingLocationUpdates) {
             mRequestingLocationUpdates = true;
@@ -677,10 +658,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            Log.i("startlocationupdates","still don't have permissions");
+            Log.i("startlocationupdates", "still don't have permissions");
             return;
         }
-        Log.i("startlocationupdates","called");
+        Log.i("startlocationupdates", "called");
         LocationServices.FusedLocationApi.requestLocationUpdates(client, mLocationRequest, this);
     }
 
@@ -704,28 +685,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.i("onlocationchanged","called");
+        Log.i("onlocationchanged", "called");
         mCurrentLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        String message = "Current Location is: " +
-                "  Latitude = " + String.valueOf(mCurrentLocation.getLatitude()) +
-                "  Longitude = " + String.valueOf(mCurrentLocation.getLongitude() +
-                "\nLast Updated = " + mLastUpdateTime);
-
-        // If GoogleApiClient isn't connected, we process the user's request by setting
-        // mAddressRequested to true. Later, when GoogleApiClient connects, we launch the service to
-        // fetch the address. As far as the user is concerned, pressing the Fetch Address button
-        // immediately kicks off the process of getting the address.
-        mAddressRequested = true;
-
-        if (meMarker != null)
-            meMarker.remove();
-
-        MarkerOptions markCur = new MarkerOptions()
-                .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
-                .title("Me");
-
-        meMarker = mMap.addMarker(markCur);
     }
 
     @Override
@@ -763,13 +724,14 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         dialogFragment.show(getActivity().getFragmentManager(), "errordialog");
     }
 
+
     /* Called from ErrorDialogFragment when the dialog is dismissed. */
     public void onDialogDismissed() {
         mResolvingError = false;
     }
 
     /* A fragment to display an error dialog */
-    public static class ErrorDialogFragment extends DialogFragment {
+    public class ErrorDialogFragment extends DialogFragment {
         public ErrorDialogFragment() {
         }
 
@@ -783,7 +745,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         @Override
         public void onDismiss(DialogInterface dialog) {
-            ((MapActivity) getActivity()).onDialogDismissed();
+            onDialogDismissed();
         }
     }
 
@@ -806,6 +768,29 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnInfoWindowClickListener(this);
+        if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this.getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+//            ActivityCompat.requestPermissions(this.getActivity(),
+//                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+//                    MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION);
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        final Context context = this.getContext();
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            @Override
+            public boolean onMyLocationButtonClick() {
+                if (null != mLastLocation && null != (Double) mLastLocation.getLatitude() && null != (Double) mLastLocation.getLongitude()) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), Constants.ZOOM_LEVEL));
+                } else {
+                    Toast.makeText(context, R.string.no_location_detected, Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+        });
     }
 
     @Override
@@ -833,4 +818,5 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             // permissions this app might request
         }
     }
+
 }
