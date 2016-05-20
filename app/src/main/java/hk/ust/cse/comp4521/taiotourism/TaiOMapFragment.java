@@ -251,22 +251,17 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Get POI peak details container
         poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
 
+        poi_peak.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.gmFragment);
         mapFragment.getMapAsync(this);
-        //mapFragment.set
-
-//        FloatingActionButton myFab = (FloatingActionButton) view.findViewById(R.id.fab);
-//        final Context context = this.getContext();
-//        myFab.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                if (null != mLastLocation && null != (Double) mLastLocation.getLatitude() && null != (Double) mLastLocation.getLongitude()) {
-//                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), Constants.ZOOM_LEVEL));
-//                } else {
-//                    Toast.makeText(context, R.string.no_location_detected, Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
 
         Log.i("oncreateview", mLastLocation.toString());
         return view;
