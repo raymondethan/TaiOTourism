@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
  */
 public class POIFragment extends Fragment {
 
+    // Views
     private TextView vName;
     private TextView vDescription;
     private ImageView vPicture;
@@ -94,15 +95,15 @@ public class POIFragment extends Fragment {
         // Set data into views
         vName.setText(poiName);
         vDescription.setText(poiDescription);
-        vOpeningHours.setText(poiOpeningHours);
+        vOpeningHours.setText(getString(R.string.opening_hours, poiOpeningHours));
 
         Picasso.with(getContext())
                 .load(poiPictureUrl)
                 .resize(screenWidth, 0)
                 .into(vPicture);
 
-        if (poiRating != null) {
-            vRating.setText(poiRating.toString());
+        if (poiRating != null && poiRating >= 0) {
+            vRating.setText(getString(R.string.rating, poiRating));
         }
 
         return rootView;

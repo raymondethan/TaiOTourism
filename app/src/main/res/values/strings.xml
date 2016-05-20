@@ -11,6 +11,10 @@
     <!--fragments-->
     <string name="fragment_placeholder">Place holder fragment text.</string>
 
+    <!--fragments list and poi-->
+    <string name="opening_hours">Opening hours: %s</string>
+    <string name="rating">Rating: %.01f</string>
+
     <!--nav drawer-->
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
