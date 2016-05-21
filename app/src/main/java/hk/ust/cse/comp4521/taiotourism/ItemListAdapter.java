@@ -2,6 +2,7 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import java.util.List;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemViewHolder> {
+    private static final String TAG = "Item List Adapter";
 
     private List<POIModel> itemList;
     private int screenWidth = 0;
@@ -35,9 +37,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
     public void setItemList(List<POIModel> itemList) {
         if (itemList == null) {
             itemList = new ArrayList<POIModel>();
-        }
-        if (itemList == null) {
-            itemList.clear();
         }
         this.itemList = itemList;
     }

@@ -75,7 +75,11 @@ public class POIFragment extends Fragment {
         }
 
         // Set toolbar title
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(poiName);
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(poiName);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     @Override

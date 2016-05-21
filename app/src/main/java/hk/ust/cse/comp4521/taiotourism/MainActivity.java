@@ -288,9 +288,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         menuItem.setChecked(true);
 
-        // Set action bar title
-//        setTitle(title);  // Doesn't work
-
         // Close the navigation drawer
         mDrawer.closeDrawers();
     }
