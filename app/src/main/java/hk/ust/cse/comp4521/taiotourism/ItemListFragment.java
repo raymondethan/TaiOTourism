@@ -24,7 +24,7 @@ import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
  * Created by amanda on 20/04/16.
  */
 public class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "ItemListFragment";
+    private static final String TAG = "Item List Fragment";
 
     private RecyclerView mRecyclerViewList;
     private ItemListAdapter mItemListAdapter;
@@ -57,13 +57,13 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
         String toolbarTitle;
         switch (listType) {
             case Constants.CATEGORY_TOUR_STOP:
-                toolbarTitle = Constants.CATEGORY_TOUR_STOP_TEXT;
+                toolbarTitle = getString(R.string.toolbar_tour_stops);
                 break;
             case Constants.CATEGORY_RESTAURANT:
-                toolbarTitle = Constants.CATEGORY_RESTAURANT_TEXT;
+                toolbarTitle = getString(R.string.toolbar_restaurants);
                 break;
             case Constants.CATEGORY_FACILITY:
-                toolbarTitle = Constants.CATEGORY_FACILITY_TEXT;
+                toolbarTitle = getString(R.string.toolbar_facilities);
                 break;
             default:
                 toolbarTitle = "";
