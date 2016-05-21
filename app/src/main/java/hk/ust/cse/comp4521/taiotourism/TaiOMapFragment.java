@@ -284,7 +284,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onStart() {
-
         super.onStart();
         Log.i(TAG, "frag: called onStart");
         client.connect();
@@ -292,7 +291,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onResume() {
-
         super.onResume();
         if (client.isConnected()) {
             mRequestingLocationUpdates = true;
@@ -302,19 +300,19 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     @Override
     public void onPause() {
+        super.onPause();
         if (client.isConnected()) {
             mRequestingLocationUpdates = false;
             stopLocationUpdates();
         }
-        super.onPause();
     }
 
     @Override
     public void onStop() {
+        super.onStop();
         if (client.isConnected()) {
             client.disconnect();
         }
-        super.onStop();
     }
 
     @Override
@@ -349,7 +347,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 // If we got here, the user's action was not recognized.
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
-
         }
     }
 

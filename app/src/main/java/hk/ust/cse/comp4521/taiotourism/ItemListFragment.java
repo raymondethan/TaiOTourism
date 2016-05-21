@@ -24,7 +24,7 @@ import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
  * Created by amanda on 20/04/16.
  */
 public class ItemListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-    private static final String TAG = "ItemListFragment";
+    private static final String TAG = "Item List Fragment";
 
     private RecyclerView mRecyclerViewList;
     private ItemListAdapter mItemListAdapter;

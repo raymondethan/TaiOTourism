@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Button;
  * Created by nickjarzembowski on 15/05/2016.
  */
 public class HomeFragment extends Fragment implements View.OnClickListener {
+    private static final String TAG = "Home Fragment";
 
     private View view;
 
@@ -50,6 +52,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         ((Button) view.findViewById(R.id.home_tour_button)).setOnClickListener(this);
         ((Button) view.findViewById(R.id.home_transport_button)).setOnClickListener(this);
         ((Button) view.findViewById(R.id.home_about_button)).setOnClickListener(this);
+
+        // Set toolbar title
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("");
+        } catch (Exception e) {
+            Log.d(TAG, e.getMessage());
+        }
 
         return view;
     }
