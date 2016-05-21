@@ -1,27 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--app global-->
-    <string name="app_name">大澳 Tai O Guide</string>
-    <string name="tai_o">大澳 Tai O</string>
-    <string name="btn_ok">OK</string>
-    <string name="btn_cancel">Cancel</string>
+    <string name="app_name">大澳 旅遊指南</string>
+    <string name="tai_o">大澳</string>
+    <string name="btn_ok">是</string>
+    <string name="btn_cancel">取消</string>
 
     <!--toolbar title-->
-    <string name="toolbar_home">Tai O</string>
-    <string name="toolbar_map">Tai O Map</string>
-    <string name="toolbar_tour_stops">Tour stops</string>
-    <string name="toolbar_restaurants">Restaurants</string>
-    <string name="toolbar_facilities">Facilities</string>
-
-    <!--fragments-->
-    <string name="fragment_placeholder">Place holder fragment text.</string>
+    <string name="toolbar_home">大澳</string>
+    <string name="toolbar_map">大澳 地圖</string>
+    <string name="toolbar_tour_stops">遊站</string>
+    <string name="toolbar_restaurants">餐廳</string>
+    <string name="toolbar_facilities">設備</string>
 
     <!--fragments list and poi-->
-    <string name="opening_hours">Opening hours: %s</string>
-    <string name="rating">Rating: %.01f</string>
+    <string name="opening_hours">營業時間: %s</string>
+    <string name="rating">等級: %.01f</string>
 
-    <!--<fragment map>-->
-    <string name="map_select_filters">Select what you want to filter</string>
+    <!--fragment map-->
+    <string name="map_select_filters">選擇您要過濾什麼</string>
 
     <!--nav drawer-->
     <string name="drawer_open">Open navigation drawer</string>
@@ -30,8 +27,8 @@
     <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
     <string name="no_geocoder_available">No geocoder available</string>
 
-    <!--<Action>-->
-    <string name="action_settings">Settings</string>
+    <!--Action-->
+    <string name="action_settings">設置</string>
     <string name="action_detailed_view">Details</string>
-    <string name="action_rate">Rate</string>
+    <string name="action_rate">打分</string>
 </resources>

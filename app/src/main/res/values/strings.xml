@@ -1,7 +1,7 @@
 <resources>
     <!--app global-->
-    <string name="app_name">大澳 Tai O Guide</string>
-    <string name="tai_o">大澳 Tai O</string>
+    <string name="app_name">Tai O Travel Guide</string>
+    <string name="tai_o">Tai O</string>
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
 
@@ -11,9 +11,6 @@
     <string name="toolbar_tour_stops">Tour stops</string>
     <string name="toolbar_restaurants">Restaurants</string>
     <string name="toolbar_facilities">Facilities</string>
-
-    <!--fragments-->
-    <string name="fragment_placeholder">Place holder fragment text.</string>
 
     <!--fragments list and poi-->
     <string name="opening_hours">Opening hours: %s</string>
