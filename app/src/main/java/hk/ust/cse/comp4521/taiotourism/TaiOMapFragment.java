@@ -27,6 +27,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
@@ -245,6 +246,14 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        // Set toolbar title
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setTitle(R.string.toolbar_map);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+
         //add the button to select different categories
         setHasOptionsMenu(true);
 
@@ -421,7 +430,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public AlertDialog createCategoryDialog() {
         final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT, Constants.CATEGORY_RESTAURANT_TEXT, Constants.CATEGORY_FACILITY_TEXT};
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
-        builder.setTitle(R.string.map_select_filters);
+        builder.setTitle(getString(R.string.map_select_filters));
         final boolean[] checkedItems = {true, true, true};
         builder.setMultiChoiceItems(categories, checkedItems,
                 new OnMultiChoiceClickListener() {

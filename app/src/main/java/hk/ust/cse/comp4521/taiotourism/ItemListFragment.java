@@ -57,13 +57,13 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
         String toolbarTitle;
         switch (listType) {
             case Constants.CATEGORY_TOUR_STOP:
-                toolbarTitle = Constants.CATEGORY_TOUR_STOP_TEXT;
+                toolbarTitle = getString(R.string.toolbar_tour_stops);
                 break;
             case Constants.CATEGORY_RESTAURANT:
-                toolbarTitle = Constants.CATEGORY_RESTAURANT_TEXT;
+                toolbarTitle = getString(R.string.toolbar_restaurants);
                 break;
             case Constants.CATEGORY_FACILITY:
-                toolbarTitle = Constants.CATEGORY_FACILITY_TEXT;
+                toolbarTitle = getString(R.string.toolbar_facilities);
                 break;
             default:
                 toolbarTitle = "";
