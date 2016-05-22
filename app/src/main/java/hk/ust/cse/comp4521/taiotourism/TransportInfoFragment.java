@@ -30,4 +30,17 @@ public class TransportInfoFragment extends Fragment {
 
         return rootView;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(((MainActivity)getActivity()).lastSelected).setChecked(false);
+        ((MainActivity)getActivity()).nvDrawer.getMenu().findItem(R.id.nav_directions).setChecked(true);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        ((MainActivity)getActivity()).nvDrawer.getMenu().findItem(R.id.nav_directions).setChecked(false);
+    }
 }

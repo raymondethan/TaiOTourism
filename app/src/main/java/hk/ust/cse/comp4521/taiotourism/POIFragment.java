@@ -97,6 +97,7 @@ public class POIFragment extends Fragment implements View.OnClickListener{
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
+
     }
 
     @Override
@@ -136,6 +137,21 @@ public class POIFragment extends Fragment implements View.OnClickListener{
     }
 
     @Override
+    public void onResume () {
+        super.onResume();
+        ((MainActivity) getActivity()).drawerToggle.setDrawerIndicatorEnabled(false);
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public void onPause () {
+        super.onPause();
+
+        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        ((MainActivity) getActivity()).drawerToggle.setDrawerIndicatorEnabled(true);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
 
@@ -144,6 +160,10 @@ public class POIFragment extends Fragment implements View.OnClickListener{
         poiPictureUrl = null;
         poiOpeningHours = null;
         poiRating = null;
+
+//        ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+//        ((MainActivity) getActivity()).drawerToggle.setDrawerIndicatorEnabled(true);
+
     }
 
     // ************************************************************************
