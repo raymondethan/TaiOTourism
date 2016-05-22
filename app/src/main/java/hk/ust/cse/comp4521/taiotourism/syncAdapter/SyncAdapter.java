@@ -72,7 +72,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     Context mContext;
 
-    private String serverUrl = "http://54.169.245.119:3000/api";
+    private String serverUrl = "http://10.0.2.2:3000/api";
     private String getUpdateUrl = "/PointOfInterests/getUpdate?date=";
     private String getGenInfoUpdateUrl = "/GeneralInfos/getUpdate?date=";
 
