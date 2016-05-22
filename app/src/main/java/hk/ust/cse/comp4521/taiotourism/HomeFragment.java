@@ -2,6 +2,7 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -45,7 +46,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_home_4, container, false);
+        view = inflater.inflate(R.layout.fragment_home_6, container, false);
 
         // Add click listeners to home screen buttons
         ((Button) view.findViewById(R.id.home_map_button)).setOnClickListener(this);
@@ -71,6 +72,24 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         } else {
             throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
         }
+    }
+
+    @Override
+    public void onResume () {
+        super.onResume();
+        ((MainActivity)getActivity()).toolbar.getBackground().setAlpha(0);
+        ((MainActivity)getActivity()).findViewById(R.id.main_activity_bg).setBackgroundResource(R.drawable.home_bg_8);
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(0).setChecked(true);
+    }
+
+    @Override
+    public void onPause () {
+        super.onPause();
+        ((MainActivity)getActivity()).toolbar.getBackground().setAlpha(1);
+        ((MainActivity)getActivity()).toolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        ((MainActivity)getActivity()).findViewById(R.id.main_activity_bg).setBackgroundResource(0);
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(0).setChecked(false);
+
     }
 
     @Override

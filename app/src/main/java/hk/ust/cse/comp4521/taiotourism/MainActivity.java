@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 
@@ -33,9 +34,9 @@ import com.strongloop.android.loopback.RestAdapter;
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener, TaiOMapFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawer;
-    private Toolbar toolbar;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
+    public Toolbar toolbar;
+    public NavigationView nvDrawer;
+    public ActionBarDrawerToggle drawerToggle;
 
     // An account type, in the form of a domain name
     public static final String ACCOUNT_TYPE = "hk.ust.cse.comp4521.datasync";
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     // Points to fragment that is currently displayed.
     private Class fragmentClass = HomeFragment.class;
+
+    public int lastSelected;
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
@@ -75,8 +78,17 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         // Find our drawer view
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
 
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
+        nvDrawer.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        lastSelected = menuItem.getItemId();
+                        return true;
+                    }
+                });
+
+                // Setup drawer view
+                setupDrawerContent(nvDrawer);
 
         // Set Home page fragment
         Fragment fragment = null;
@@ -275,6 +287,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
                                                 // Swap fragment from detailed view to map
                                                 SwapFragment(mapFragment);
+
                                             }
                                         }
                                 );
@@ -282,16 +295,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                                 // Swap fragment list to detailed poi
                                 SwapFragment(poiFragment);
 
-                                // Hide hamburger in toolbar and replace with back button
-                                drawerToggle.setDrawerIndicatorEnabled(false);
-                                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
                                 drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         onBackPressed();
-                                        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-                                        drawerToggle.setDrawerIndicatorEnabled(true);
                                     }
                                 });
 
@@ -323,12 +330,29 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             case R.id.action_settings:
 
                     // only show popup on home
-                    if (fragmentClass == HomeFragment.class) {
+                    if (fragmentClass != TaiOMapFragment.class) {
                         // inflate filter widget for google map
                         // TODO: fix position under tool bar
                         PopupMenu popup = new PopupMenu(this, findViewById(R.id.flContent), Gravity.RIGHT);
+
                         MenuInflater inflater = popup.getMenuInflater();
-                        inflater.inflate(R.menu.settings_home, popup.getMenu());
+                        inflater.inflate(R.menu.settings_drop_down, popup.getMenu());
+
+                        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+
+                                switch (item.getItemId()) {
+                                    case R.id.settings_menu_option: {
+                                        System.out.println("test");
+                                        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                                        startActivity(intent);
+                                        return true;
+                                    }
+                                }
+                                return true;
+                            }
+                        });
                         popup.show();
                     }
 
@@ -424,33 +448,25 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         return true;
     }
 
-    private Fragment getCurrentFragment(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
-        Fragment currentFragment = getSupportFragmentManager()
-                .findFragmentByTag(fragmentTag);
-        return currentFragment;
-    }
-
     @Override
     /**
      *  Remark: TaiOFragment and ItemListFragment both go back to the main screen when the back button is pushed.
      */
     public void onBackPressed() {
 
-        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
 
             int count = getSupportFragmentManager().getBackStackEntryCount();
-            String lastBackStack = getSupportFragmentManager().getBackStackEntryAt(count - 1).getName();
+            String lastBackStack = getSupportFragmentManager().getBackStackEntryAt(count - 2).getName();
 
-            if ( lastBackStack.equals("TaiOMapFragment") || lastBackStack.equals("ItemListFragment") ) {
+            if ( lastBackStack.equals("TaiOMapFragment") ) {
                 fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 return;
             }
 
             getSupportFragmentManager().popBackStack();
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            drawerToggle.setDrawerIndicatorEnabled(true);
+//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            drawerToggle.setDrawerIndicatorEnabled(true);
 
         } else {
             super.onBackPressed();

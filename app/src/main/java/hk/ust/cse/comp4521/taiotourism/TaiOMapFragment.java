@@ -308,6 +308,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             mRequestingLocationUpdates = true;
             startLocationUpdates();
         }
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(((MainActivity)getActivity()).lastSelected).setChecked(false);
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(1).setChecked(true);
     }
 
     @Override
@@ -317,6 +319,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             mRequestingLocationUpdates = false;
             stopLocationUpdates();
         }
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(1).setChecked(false);
     }
 
     @Override

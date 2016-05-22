@@ -33,12 +33,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SettingsActivity">
+            </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyByZw3jKG0c7MVrdH0fwfqhCWodLw4nsic" />
-
-        <activity android:name=".SettingsActivity" />
 
         <provider
             android:name=".TaiODataProvider"

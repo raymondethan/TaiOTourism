@@ -1,0 +1,140 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/viewA"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:background="#00000000"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:elevation="1dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="20dp"
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Tai O Guide"
+                    android:color="#fff"
+                    android:textColor="#fff"
+                    android:textSize="40dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="By YCMA"
+                    android:id="@+id/textView6"
+                    android:textColor="#BEFFFFFF" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/viewB"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:background="#00000000"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal">
+
+            <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:columnCount="2"
+                android:rowCount="2"
+                android:orientation="horizontal">
+
+                <Button
+                    android:text="Map"
+                    android:drawableTop="@android:drawable/ic_menu_mapmode"
+                    android:id="@+id/home_map_button"
+                    android:layout_width="130dp"
+                    android:layout_gravity="left|top"
+                    android:background="@drawable/button_home"
+                    android:layout_margin="10dp"
+                    android:textColor="#333333"
+                    android:elevation="1dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"/>
+                <Button
+                    android:text="Take the Tour"
+                    android:drawableTop="@android:drawable/ic_menu_directions"
+                    android:id="@+id/home_tour_button"
+                    android:layout_width="130dp"
+                    android:layout_gravity="left|top"
+                    android:background="@drawable/button_home"
+                    android:layout_margin="10dp"
+                    android:textColor="#333333"
+                    android:elevation="1dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp" />
+                <Button
+                    android:text="About YCMA"
+                    android:drawableTop="@android:drawable/ic_menu_search"
+                    android:id="@+id/home_transport_button"
+                    android:layout_width="130dp"
+                    android:layout_gravity="left|top"
+                    android:background="@drawable/button_home"
+                    android:layout_margin="10dp"
+                    android:textColor="#333333"
+                    android:elevation="1dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp" />
+                <Button
+                    android:text="Directions "
+                    android:drawableTop="@android:drawable/ic_menu_info_details"
+                    android:id="@+id/home_about_button"
+                    android:layout_width="130dp"
+                    android:layout_gravity="left|top"
+                    android:background="@drawable/button_home"
+                    android:layout_margin="10dp"
+                    android:textColor="#333333"
+                    android:elevation="1dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp" />
+
+            </GridLayout>
+
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/fab"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="16dp"-->
+        <!--android:clickable="true"-->
+        <!--android:src="@drawable/ic_map_black_24dp"-->
+        <!--app:backgroundTint="@color/colorPrimary"-->
+        <!--app:layout_anchor="@id/viewA"-->
+        <!--app:layout_anchorGravity="bottom|right|end"-->
+        <!--android:elevation="1dp"-->
+        <!--/>-->
+
+</android.support.design.widget.CoordinatorLayout>
