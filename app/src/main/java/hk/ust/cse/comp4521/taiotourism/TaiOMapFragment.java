@@ -94,6 +94,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private static final String ARG_POI_LONGITUDE = "poiLng";
 
     private String mapFilterSetting;
+    private double initialLat = 22.253155;
+    private double initialLng = 113.858185;
 
     private OnFragmentInteractionListener mListener;
 
@@ -171,7 +173,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         TaiOMapFragment fragment = new TaiOMapFragment();
         Bundle args = new Bundle();
         args.putString(ARG_MAP_FILTER_SETTING, mapFilterSetting);
-        args.putString()
+        args.putDouble(ARG_POI_LATITUDE,22.253155);
+        args.putDouble(ARG_POI_LONGITUDE,113.858185);
         fragment.setArguments(args);
         return fragment;
     }
@@ -179,6 +182,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public static TaiOMapFragment newInstance(double latitude, double longitude) {
         TaiOMapFragment fragment = new TaiOMapFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_MAP_FILTER_SETTING, "");
         args.putDouble(ARG_POI_LATITUDE, latitude);
         args.putDouble(ARG_POI_LONGITUDE, longitude);
         fragment.setArguments(args);
@@ -191,7 +195,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mapFilterSetting = getArguments().getString(ARG_MAP_FILTER_SETTING);
-
+            initialLat = getArguments().getDouble(ARG_POI_LATITUDE);
+            initialLat = getArguments().getDouble(ARG_POI_LONGITUDE);
         }
 
         buildGoogleApiClient();
@@ -200,7 +205,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         selectCategoryDialog = createCategoryDialog();
 
-        //TODO: Bind cursor adapter to popup
         getLoaderManager().initLoader(0, null, this);
 
         //Is there a more scalable way we can do this
@@ -513,6 +517,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
                 Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
+                if ("" != mapFilterSetting && category != Constants.CATEGORY_TOUR_STOP) {
+                    m.setVisible(false);
+                }
                 markers.add(m);
                 markerCategories.put(m, category);
 
@@ -580,7 +587,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         setUpMarkers(data);
         Log.d("******LOADER MANAGER: ", "called initLoader");
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185), Constants.ZOOM_LEVEL));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185), Constants.ZOOM_LEVEL));
 
     }
 
@@ -789,6 +796,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 return true;
             }
         });
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185), Constants.ZOOM_LEVEL));
     }
 
     @Override
