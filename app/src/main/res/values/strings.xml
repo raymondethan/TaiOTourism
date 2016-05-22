@@ -11,6 +11,7 @@
     <string name="toolbar_tour_stops">Tour stops</string>
     <string name="toolbar_restaurants">Restaurants</string>
     <string name="toolbar_facilities">Facilities</string>
+    <string name="toolbar_transportation">Transportation</string>
 
     <!--fragments list and poi-->
     <string name="opening_hours">Opening hours: %s</string>
@@ -18,6 +19,16 @@
 
     <!--<fragment map>-->
     <string name="map_select_filters">Select what you want to filter</string>
+
+    <!--fragment transportation-->
+    <string name="path1_title">Best way to Tai O</string>
+    <string name="path1_details">Take the MTR to Tung Chung Station, the terminus of the yellow
+        Tung Chung line.\nThen take the bus number 11 from the Tung Chung Town Centre.</string>
+    <string name="path2_title">Alternative path to get there</string>
+    <string name="path2_details">You can also take the ferry from Central Ferry Pier
+        (in front of the IFC Mall) to Mui Wo on Lantau Island. From there,
+        take the bus number 1 from the bus terminal.\nIt usually takes slightly longer but the
+        ferry connection offers great panoramas of Lantau island.</string>
 
     <!--nav drawer-->
     <string name="drawer_open">Open navigation drawer</string>
@@ -28,6 +39,6 @@
 
     <!--<Action>-->
     <string name="action_settings">Settings</string>
-    <string name="action_detailed_view">Details</string>
+    <!--<string name="action_detailed_view">Details</string>-->
     <string name="action_rate">Rate</string>
 </resources>

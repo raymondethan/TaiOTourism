@@ -2,6 +2,7 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     // Points to fragment that is currently displayed.
     private Class fragmentClass = HomeFragment.class;
-
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
@@ -243,6 +243,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 bundleArgs.putString(Constants.LIST_CATEGORY, Constants.CATEGORY_FACILITY);
                 fragmentClass = ItemListFragment.class;
                 break;
+            case R.id.nav_directions:
+                fragmentClass = TransportInfoFragment.class;
+                break;
             default:
                 fragmentClass = HomeFragment.class;
         }
@@ -370,17 +373,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             // Handle OnClick methods for HomeScreen buttons
             case R.id.home_map_button:
                 fragmentClass = TaiOMapFragment.class;
-                nvDrawer.getMenu().getItem(1).setChecked(true);
                 break;
             case R.id.home_tour_button:
                 // TODO: pass parameters to fragment to filter tour stops only.
                 fragmentClass = TaiOMapFragment.class;
-                nvDrawer.setCheckedItem(R.id.nav_map);
-                nvDrawer.getMenu().getItem(1).setChecked(true);
                 break;
             case R.id.home_transport_button:
-                // TODO: Add fragment class for Transport fragment
-                return;
+                fragmentClass = TransportInfoFragment.class;
+                break;
             case R.id.home_about_button:
                 // TODO: Add fragment class for general info
                 return;
@@ -424,17 +424,36 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         return true;
     }
 
+    private Fragment getCurrentFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
+        Fragment currentFragment = getSupportFragmentManager()
+                .findFragmentByTag(fragmentTag);
+        return currentFragment;
+    }
+
     @Override
+    /**
+     *  Remark: TaiOFragment and ItemListFragment both go back to the main screen when the back button is pushed.
+     */
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+
+            int count = getSupportFragmentManager().getBackStackEntryCount();
+            String lastBackStack = getSupportFragmentManager().getBackStackEntryAt(count - 1).getName();
+
+            if ( lastBackStack.equals("TaiOMapFragment") || lastBackStack.equals("ItemListFragment") ) {
+                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                return;
+            }
+
+            getSupportFragmentManager().popBackStack();
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             drawerToggle.setDrawerIndicatorEnabled(true);
 
         } else {
             super.onBackPressed();
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        drawerToggle.setDrawerIndicatorEnabled(true);
     }
 }
