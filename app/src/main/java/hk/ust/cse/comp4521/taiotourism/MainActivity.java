@@ -222,6 +222,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         // Toolbar title
         String title = "";
 
+        System.out.println(menuItem.getItemId());
+
         switch(menuItem.getItemId()) {
 
             case R.id.nav_first_fragment:
