@@ -5,22 +5,31 @@ package hk.ust.cse.comp4521.taiotourism.syncAdapter;
  */
 public class GeoPoint {
 
-    private Double lat;
-    private Double lng;
+    private double lat;
+    private double lng;
 
-    public Double getLat() {
+    // Constructor
+    public GeoPoint(double lat, double lng) {
+        this.setLat(lat);
+        this.setLng(lng);
+    }
+
+    // Setters and getters
+    public double getLat() {
         return lat;
     }
 
     public void setLat(Double lat) {
+        // TODO : add check on range
         this.lat = lat;
     }
 
-    public Double getLng() {
+    public double getLng() {
         return lng;
     }
 
     public void setLng(Double lng) {
+        // TODO : add check on range
         this.lng = lng;
     }
 }
