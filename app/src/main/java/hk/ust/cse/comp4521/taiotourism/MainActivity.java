@@ -243,6 +243,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 bundleArgs.putString(Constants.LIST_CATEGORY, Constants.CATEGORY_FACILITY);
                 fragmentClass = ItemListFragment.class;
                 break;
+            case R.id.nav_directions:
+                fragmentClass = TransportInfoFragment.class;
+                break;
             default:
                 fragmentClass = HomeFragment.class;
         }
@@ -370,17 +373,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             // Handle OnClick methods for HomeScreen buttons
             case R.id.home_map_button:
                 fragmentClass = TaiOMapFragment.class;
-                nvDrawer.getMenu().getItem(1).setChecked(true);
                 break;
             case R.id.home_tour_button:
                 // TODO: pass parameters to fragment to filter tour stops only.
                 fragmentClass = TaiOMapFragment.class;
-                nvDrawer.setCheckedItem(R.id.nav_map);
-                nvDrawer.getMenu().getItem(1).setChecked(true);
                 break;
             case R.id.home_transport_button:
-                // TODO: Add fragment class for Transport fragment
-                return;
+                fragmentClass = TransportInfoFragment.class;
+                break;
             case R.id.home_about_button:
                 // TODO: Add fragment class for general info
                 return;
