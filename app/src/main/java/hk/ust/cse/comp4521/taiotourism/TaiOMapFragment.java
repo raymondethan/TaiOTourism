@@ -87,8 +87,11 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     boolean poi_closed = true;
     boolean anim_stopped = true;
 
+    // Fragment's arguments
     // used to define the filter setting of the map from the menu
     private static final String ARG_MAP_FILTER_SETTING = "param1";
+    private static final String ARG_POI_LATITUDE = "poiLat";
+    private static final String ARG_POI_LONGITUDE = "poiLng";
 
     private String mapFilterSetting;
 
@@ -169,6 +172,15 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         Bundle args = new Bundle();
         args.putString(ARG_MAP_FILTER_SETTING, mapFilterSetting);
         args.putString()
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public static TaiOMapFragment newInstance(double latitude, double longitude) {
+        TaiOMapFragment fragment = new TaiOMapFragment();
+        Bundle args = new Bundle();
+        args.putDouble(ARG_POI_LATITUDE, latitude);
+        args.putDouble(ARG_POI_LONGITUDE, longitude);
         fragment.setArguments(args);
         return fragment;
     }

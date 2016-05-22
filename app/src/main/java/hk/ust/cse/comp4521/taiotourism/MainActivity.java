@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeoPoint;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
@@ -258,9 +259,27 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                         new ItemListAdapter.ItemClickListener() {
                             @Override
                             public void onItemClickListener(POIModel poi) {
-                                Fragment poiFragment = POIFragment.newInstance(
+                                GeoPoint poiCoordinates = poi.getCoordinates();
+                                POIFragment poiFragment = POIFragment.newInstance(
                                         poi.getName(), poi.getDescription(), poi.getPictureUrl(),
-                                        poi.getOpeningHours(), poi.getRating());
+                                        poi.getOpeningHours(), poi.getRating(),
+                                        poiCoordinates.getLat(), poiCoordinates.getLng());
+
+                                // Set listener to locate a poi on the map from the detailed view
+                                poiFragment.setToMapListener(
+                                        new POIFragment.ToMapListener() {
+                                            @Override
+                                            public void onToMapClickListener(double lat, double lng) {
+                                                TaiOMapFragment mapFragment =
+                                                        TaiOMapFragment.newInstance(lat, lng);
+
+                                                // Swap fragment from detailed view to map
+                                                SwapFragment(mapFragment);
+                                            }
+                                        }
+                                );
+
+                                // Swap fragment list to detailed poi
                                 SwapFragment(poiFragment);
 
                                 // Hide hamburger in toolbar and replace with back button
@@ -360,10 +379,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 nvDrawer.getMenu().getItem(1).setChecked(true);
                 break;
             case R.id.home_transport_button:
-                // TODO: Add fragment class for POI list view
+                // TODO: Add fragment class for Transport fragment
                 return;
             case R.id.home_about_button:
-                // TODO: Add fragment class for Transport fragment
+                // TODO: Add fragment class for general info
                 return;
             default:
                 fragmentClass = HomeFragment.class;

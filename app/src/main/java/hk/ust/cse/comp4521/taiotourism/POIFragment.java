@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +17,7 @@ import com.squareup.picasso.Picasso;
 /**
  * Created by amanda on 17/05/16.
  */
-public class POIFragment extends Fragment {
+public class POIFragment extends Fragment implements View.OnClickListener{
     private static final String TAG = "POI Fragment";
 
     // Views
@@ -26,26 +27,34 @@ public class POIFragment extends Fragment {
     private TextView vOpeningHours;
     private TextView vRating;
 
+    // Listener to access the poi location on the map
+    private static ToMapListener toMapListener;
+
     // Fragment arguments
     private String poiName;
     private String poiDescription;
     private String poiPictureUrl;
     private String poiOpeningHours;
     private Double poiRating;
+    private double poiLatitude;
+    private double poiLongitude;
     private static final String POI_NAME = "name";
     private static final String POI_DESCRIPTION = "description";
     private static final String POI_PICTURE_URL = "pictureUrl";
     private static final String POI_OPENING_HOURS  = "openingHours";
     private static final String POI_RATING = "rating";
+    private static final String POI_LATITUDE = "latitude";
+    private static final String POI_LONGITUDE = "longitude";
 
     // ************************************************************************
-    //                         CONSTRUCTOR AND FACTORY
+    //                         CONSTRUCTORS AND SETTER
     // ************************************************************************
     public POIFragment() {}
 
     public static POIFragment newInstance(String poiName, String poiDescription,
                                           String poiPictureUrl, String poiOpeningHours,
-                                          Double poiRating) {
+                                          double poiRating, double poiLatitude,
+                                          double poiLongitude) {
         POIFragment poiFragment = new POIFragment();
         Bundle args = new Bundle();
         args.putString(POI_NAME, poiName);
@@ -53,9 +62,15 @@ public class POIFragment extends Fragment {
         args.putString(POI_PICTURE_URL, poiPictureUrl);
         args.putString(POI_OPENING_HOURS, poiOpeningHours);
         args.putDouble(POI_RATING, poiRating);
+        args.putDouble(POI_LATITUDE, poiLatitude);
+        args.putDouble(POI_LONGITUDE, poiLongitude);
 
         poiFragment.setArguments(args);
         return poiFragment;
+    }
+
+    public void setToMapListener(ToMapListener listener) {
+        this.toMapListener = listener;
     }
 
     // ************************************************************************
@@ -72,6 +87,8 @@ public class POIFragment extends Fragment {
             poiPictureUrl = getArguments().getString(POI_PICTURE_URL);
             poiOpeningHours = getArguments().getString(POI_OPENING_HOURS);
             poiRating = getArguments().getDouble(POI_RATING);
+            poiLatitude = getArguments().getDouble(POI_LATITUDE);
+            poiLongitude = getArguments().getDouble(POI_LONGITUDE);
         }
 
         // Set toolbar title
@@ -97,6 +114,9 @@ public class POIFragment extends Fragment {
         vPicture = (ImageView) rootView.findViewById(R.id.poiPicture);
         vOpeningHours = (TextView) rootView.findViewById(R.id.poiOpeningHours);
         vRating = (TextView) rootView.findViewById(R.id.poiRating);
+
+        // Set button click listener
+        rootView.findViewById(R.id.poi_to_map_button).setOnClickListener(this);
 
         // Set data into views
         vName.setText(poiName);
@@ -124,5 +144,18 @@ public class POIFragment extends Fragment {
         poiPictureUrl = null;
         poiOpeningHours = null;
         poiRating = null;
+    }
+
+    // ************************************************************************
+    //                           INTERACTION METHODS
+    // ************************************************************************
+    @Override
+    public void onClick(View view) {
+        toMapListener.onToMapClickListener(poiLatitude, poiLongitude);
+    }
+
+    // Interface for Main Activity
+    public interface ToMapListener{
+        void onToMapClickListener(double lat, double lng);
     }
 }
