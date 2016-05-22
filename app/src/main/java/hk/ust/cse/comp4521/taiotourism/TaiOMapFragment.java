@@ -168,15 +168,18 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         TaiOMapFragment fragment = new TaiOMapFragment();
         Bundle args = new Bundle();
         args.putString(ARG_MAP_FILTER_SETTING, mapFilterSetting);
+        args.putString()
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i("On create","called");
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mapFilterSetting = getArguments().getString(ARG_MAP_FILTER_SETTING);
+
         }
 
         buildGoogleApiClient();
@@ -227,6 +230,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_map, container, false);
 
+        Bundle args = this.getArguments();
+
         // Set toolbar title
         try {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
@@ -241,13 +246,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Get POI peak details container
         poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
 
-        poi_peak.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
                 .findFragmentById(R.id.gmFragment);
