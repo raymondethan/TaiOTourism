@@ -2,6 +2,7 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -50,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     // Points to fragment that is currently displayed.
     private Class fragmentClass = HomeFragment.class;
-
 
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
@@ -424,17 +424,36 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         return true;
     }
 
+    private Fragment getCurrentFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        String fragmentTag = fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName();
+        Fragment currentFragment = getSupportFragmentManager()
+                .findFragmentByTag(fragmentTag);
+        return currentFragment;
+    }
+
     @Override
+    /**
+     *  Remark: TaiOFragment and ItemListFragment both go back to the main screen when the back button is pushed.
+     */
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+
+            int count = getSupportFragmentManager().getBackStackEntryCount();
+            String lastBackStack = getSupportFragmentManager().getBackStackEntryAt(count - 1).getName();
+
+            if ( lastBackStack.equals("TaiOMapFragment") || lastBackStack.equals("ItemListFragment") ) {
+                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                return;
+            }
+
+            getSupportFragmentManager().popBackStack();
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             drawerToggle.setDrawerIndicatorEnabled(true);
 
         } else {
             super.onBackPressed();
         }
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        drawerToggle.setDrawerIndicatorEnabled(true);
     }
 }
