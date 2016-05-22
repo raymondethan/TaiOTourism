@@ -111,7 +111,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private HashMap<Marker, String> markerCategories = new HashMap();
 
-    private ImageButton category_selector;
     private HashSet<String> hideItems = new HashSet();
     private HashSet<String> showItems = new HashSet();
 
@@ -149,24 +148,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
      * Start Updates and Stop Updates buttons.
      */
     protected Boolean mRequestingLocationUpdates = false;
-
-    protected static final String ADDRESS_REQUESTED_KEY = "address-request-pending";
-    protected static final String LOCATION_ADDRESS_KEY = "location-address";
-
-    /**
-     * Tracks whether the user has requested an address. Becomes true when the user requests an
-     * address and false when the address (or an error message) is delivered.
-     * The user requests an address by pressing the Fetch Address button. This may happen
-     * before GoogleApiClient connects. This activity uses this boolean to keep track of the
-     * user's intent. If the value is true, the activity tries to fetch the address as soon as
-     * GoogleApiClient connects.
-     */
-    protected boolean mAddressRequested;
-
-    /**
-     * The formatted location address.
-     */
-    protected String mLocationOutput;
 
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     //private final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1;
