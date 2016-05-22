@@ -33,16 +33,15 @@
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Title"
                 android:textSize="@dimen/title_size"
-                android:textAppearance="?attr/textAppearanceListItem" />
+                android:textAppearance="?attr/textAppearanceListItem"
+                android:textColor="@color/colorPrimary" />
 
             <TextView
                 android:id="@+id/item_hours"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Opening hours"
-                android:textSize="@dimen/subtitle_size"/>
+                android:textSize="@dimen/text_body"/>
         </LinearLayout>
 
         <!--<LinearLayout-->
@@ -54,6 +53,7 @@
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:text="@string/action_detailed_view"-->
+                <!--android:textColor="@color/colorPrimaryDark"-->
                 <!--android:background="@color/transparent"-->
                 <!--style="?android:attr/borderlessButtonStyle"/>-->
 
@@ -61,6 +61,7 @@
                 <!--android:layout_width="wrap_content"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:text="@string/action_rate"-->
+                <!--android:textColor="@color/colorPrimaryDark"-->
                 <!--android:background="@color/transparent"-->
                 <!--style="?android:attr/borderlessButtonStyle"/>-->
 
