@@ -57,4 +57,12 @@ public final class Constants {
     public static final String LAST_UPDATE_DEFAULT = "1990-00-10T00:00:00.000Z";
     public static final String DATE_FORMAT = "yyyy-MM-ddhh:mm:ss:SSS";
 
+    // Fragment's arguments
+    // used to define the filter setting of the map from the menu
+    public static final String ARG_MAP_FILTER_SETTING = "param1";
+    public static final String ARG_POI_LATITUDE = "poiLat";
+    public static final String ARG_POI_LONGITUDE = "poiLng";
+    public static final Double INITIAL_LAT = 22.253155;
+    public static final Double INITIAL_LNG = 113.858185;
+
 }

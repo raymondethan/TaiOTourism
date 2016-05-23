@@ -92,15 +92,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     boolean poi_closed = true;
     boolean anim_stopped = true;
 
-    // Fragment's arguments
-    // used to define the filter setting of the map from the menu
-    private static final String ARG_MAP_FILTER_SETTING = "param1";
-    private static final String ARG_POI_LATITUDE = "poiLat";
-    private static final String ARG_POI_LONGITUDE = "poiLng";
 
-    private String mapFilterSetting;
-    private double initialLat = 22.253155;
-    private double initialLng = 113.858185;
+    private String mapFilterSetting = "";
+    private double initialLat;
+    private double initialLng;
 
     private OnFragmentInteractionListener mListener;
 
@@ -121,6 +116,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private HashMap<Marker, String> markerCategories = new HashMap();
 
+    //For the category selection dialog
+    boolean[] checkedItems;
     private HashSet<String> hideItems = new HashSet();
     private HashSet<String> showItems = new HashSet();
 
@@ -177,9 +174,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public static TaiOMapFragment newInstance(String mapFilterSetting) {
         TaiOMapFragment fragment = new TaiOMapFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_MAP_FILTER_SETTING, mapFilterSetting);
-        args.putDouble(ARG_POI_LATITUDE,22.253155);
-        args.putDouble(ARG_POI_LONGITUDE,113.858185);
+        args.putString(Constants.ARG_MAP_FILTER_SETTING, mapFilterSetting);
+        args.putDouble(Constants.ARG_POI_LATITUDE,22.253155);
+        args.putDouble(Constants.ARG_POI_LONGITUDE,113.858185);
         fragment.setArguments(args);
         return fragment;
     }
@@ -187,9 +184,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public static TaiOMapFragment newInstance(double latitude, double longitude) {
         TaiOMapFragment fragment = new TaiOMapFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_MAP_FILTER_SETTING, "");
-        args.putDouble(ARG_POI_LATITUDE, latitude);
-        args.putDouble(ARG_POI_LONGITUDE, longitude);
+        args.putString(Constants.ARG_MAP_FILTER_SETTING, "");
+        args.putDouble(Constants.ARG_POI_LATITUDE, latitude);
+        args.putDouble(Constants.ARG_POI_LONGITUDE, longitude);
         fragment.setArguments(args);
         return fragment;
     }
@@ -198,10 +195,17 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     public void onCreate(Bundle savedInstanceState) {
         Log.i("On create","called");
         super.onCreate(savedInstanceState);
+        Log.i("On create",String.valueOf(getArguments()));
         if (getArguments() != null) {
-            mapFilterSetting = getArguments().getString(ARG_MAP_FILTER_SETTING);
-            initialLat = getArguments().getDouble(ARG_POI_LATITUDE);
-            initialLat = getArguments().getDouble(ARG_POI_LONGITUDE);
+            mapFilterSetting = getArguments().getString(Constants.ARG_MAP_FILTER_SETTING);
+            checkedItems = new boolean[]{true, false, false};
+            initialLat = getArguments().getDouble(Constants.ARG_POI_LATITUDE);
+            initialLng = getArguments().getDouble(Constants.ARG_POI_LONGITUDE);
+        }
+        else {
+            checkedItems = new boolean[]{true, true, true};
+            initialLat = Constants.INITIAL_LAT;
+            initialLng = Constants.INITIAL_LNG;
         }
 
         buildGoogleApiClient();
@@ -431,7 +435,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         final String[] categories = {Constants.CATEGORY_TOUR_STOP_TEXT, Constants.CATEGORY_RESTAURANT_TEXT, Constants.CATEGORY_FACILITY_TEXT};
         AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
         builder.setTitle(getString(R.string.map_select_filters));
-        final boolean[] checkedItems = {true, true, true};
+
         builder.setMultiChoiceItems(categories, checkedItems,
                 new OnMultiChoiceClickListener() {
                     // indexSelected contains the index of item (of which checkbox checked)
@@ -525,11 +529,12 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
                 Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
-//                if ("" != mapFilterSetting && category != Constants.CATEGORY_TOUR_STOP) {
-//                    Log.i(TAG,mapFilterSetting.toString());
-//                    Log.i(TAG,category.toString());
-//                    m.setVisible(false);
-//                }
+                if (Constants.CATEGORY_TOUR_STOP.equals(mapFilterSetting) && !category.equals(Constants.CATEGORY_TOUR_STOP)) {
+                    Log.i(TAG,mapFilterSetting.toString());
+                    Log.i(TAG,category.toString());
+                    Log.i(TAG,Constants.CATEGORY_TOUR_STOP);
+                    m.setVisible(false);
+                }
                 markers.add(m);
                 markerCategories.put(m, category);
 
@@ -806,7 +811,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 return true;
             }
         });
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185), Constants.ZOOM_LEVEL));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(initialLat, initialLng), Constants.ZOOM_LEVEL));
     }
 
     @Override
