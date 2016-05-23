@@ -28,7 +28,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeneralInfoFragment;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeoPoint;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 
@@ -128,9 +127,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         // Create the dummy account
         mAccount = GetSyncAccount(this);
-        if (mAccount != null) {
-            getContentResolver().setSyncAutomatically(mAccount, TaiODataContract.AUTHORITY, true);
-        }
+
+        if (mAccount != null) getContentResolver().setSyncAutomatically(mAccount, TaiODataContract.AUTHORITY, true);
+
+        Log.i("Language", Locale.getDefault().getDisplayLanguage());
 
         //Test to see if the sync adapter works
         Bundle settingsBundle = new Bundle();
@@ -140,21 +140,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
         ContentResolver.requestSync(mAccount, TaiODataContract.AUTHORITY, settingsBundle);
-    }
-
-    public RestAdapter getLoopBackAdapter() {
-        if (adapter == null) {
-            // Instantiate the shared RestAdapter. In most circumstances,
-            // you'll do this only once; putting that reference in a singleton
-            // is recommended for the sake of simplicity.
-            // However, some applications will need to talk to more than one
-            // server - create as many Adapters as you need.
-            adapter = new RestAdapter(
-                    getApplicationContext(), "http://10.0.2.2:3000/api");
-
-        }
-        Log.i(TAG, getApplicationContext().toString());
-        return adapter;
     }
 
     /**
@@ -235,6 +220,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 // tour
                 //TODO: add map filter to tour selection
                 fragmentClass = TaiOMapFragment.class;
+                //title = getResources().getString(R.string.toolbar_home);
+                bundleArgs = new Bundle();
+                bundleArgs.putString(Constants.ARG_MAP_FILTER_SETTING, Constants.CATEGORY_TOUR_STOP);
+                bundleArgs.putDouble(Constants.ARG_POI_LATITUDE, Constants.INITIAL_LAT);
+                bundleArgs.putDouble(Constants.ARG_POI_LONGITUDE, Constants.INITIAL_LNG);
+
                 break;
             case R.id.nav_ptg_poi:
                 bundleArgs = new Bundle();
@@ -383,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     @Override
     public void OnHomeFragmentInteraction(View view) {
 
+        Bundle homeFragBundleArgs = null;
         Fragment fragment = null;
         nvDrawer.getMenu().getItem(0).setChecked(false);
 
@@ -392,7 +384,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 fragmentClass = TaiOMapFragment.class;
                 break;
             case R.id.home_tour_button:
-                // TODO: pass parameters to fragment to filter tour stops only.
+                homeFragBundleArgs = new Bundle();
+                homeFragBundleArgs.putString(Constants.ARG_MAP_FILTER_SETTING, Constants.CATEGORY_TOUR_STOP);
+                homeFragBundleArgs.putDouble(Constants.ARG_POI_LATITUDE, Constants.INITIAL_LAT);
+                homeFragBundleArgs.putDouble(Constants.ARG_POI_LONGITUDE, Constants.INITIAL_LNG);
                 fragmentClass = TaiOMapFragment.class;
                 break;
             case R.id.home_transport_button:
@@ -408,6 +403,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         try {
             fragment = (Fragment) fragmentClass.newInstance();
+            if (homeFragBundleArgs != null) {
+                fragment.setArguments(homeFragBundleArgs);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

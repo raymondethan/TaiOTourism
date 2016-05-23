@@ -25,16 +25,20 @@ public class GeoPoint {
     }
 
     public void setLat(Double lat) {
-        // TODO : add check on range
+        if (lat < -85 || lat > 85) {
+            //set default value because lat is out of bounds
+            this.lat = 22.254563;
+        }
         this.lat = lat;
     }
 
-    public double getLng() {
-        return lng;
-    }
+    public double getLng() { return lng; }
 
-    public void setLng(Double lng) {
-        // TODO : add check on range
+    public void setLng(double lng) {
+        if (lng < -180 || lng > 180) {
+            //set default value because lng is out of bounds
+            this.lng = 113.864075;
+        }
         this.lng = lng;
     }
 }
