@@ -154,7 +154,6 @@ public class POIFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onPause () {
         super.onPause();
-
         ((MainActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         ((MainActivity) getActivity()).drawerToggle.setDrawerIndicatorEnabled(true);
     }

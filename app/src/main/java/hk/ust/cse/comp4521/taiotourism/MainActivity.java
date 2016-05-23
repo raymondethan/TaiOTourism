@@ -1,7 +1,7 @@
-//# COMP 4521    #  AMANDA SAMBATH                            20363161          asambath@connect.ust.hk
-//# COMP 4521    #  ETHAN RAYMOND                              20363147          eoraymond@connect.ust.hk
-//# COMP 4521    #  NICKOLAS JARZEMBOWSKI               2033 8324          njj@connect.ust.hk
-//# COMP 4521    #  LOIC BRUNO STEPAHNE TURIN        20363264          lbsturin@connect.ust.hk
+//# COMP 4521    #  AMANDA SAMBATH                  20363161        asambath@connect.ust.hk
+//# COMP 4521    #  ETHAN RAYMOND                   20363147        eoraymond@connect.ust.hk
+//# COMP 4521    #  Nicholas JARZEMBOWSKI           2033 8324       njj@connect.ust.hk
+//# COMP 4521    #  LOIC BRUNO STEPAHNE TURIN       20363264        lbsturin@connect.ust.hk
 
 package hk.ust.cse.comp4521.taiotourism;
 
@@ -76,11 +76,20 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         // Find our drawer view.
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        // Set up drawer toggle (Hamburger and Back Arrow)
         drawerToggle = setupDrawerToggle();
+        drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         // Find our drawer view
         nvDrawer = (NavigationView) findViewById(R.id.nvView);
 
+        // Set up nav drawer menu selection listen
         nvDrawer.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
 
         ContentResolver.requestSync(mAccount, TaiODataContract.AUTHORITY, settingsBundle);
+
     }
 
     /**
@@ -165,6 +175,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             return account[0];
     }
 
+    /**
+     * Sets up the drawer open and close handler
+     * @return  ActionBarDrawerToggle
+     */
     private ActionBarDrawerToggle setupDrawerToggle() {
         return new ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
     }
@@ -180,6 +194,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 });
     }
 
+    /**
+     * Handles nav drawer menu item selection
+     * @param menuItem
+     */
     public void selectDrawerItem(MenuItem menuItem) {
 
         Bundle bundleArgs = null;
@@ -266,13 +284,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                                 // Swap fragment list to detailed poi
                                 SwapFragment(poiFragment);
 
-                                drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        onBackPressed();
-                                    }
-                                });
-
                             }
                         }
                 );
@@ -288,6 +299,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         mDrawer.closeDrawers();
     }
 
+    /**
+     * Handles interaction with buttons on the toolbar.
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -393,6 +409,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         SwapFragment(fragment);
     }
 
+    /**
+     * Called every time a fragment in the content panel is replaced.
+     * @param fragment Fragment that will replace current fragment.
+     */
     private void SwapFragment(Fragment fragment) {
         fragmentManager = getSupportFragmentManager();
         android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
@@ -415,26 +435,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     }
 
     @Override
-    /**
-     *  Remark: TaiOFragment and ItemListFragment both go back to the main screen when the back button is pushed.
-     */
     public void onBackPressed() {
-
         super.onBackPressed();
-
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-
-            int count = getSupportFragmentManager().getBackStackEntryCount();
-            String lastBackStack = getSupportFragmentManager().getBackStackEntryAt(count - 2).getName();
-
-            if ( lastBackStack.equals("TaiOMapFragment") ) {
-                fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                return;
-            }
-
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
+        if (getFragmentManager().getBackStackEntryCount() > 1) {
+            getFragmentManager().popBackStackImmediate();
         }
     }
 
@@ -448,6 +452,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                     public void onToMapClickListener(double lat, double lng) {
                         TaiOMapFragment mapFragment =
                                 TaiOMapFragment.newInstance(lat,lng);
+                        SwapFragment(mapFragment);
                     }
                 }
         );

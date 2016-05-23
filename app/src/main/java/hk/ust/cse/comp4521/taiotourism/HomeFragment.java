@@ -51,13 +51,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_home_6, container, false);
+        view = inflater.inflate(R.layout.fragment_home_7, container, false);
 
         // Add click listeners to home screen buttons
-        ((Button) view.findViewById(R.id.home_map_button)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.home_tour_button)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.home_transport_button)).setOnClickListener(this);
-        ((Button) view.findViewById(R.id.home_about_button)).setOnClickListener(this);
+        view.findViewById(R.id.home_map_button).setOnClickListener(this);
+        view.findViewById(R.id.home_tour_button).setOnClickListener(this);
+        view.findViewById(R.id.home_transport_button).setOnClickListener(this);
+        view.findViewById(R.id.home_about_button).setOnClickListener(this);
 
         // Set toolbar title
         try {

@@ -36,6 +36,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -104,7 +105,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private String TAG = "Maps Fragment";
 
     private GoogleMap mMap;
-    private MapView mapView;
     private boolean mapReady = false;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -184,7 +184,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         TaiOMapFragment fragment = new TaiOMapFragment();
         Bundle args = new Bundle();
         args.putString(Constants.ARG_MAP_FILTER_SETTING, mapFilterSetting);
-        args.putDouble(Constants.ARG_POI_LATITUDE,22.253155);
+        args.putDouble(Constants.ARG_POI_LATITUDE, 22.253155);
         args.putDouble(Constants.ARG_POI_LONGITUDE,113.858185);
         fragment.setArguments(args);
         return fragment;
@@ -216,10 +216,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             checkedItems = new boolean[]{true, true, true};
             initialLat = Constants.INITIAL_LAT;
             initialLng = Constants.INITIAL_LNG;
-        }
-
-        if (mapView == null) {
-            mapView.onCreate(savedInstanceState);
         }
 
         buildGoogleApiClient();
@@ -266,8 +262,23 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_map, container, false);
+        if (view == null) {
+            view = inflater.inflate(R.layout.fragment_map, container, false);
+        }
+        try {
+            view = inflater.inflate(R.layout.fragment_map, container, false);
+        } catch (InflateException e) {
+    /* map is already there, just return view as it is */
+        }
+
+        if (poi_peak == null) {
+            poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
+        }
+        try {
+            poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
+        } catch (InflateException e) {
+    /* map is already there, just return view as it is */
+        }
 
         Bundle args = this.getArguments();
 
@@ -282,8 +293,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         //add the button to select different categories
         setHasOptionsMenu(true);
 
-        // Get POI peak details container
-        poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
 
         if (mapFragment == null) {
             mapFragment = (SupportMapFragment) this.getChildFragmentManager()
@@ -308,26 +317,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         client.connect();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (client.isConnected()) {
-            mRequestingLocationUpdates = true;
-            startLocationUpdates();
-        }
-        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(((MainActivity)getActivity()).lastSelected).setChecked(false);
-        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(1).setChecked(true);
-    }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (client.isConnected()) {
-            mRequestingLocationUpdates = false;
-            stopLocationUpdates();
-        }
-        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(1).setChecked(false);
-    }
 
     @Override
     public void onStop() {
@@ -564,7 +554,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             }
             while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
         }
-        markerCursor.close();
+//        markerCursor.close();
 
     }
 
@@ -861,6 +851,52 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             // permissions this app might request
         }
     }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapFragment.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (client.isConnected()) {
+            mRequestingLocationUpdates = true;
+            startLocationUpdates();
+        }
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(((MainActivity)getActivity()).lastSelected).setChecked(false);
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(1).setChecked(true);
+        mapFragment.onResume();
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (client.isConnected()) {
+            mRequestingLocationUpdates = false;
+            stopLocationUpdates();
+        }
+        ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(1).setChecked(false);
+        mapFragment.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        if (mapFragment != null) {
+//            mapFragment.onDestroy();
+//        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapFragment.onLowMemory();
+    }
+
+
 
 
 
