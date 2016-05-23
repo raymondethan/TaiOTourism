@@ -4,33 +4,33 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_first_fragment"
-            android:title="Home"
+            android:title="@string/menu_home"
             android:icon="@drawable/icon_home"
             android:checked = "true"/>
         <item
             android:id="@+id/nav_second_fragment"
-            android:title="Map"
+            android:title="@string/menu_map"
             android:icon="@drawable/icon_map"/>
         <item
             android:id="@+id/nav_third_fragment"
-            android:title="Tour"
+            android:title="@string/menu_tour"
             android:icon="@drawable/icon_tour"/>
     </group>
-    <item android:title="Extras">
+    <item android:title="@string/menu_extras">
         <menu>
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/nav_ptg_poi"
-                    android:title="Points of Interest" />
+                    android:title="@string/menu_poi" />
                 <item
                     android:id="@+id/nav_ptg_restaurants"
-                    android:title="Restaurants" />
+                    android:title="@string/menu_restaurants" />
                 <item
                     android:id="@+id/nav_ptg_facilities"
-                    android:title="Facilities" />
+                    android:title="@string/menu_facilities" />
                 <item
                     android:id="@+id/nav_directions"
-                    android:title="Directions" />
+                    android:title="@string/menu_transportation" />
             </group>
         </menu>
     </item>

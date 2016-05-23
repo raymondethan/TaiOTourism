@@ -4,6 +4,14 @@
     <string name="tai_o">Tai O</string>
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="ywca">YWCA</string>
+
+    <!--General information-->
+    <string name="ywca_website">http://cerc.ywca.org.hk</string>
+    <string name="ywca_email">cerc@ywca.org.hk</string>
+    <string name="ywca_telephone">2985 6310</string>
+    <string name="about_ywca">About YWCA</string>
+    <string name="about_tai_o">About Tai O village</string>
 
     <!--toolbar title-->
     <string name="toolbar_home">Tai O</string>
@@ -12,6 +20,24 @@
     <string name="toolbar_restaurants">Restaurants</string>
     <string name="toolbar_facilities">Facilities</string>
     <string name="toolbar_transportation">Transportation</string>
+    <string name="toolbar_general_info">About Tai O and YWCA</string>
+
+    <!--Drawer menu item-->
+    <string name="menu_home">Home</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_tour">Tour</string>
+    <string name="menu_extras">Extras</string>
+    <string name="menu_poi">Points of Interest</string>
+    <string name="menu_restaurants">Restaurants</string>
+    <string name="menu_facilities">Facilities</string>
+    <string name="menu_transportation">Transportation</string>
+
+    <!--fragment home page-->
+    <string name="by_ywca">By YWCA</string>
+    <string name="map">Map</string>
+    <string name="take_tour">Take the Tour</string>
+    <string name="transportation">Transportation details</string>
+    <string name="general_info">About Tai O and YWCA</string>
 
     <!--fragments list and poi-->
     <string name="opening_hours">Opening hours: %s</string>
@@ -34,18 +60,20 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
-    <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
+    <string name="no_location_detected">No location detected.
+        Make sure location is enabled on the device.</string>
     <string name="no_geocoder_available">No geocoder available</string>
 
     <!--<Action>-->
     <string name="action_settings">Settings</string>
+    <!--TODO : add buttons on card views for rating feature-->
     <!--<string name="action_detailed_view">Details</string>-->
-    <string name="action_rate">Rate</string>
+    <!--<string name="action_rate">Rate</string>-->
 
     <!--languages-->
     <string-array name="language_options">
         <item>English</item>
-        <item>Chinese (Mandarin)</item>
+        <item>中文</item>
     </string-array>
     <string-array name="language_values">
         <item>English</item>

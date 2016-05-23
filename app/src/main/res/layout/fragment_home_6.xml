@@ -1,6 +1,5 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -34,7 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Tai O Guide"
+                    android:text="@string/app_name"
                     android:color="#fff"
                     android:textColor="#fff"
                     android:textSize="40dp" />
@@ -43,7 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="By YCMA"
+                    android:text="@string/by_ywca"
                     android:id="@+id/textView6"
                     android:textColor="#BEFFFFFF" />
 
@@ -68,7 +67,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:text="Map"
+                    android:text="@string/map"
                     android:drawableTop="@android:drawable/ic_menu_mapmode"
                     android:id="@+id/home_map_button"
                     android:layout_width="130dp"
@@ -81,7 +80,7 @@
                     android:paddingBottom="20dp"
                     android:clickable="true" />
                 <Button
-                    android:text="Take the Tour"
+                    android:text="@string/take_tour"
                     android:drawableTop="@android:drawable/ic_menu_directions"
                     android:id="@+id/home_tour_button"
                     android:layout_width="130dp"
@@ -94,7 +93,7 @@
                     android:paddingBottom="20dp"
                     android:clickable="true" />
                 <Button
-                    android:text="About YCMA"
+                    android:text="@string/general_info"
                     android:drawableTop="@android:drawable/ic_menu_search"
                     android:id="@+id/home_about_button"
                     android:layout_width="130dp"
@@ -107,7 +106,7 @@
                     android:paddingBottom="20dp"
                     android:clickable="true" />
                 <Button
-                    android:text="Directions "
+                    android:text="@string/transportation"
                     android:drawableTop="@android:drawable/ic_menu_info_details"
                     android:id="@+id/home_transport_button"
                     android:layout_width="130dp"
@@ -121,24 +120,6 @@
                     android:clickable="true" />
 
             </GridLayout>
-
-
-
         </LinearLayout>
-
     </LinearLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="16dp"-->
-        <!--android:clickable="true"-->
-        <!--android:src="@drawable/ic_map_black_24dp"-->
-        <!--app:backgroundTint="@color/colorPrimary"-->
-        <!--app:layout_anchor="@id/viewA"-->
-        <!--app:layout_anchorGravity="bottom|right|end"-->
-        <!--android:elevation="1dp"-->
-        <!--/>-->
-
 </android.support.design.widget.CoordinatorLayout>

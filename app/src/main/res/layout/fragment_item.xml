@@ -44,6 +44,7 @@
                 android:textSize="@dimen/text_body"/>
         </LinearLayout>
 
+        <!--TODO : add for rating feature-->
         <!--<LinearLayout-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="wrap_content"-->

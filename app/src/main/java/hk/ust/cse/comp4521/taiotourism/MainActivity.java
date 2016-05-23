@@ -7,13 +7,10 @@ package hk.ust.cse.comp4521.taiotourism;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
-
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -30,15 +27,17 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeneralInfoFragment;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeoPoint;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
-import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
 import com.strongloop.android.loopback.RestAdapter;
 
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener, TaiOMapFragment.OnFragmentInteractionListener {
+
+    private static final String TAG = "Main Activity";
 
     private DrawerLayout mDrawer;
     public Toolbar toolbar;
@@ -55,8 +54,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     Account mAccount;
     RestAdapter adapter;
 
-    private SharedPreferences mSharedPreferences;
-
     // Points to fragment that is currently displayed.
     private Class fragmentClass = HomeFragment.class;
 
@@ -65,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     public void setToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -79,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         // Find our drawer view.
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         drawerToggle = setupDrawerToggle();
 
         // Find our drawer view
@@ -100,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         // Set Home page fragment
         Fragment fragment = null;
         try {
-            fragment = (Fragment) HomeFragment.class.newInstance();
+            fragment = HomeFragment.class.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,17 +107,12 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
         setTitle("");
 
-
-
         // Create the dummy account
         mAccount = GetSyncAccount(this);
 
         if (mAccount != null) getContentResolver().setSyncAutomatically(mAccount, TaiODataContract.AUTHORITY, true);
 
         Log.i("Language", Locale.getDefault().getDisplayLanguage());
-
-        //might not need this line
-        mSharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,MODE_PRIVATE);
 
         //Test to see if the sync adapter works
         Bundle settingsBundle = new Bundle();
@@ -196,33 +188,26 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         // On Nav Drawer menu item selection
         // Switch fragment in content pane according to selected item
-
-        // Toolbar title
-        String title = "";
-
-        System.out.println(menuItem.getItemId());
-
         switch(menuItem.getItemId()) {
 
             case R.id.nav_first_fragment:
                 // home
                 fragmentClass = HomeFragment.class;
-                title = getResources().getString(R.string.toolbar_home);
                 break;
             case R.id.nav_second_fragment:
                 // map
                 fragmentClass = TaiOMapFragment.class;
-                title = getResources().getString(R.string.toolbar_map);
                 break;
             case R.id.nav_third_fragment:
                 // tour
                 //TODO: add map filter to tour selection
                 fragmentClass = TaiOMapFragment.class;
-                title = getResources().getString(R.string.toolbar_home);
+                //title = getResources().getString(R.string.toolbar_home);
                 bundleArgs = new Bundle();
                 bundleArgs.putString(Constants.ARG_MAP_FILTER_SETTING, Constants.CATEGORY_TOUR_STOP);
                 bundleArgs.putDouble(Constants.ARG_POI_LATITUDE, Constants.INITIAL_LAT);
                 bundleArgs.putDouble(Constants.ARG_POI_LONGITUDE, Constants.INITIAL_LNG);
+
                 break;
             case R.id.nav_ptg_poi:
                 bundleArgs = new Bundle();
@@ -244,6 +229,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 break;
             default:
                 fragmentClass = HomeFragment.class;
+                break;
         }
 
         try {
@@ -298,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         }
 
         SwapFragment(fragment);
-
         menuItem.setChecked(true);
 
         // Close the navigation drawer
@@ -331,7 +316,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
                                 switch (item.getItemId()) {
                                     case R.id.settings_menu_option: {
-                                        System.out.println("test");
                                         Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                                         startActivity(intent);
                                         return true;
@@ -374,11 +358,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
         Bundle homeFragBundleArgs = null;
         Fragment fragment = null;
-
         nvDrawer.getMenu().getItem(0).setChecked(false);
 
         switch(view.getId()) {
-
             // Handle OnClick methods for HomeScreen buttons
             case R.id.home_map_button:
                 fragmentClass = TaiOMapFragment.class;
@@ -394,10 +376,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 fragmentClass = TransportInfoFragment.class;
                 break;
             case R.id.home_about_button:
-                // TODO: Add fragment class for general info
-                return;
+                fragmentClass = GeneralInfoFragment.class;
+                break;
             default:
                 fragmentClass = HomeFragment.class;
+                break;
         }
 
         try {
@@ -410,7 +393,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         }
 
         SwapFragment(fragment);
-
     }
 
     private void SwapFragment(Fragment fragment) {
@@ -456,9 +438,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             }
 
             getSupportFragmentManager().popBackStack();
-//            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//            drawerToggle.setDrawerIndicatorEnabled(true);
-
         } else {
             super.onBackPressed();
         }
