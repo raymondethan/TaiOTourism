@@ -615,7 +615,6 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         setUpMarkers(data);
         Log.d("******LOADER MANAGER: ", "called initLoader");
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.253155, 113.858185), Constants.ZOOM_LEVEL));
 
     }
 

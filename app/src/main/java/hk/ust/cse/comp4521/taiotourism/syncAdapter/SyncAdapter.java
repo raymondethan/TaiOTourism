@@ -128,7 +128,6 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
     private void setLastUpdatePreference() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
-        //editor.putString(Constants.SHAREDPREF_LAST_UPDATE, "Mon May 23 14:58:14 UTC 2016");
         editor.commit();
         Log.i(TAG,"Updated last update: " + formatter.format(lastUpdate));
     }
