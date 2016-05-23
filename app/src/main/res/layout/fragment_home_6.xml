@@ -93,7 +93,7 @@
                     android:paddingBottom="20dp"
                     android:clickable="true" />
                 <Button
-                    android:text="@string/about_ywca"
+                    android:text="@string/general_info"
                     android:drawableTop="@android:drawable/ic_menu_search"
                     android:id="@+id/home_about_button"
                     android:layout_width="130dp"

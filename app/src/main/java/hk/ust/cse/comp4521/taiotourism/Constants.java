@@ -26,6 +26,9 @@ public final class Constants {
 
 
     public static final String SHARED_PREFERENCES_NAME = PACKAGE_NAME + ".SHARED_PREFERENCES_NAME";
+    public static final String SHARED_PREFERENCES_LANG = "language";    // key for language setting
+    public static final String SHARED_PREFERENCES_EN = "en";    // value for English
+    public static final String SHARED_PREFERENCES_CH = "ch";    // value for Chinese
 
     public static final String GEOFENCES_ADDED_KEY = PACKAGE_NAME + ".GEOFENCES_ADDED_KEY";
 

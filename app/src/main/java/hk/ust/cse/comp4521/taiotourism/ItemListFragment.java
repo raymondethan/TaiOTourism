@@ -177,51 +177,5 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
             while (itemCursor.moveToNext());
         }
         itemCursor.close();
-
-//
-//        // TODO : delete, for testing mock-up data
-//        GeoPoint coordinates = new GeoPoint(20.87, 150);
-//        POIModel item1 = new POIModel();
-//        item1.setName("Tour stop 1");
-//        item1.setDescription("detailed description of the tour stop laaaa\n"
-//                + ".........................................................."
-//                + ".........................................................."
-//                + ".........................................................."
-//                + ".........................................................."
-//                + ".........................................................."
-//                + "..........................................................");
-//        item1.setOpeningHours("9:00-00:00");
-//        item1.setPictureUrl(
-//                "http://static.panoramio.com/photos/large/32997299.jpg");
-//        item1.setRating(2.5);
-//        item1.setCoordinates(coordinates);
-//        POIModel item2 = new POIModel();
-//        item2.setName("Tour stop 2");
-//        item2.setDescription("detailed description of the tour stop 2. \n"
-//                + ".........................................................."
-//                + ".........................................................."
-//                + "..........................................................");
-//        item2.setOpeningHours("9:00-00:00");
-//        item2.setPictureUrl(
-//                "https://wendymctavish.files.wordpress.com/2011/04/69748013_7d5b129dcc.jpg?w=300&h=168");
-//        item2.setRating(-1.0);
-//        item2.setCoordinates(coordinates);
-//        POIModel item3 = new POIModel();
-//        item3.setName("Tour stop 3");
-//        item3.setDescription("detailed description of the tour stop 3\n"
-//                + ".........................................................."
-//                + "..........................................................");
-//        item3.setOpeningHours("9:00-00:00");
-//        item3.setPictureUrl(
-//                "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Food_stalls_in_Tai_O_village%2C_Hong_Kong_%286847729712%29.jpg/1024px-Food_stalls_in_Tai_O_village%2C_Hong_Kong_%286847729712%29.jpg");
-//        item3.setRating(4.6);
-//        item3.setCoordinates(coordinates);
-//        itemList.clear();
-//        itemList.add(item1);
-//        itemList.add(item2);
-//        itemList.add(item3);
-//        itemList.add(item1);
-//        itemList.add(item2);
-//        itemList.add(item3);
     }
 }

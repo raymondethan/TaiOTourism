@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeneralInfoFragment;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeoPoint;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 
@@ -234,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 break;
             default:
                 fragmentClass = HomeFragment.class;
+                break;
         }
 
         try {
@@ -376,10 +378,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 fragmentClass = TransportInfoFragment.class;
                 break;
             case R.id.home_about_button:
-                // TODO: Add fragment class for general info
-                return;
+                fragmentClass = GeneralInfoFragment.class;
+                break;
             default:
                 fragmentClass = HomeFragment.class;
+                break;
         }
 
         try {
