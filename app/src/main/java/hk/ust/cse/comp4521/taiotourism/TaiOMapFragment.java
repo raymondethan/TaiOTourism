@@ -62,6 +62,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -103,6 +104,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private String TAG = "Maps Fragment";
 
     private GoogleMap mMap;
+    private MapView mapView;
     private boolean mapReady = false;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -164,6 +166,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
     //private final int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 1;
 
+    SupportMapFragment mapFragment;
+
     //assume its true and only set it to false if we realize we don't have permission
     //private Boolean location_permission_granted = true;
 
@@ -201,6 +205,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         Log.i("On create","called");
         super.onCreate(savedInstanceState);
         Log.i("On create",String.valueOf(getArguments()));
+
         if (getArguments() != null) {
             mapFilterSetting = getArguments().getString(Constants.ARG_MAP_FILTER_SETTING);
             checkedItems = new boolean[]{true, false, false};
@@ -211,6 +216,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             checkedItems = new boolean[]{true, true, true};
             initialLat = Constants.INITIAL_LAT;
             initialLng = Constants.INITIAL_LNG;
+        }
+
+        if (mapView == null) {
+            mapView.onCreate(savedInstanceState);
         }
 
         buildGoogleApiClient();
@@ -276,10 +285,11 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         // Get POI peak details container
         poi_peak = (RelativeLayout) view.findViewById(R.id.poi_peak_main);
 
-
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
-                .findFragmentById(R.id.gmFragment);
-        mapFragment.getMapAsync(this);
+        if (mapFragment == null) {
+            mapFragment = (SupportMapFragment) this.getChildFragmentManager()
+                    .findFragmentById(R.id.gmFragment);
+            mapFragment.getMapAsync(this);
+        }
 
         Log.i(TAG + " onCreateView", mLastLocation.toString());
         return view;
@@ -388,7 +398,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 ArrayList<String> info = markerInfo.get(marker);
                 Log.i("popup info", String.valueOf(info));
                 if (null != info) {
-                    toPOIFragListener.onPopupClickListener(marker.getTitle(), marker.getSnippet(), info.get(pictureUrlIndex),
+                    mListener.OnMapFragmentPOIPopupInteraction(marker.getTitle(), marker.getSnippet(), info.get(pictureUrlIndex),
                             info.get(openingHoursIndex), Double.parseDouble(info.get(ratingIndex)),
                             marker.getPosition().latitude, marker.getPosition().longitude);
                 }
@@ -788,7 +798,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     // TODO: setup interface for main activity to change content pane according to events here.
     public interface OnFragmentInteractionListener {
-        void OnMapFragmentInteraction();
+        void OnMapFragmentPOIPopupInteraction(String name, String description, String pictureUrl, String openingHours, double rating, double latitude, double longitude);
     }
 
     @Override
@@ -851,5 +861,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             // permissions this app might request
         }
     }
+
+
+
 
 }

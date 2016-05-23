@@ -206,7 +206,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                 bundleArgs.putString(Constants.ARG_MAP_FILTER_SETTING, Constants.CATEGORY_TOUR_STOP);
                 bundleArgs.putDouble(Constants.ARG_POI_LATITUDE, Constants.INITIAL_LAT);
                 bundleArgs.putDouble(Constants.ARG_POI_LONGITUDE, Constants.INITIAL_LNG);
-
                 break;
             case R.id.nav_ptg_poi:
                 bundleArgs = new Bundle();
@@ -409,11 +408,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     }
 
     @Override
-    public void OnMapFragmentInteraction() {
-
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_map, menu);
@@ -425,6 +419,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
      *  Remark: TaiOFragment and ItemListFragment both go back to the main screen when the back button is pushed.
      */
     public void onBackPressed() {
+
+        super.onBackPressed();
 
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
 
@@ -441,4 +437,21 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             super.onBackPressed();
         }
     }
+
+    @Override
+    public void OnMapFragmentPOIPopupInteraction(String name, String description, String pictureUrl, String openingHours, double rating, double latitude, double longitude) {
+        POIFragment poiFragment =
+                POIFragment.newInstance(name, description, pictureUrl, openingHours, rating, latitude, longitude);
+        poiFragment.setToMapListener(
+                new POIFragment.ToMapListener() {
+                    @Override
+                    public void onToMapClickListener(double lat, double lng) {
+                        TaiOMapFragment mapFragment =
+                                TaiOMapFragment.newInstance(lat,lng);
+                    }
+                }
+        );
+        SwapFragment(poiFragment);
+    }
 }
+
