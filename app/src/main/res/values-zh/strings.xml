@@ -18,6 +18,16 @@
     <string name="toolbar_facilities">設備</string>
     <string name="toolbar_transportation">怎么去</string>
 
+    <!--Drawer menu item-->
+    <string name="menu_home">主頁</string>
+    <string name="menu_map">地圖</string>
+    <string name="menu_tour">遊覽</string>
+    <string name="menu_extras">额外</string>
+    <string name="menu_poi">遊站</string>
+    <string name="menu_restaurants">餐廳s</string>
+    <string name="menu_facilities">設備s</string>
+    <string name="menu_transportation">怎么去</string>
+
     <!--fragment home page-->
     <string name="by_ywca">由 香港基督教女青年會</string>
     <string name="map">地圖</string>
@@ -48,6 +58,7 @@
 
     <!--Action-->
     <string name="action_settings">設置</string>
+    <!--TODO : add buttons on card views for rating feature-->
     <!--<string name="action_detailed_view">Details</string>-->
-    <string name="action_rate">打分</string>
+    <!--<string name="action_rate">打分</string>-->
 </resources>

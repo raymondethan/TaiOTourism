@@ -9,12 +9,12 @@
     <!--YWCA information-->
     <string name="ywca_website">http://cerc.ywca.org.hk</string>
     <string name="ywca_email">cerc@ywca.org.hk</string>
-    <string name="ycwa_telephone">2985 6310</string>
+    <string name="ywca_telephone">2985 6310</string>
     <string name="ywca_description">The Tai O Cultural and Economic Resource Centre is dedicated to
         promoting regional economics by facilitating the interactions of locals allowing them to
         share their culture with visitors through ecological and cultural tourism outreach programs.
         We provide job training to low-skilled, under-educated local residents for the sustainable
-        promotion and preservation of Tai O's unique and timeless culture.
+        promotion and preservation of Tai O\'s unique and timeless culture.
     </string>
 
     <!--toolbar title-->
@@ -24,6 +24,16 @@
     <string name="toolbar_restaurants">Restaurants</string>
     <string name="toolbar_facilities">Facilities</string>
     <string name="toolbar_transportation">Transportation</string>
+
+    <!--Drawer menu item-->
+    <string name="menu_home">Home</string>
+    <string name="menu_map">Map</string>
+    <string name="menu_tour">Tour</string>
+    <string name="menu_extras">Extras</string>
+    <string name="menu_poi">Points of Interest</string>
+    <string name="menu_restaurants">Restaurants</string>
+    <string name="menu_facilities">Facilities</string>
+    <string name="menu_transportation">Transportation</string>
 
     <!--fragment home page-->
     <string name="by_ywca">By YWCA</string>
@@ -59,13 +69,14 @@
 
     <!--<Action>-->
     <string name="action_settings">Settings</string>
+    <!--TODO : add buttons on card views for rating feature-->
     <!--<string name="action_detailed_view">Details</string>-->
-    <string name="action_rate">Rate</string>
+    <!--<string name="action_rate">Rate</string>-->
 
     <!--languages-->
     <string-array name="language_options">
         <item>English</item>
-        <item>Chinese (Mandarin)</item>
+        <item>中文</item>
     </string-array>
     <string-array name="language_values">
         <item>English</item>
