@@ -16,6 +16,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnMultiChoiceClickListener;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.location.Geocoder;
@@ -91,6 +92,8 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private RelativeLayout poi_peak;
     boolean poi_closed = true;
     boolean anim_stopped = true;
+
+    SharedPreferences sharedPreferences;
 
     // Fragment's arguments
     // used to define the filter setting of the map from the menu
@@ -515,6 +518,12 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         String opening_hours;
         int count;
 
+        // getting lang setting from sharedPreferences
+        sharedPreferences = getActivity().getSharedPreferences(
+                Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String lang = sharedPreferences.getString(Constants.SHARED_PREFERENCES_LANG,
+                Constants.SHARED_PREFERENCES_EN);
+
         while (!mapReady) {
             Log.d(TAG, "map not ready");
         }
@@ -527,13 +536,23 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
 
                 // Get the poiName's name, latitude and longitude
+                // Name and decription depend on language setting
+                switch(lang)
+                {
+                    case Constants.SHARED_PREFERENCES_CH:
+                        name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME_CH));
+                        description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION_CH));
+                        break;
+                    default:
+                        name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME));
+                        description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION));
+                        break;
+                }
                 id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
-                name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME));
                 latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LATITUDE));
                 longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LONGITUDE));
                 category = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_CATEGORY));
                 tour_order = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER));
-                description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION));
                 rating = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_RATING));
                 opening_hours = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS));
                 count = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER));

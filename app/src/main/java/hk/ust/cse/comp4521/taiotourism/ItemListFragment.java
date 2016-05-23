@@ -5,6 +5,8 @@
 
 package hk.ust.cse.comp4521.taiotourism;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -41,6 +43,7 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
     private String listType = null;
     private static final int ID_LOADER = 0;
     private static  final String prefixUrl = "http://52.221.252.163:3000/api/containers/images/download/";
+    private SharedPreferences sharedPreferences;
 
     // Setters
     public void setItemClickListener(ItemListAdapter.ItemClickListener itemClickListener) {
@@ -153,14 +156,31 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
         itemList.clear();
         itemCursor.moveToFirst();
 
+        // getting lang setting from sharedPreferences
+        sharedPreferences = getActivity().getSharedPreferences(
+                Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        String lang = sharedPreferences.getString(Constants.SHARED_PREFERENCES_LANG,
+                Constants.SHARED_PREFERENCES_EN);
+
         // Populate the list
         if (!itemCursor.isAfterLast()) {
             do {
                 POIModel item = new POIModel();
-                item.setName(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
-                        TaiODataContract.POIEntry.COLUMN_NAME)));
-                item.setDescription(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
-                        TaiODataContract.POIEntry.COLUMN_DESCRIPTION)));
+                // Name and description depend on the lang setting
+                switch(lang){
+                    case Constants.SHARED_PREFERENCES_CH:
+                        item.setName(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                                TaiODataContract.POIEntry.COLUMN_NAME_CH)));
+                        item.setDescription(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                                TaiODataContract.POIEntry.COLUMN_DESCRIPTION_CH)));
+                        break;
+                    default:
+                        item.setName(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                                TaiODataContract.POIEntry.COLUMN_NAME)));
+                        item.setDescription(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                                TaiODataContract.POIEntry.COLUMN_DESCRIPTION)));
+                        break;
+                }
                 item.setOpeningHours(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
                         TaiODataContract.POIEntry.COLUMN_OPENING_HOURS)));
                 item.setPictureUrl(prefixUrl + itemCursor.getString(itemCursor.getColumnIndexOrThrow(

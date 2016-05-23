@@ -10,6 +10,7 @@ import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -33,9 +34,12 @@ import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 
 import com.strongloop.android.loopback.RestAdapter;
 
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener, TaiOMapFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "Main Activity";
+    private SharedPreferences sharedPreferences;
 
     private DrawerLayout mDrawer;
     public Toolbar toolbar;
@@ -65,6 +69,23 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
+        // Set language in shared preferences
+        sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        switch (Locale.getDefault().getLanguage())
+        {
+            case "zh_CN":
+            case "zh":
+                editor.putString(Constants.SHARED_PREFERENCES_LANG,
+                        Constants.SHARED_PREFERENCES_CH);
+                break;
+            default:
+                editor.putString(Constants.SHARED_PREFERENCES_LANG,
+                        Constants.SHARED_PREFERENCES_EN);
+                break;
+        }
+        editor.apply();
 
         // Inflate the layout.
         setContentView(R.layout.activity_main);
