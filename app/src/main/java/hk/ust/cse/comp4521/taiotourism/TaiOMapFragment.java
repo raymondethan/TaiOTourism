@@ -520,9 +520,11 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
                 //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
                 Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
-                if ("" != mapFilterSetting && category != Constants.CATEGORY_TOUR_STOP) {
-                    m.setVisible(false);
-                }
+//                if ("" != mapFilterSetting && category != Constants.CATEGORY_TOUR_STOP) {
+//                    Log.i(TAG,mapFilterSetting.toString());
+//                    Log.i(TAG,category.toString());
+//                    m.setVisible(false);
+//                }
                 markers.add(m);
                 markerCategories.put(m, category);
 

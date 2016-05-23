@@ -124,10 +124,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Looper.prepare();
             Log.i(TAG, "trying get all places");
             //TODO: get rid of this before submission
-            String lastUpdateTmp = "2016-03-1900:00:00:000";
-            getUpdate(lastUpdateTmp,getUpdateUrl);
-            //getUpdate(formatter.format(lastUpdate),getGenInfoUpdateUrl);
-            getUpdate(lastUpdateTmp,getGenInfoUpdateUrl);
+
+            getUpdate(formatter.format(lastUpdate),getUpdateUrl);
+            getUpdate(formatter.format(lastUpdate),getGenInfoUpdateUrl);
+
             setLastUpdatPreference();
             //getAllPlaces();
             //2016-05-10T00:00:00.000Z
