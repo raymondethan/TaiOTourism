@@ -96,6 +96,9 @@ public class POIFragment extends Fragment implements View.OnClickListener{
             poiLongitude = getArguments().getDouble(POI_LONGITUDE);
         }
 
+        Log.i("POI frag lat", String.valueOf(poiLatitude));
+        Log.i("POI frag lng", String.valueOf(poiLongitude));
+
         // Set toolbar title
         try {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(poiName);

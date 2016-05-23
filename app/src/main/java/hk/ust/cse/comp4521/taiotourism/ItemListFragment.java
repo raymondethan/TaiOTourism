@@ -172,6 +172,8 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
                                 TaiODataContract.POIEntry.COLUMN_LATITUDE)),
                         itemCursor.getDouble(itemCursor.getColumnIndexOrThrow(
                                 TaiODataContract.POIEntry.COLUMN_LONGITUDE))));
+                Log.i("Lat", String.valueOf(item.getCoordinates().getLat()));
+                Log.i("Lat", String.valueOf(item.getCoordinates().getLng()));
 
                 itemList.add(item);
             }

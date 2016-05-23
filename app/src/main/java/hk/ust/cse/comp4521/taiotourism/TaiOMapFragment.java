@@ -98,6 +98,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private double initialLng;
 
     private OnFragmentInteractionListener mListener;
+    private static ToPOIFragListener toPOIFragListener;
 
     private String TAG = "Maps Fragment";
 
@@ -115,6 +116,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     private ArrayList<Marker> markers = new ArrayList<Marker>();
     private HashMap<Marker, String> markerCategories = new HashMap();
+    private HashMap<Marker, ArrayList<String>> markerInfo = new HashMap();
+    int pictureUrlIndex = 0;
+    int openingHoursIndex = 1;
+    int ratingIndex = 2;
 
     //For the category selection dialog
     boolean[] checkedItems;
@@ -210,7 +215,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         buildGoogleApiClient();
         mRequestingLocationUpdates = false;
-        mLastLocation = new Location(String.valueOf(new LatLng(22.253155, 113.858185)));
+        mLastLocation = new Location(String.valueOf(new LatLng(Constants.INITIAL_LAT, Constants.INITIAL_LNG)));
 
         selectCategoryDialog = createCategoryDialog();
 
@@ -358,14 +363,18 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v) {}
+
+    // Interface for Main Activity
+    public interface ToPOIFragListener {
+        void onPopupClickListener(String name, String description, String pictureUrl, String openingHours, double rating, double latitude, double longitude);
     }
 
     /**
      * Handles the POI popup animation
      * @param v
      */
-    private void OnPOITapHandler(View v, Marker marker) {
+    private void OnPOITapHandler(View v, final Marker marker) {
         if (!anim_stopped) return;
 
         anim_stopped = false;
@@ -373,13 +382,15 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
         poi_peak.setVisibility(View.VISIBLE);
 
-//        poi_peak.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getContext(), POIActivity.class);
-//                startActivity(intent);
-//            }
-//        });
+        poi_peak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArrayList<String> info = markerInfo.get(marker);
+                toPOIFragListener.onPopupClickListener(marker.getTitle(),marker.getSnippet(),info.get(pictureUrlIndex),
+                        info.get(openingHoursIndex),Double.parseDouble(info.get(ratingIndex)),
+                        marker.getPosition().latitude,marker.getPosition().longitude);
+            }
+        });
 
         if (poi_closed) {
             //Only change the layout information if a popup is not already open
@@ -491,16 +502,13 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
      */
     private void setUpMarkers(Cursor markerCursor) {
 
-        int column_index;
         double latitude, longitude;
         String name;
-        long id;
         String category;
-        int tour_order;
         String description;
         double rating;
         String opening_hours;
-        int count;
+        String pictureUrl;
 
         while (!mapReady) {
             Log.d(TAG, "map not ready");
@@ -514,20 +522,17 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
 
                 // Get the poiName's name, latitude and longitude
-                id = markerCursor.getLong(markerCursor.getColumnIndexOrThrow(_ID));
                 name = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_NAME));
                 latitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LATITUDE));
                 longitude = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_LONGITUDE));
                 category = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_CATEGORY));
-                tour_order = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER));
                 description = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_DESCRIPTION));
                 rating = markerCursor.getDouble(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_RATING));
                 opening_hours = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_OPENING_HOURS));
-                count = markerCursor.getInt(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER));
+                pictureUrl = markerCursor.getString(markerCursor.getColumnIndexOrThrow(TaiODataContract.POIEntry.COLUMN_PICTURE_URL));
 
-                Log.i(TAG, "Marker at: " + id + " " + name + " " + latitude + " " + longitude);
+                Log.i(TAG, "Marker at: " + name + " " + latitude + " " + longitude);
 
-                //mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(Long.toString(id)));
                 Marker m = mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude)).title(name).snippet(description));
                 if (Constants.CATEGORY_TOUR_STOP.equals(mapFilterSetting) && !category.equals(Constants.CATEGORY_TOUR_STOP)) {
                     Log.i(TAG,mapFilterSetting.toString());
@@ -537,6 +542,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 }
                 markers.add(m);
                 markerCategories.put(m, category);
+                ArrayList<String> info = new ArrayList();
+                info.add(pictureUrl);
+                info.add(opening_hours);
+                info.add(String.valueOf(rating));
 
             }
             while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
@@ -576,9 +585,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
            /*
      * Takes action based on the ID of the Loader that's being created
      */
-        String[] projection = {TaiODataContract.POIEntry._ID, TaiODataContract.POIEntry.COLUMN_NAME, TaiODataContract.POIEntry.COLUMN_LATITUDE, TaiODataContract.POIEntry.COLUMN_LONGITUDE,
-                TaiODataContract.POIEntry.COLUMN_CATEGORY, TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, TaiODataContract.POIEntry.COLUMN_DESCRIPTION,
-                TaiODataContract.POIEntry.COLUMN_RATING, TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER};
+        String[] projection = {TaiODataContract.POIEntry.COLUMN_NAME, TaiODataContract.POIEntry.COLUMN_LATITUDE, TaiODataContract.POIEntry.COLUMN_LONGITUDE,
+                TaiODataContract.POIEntry.COLUMN_CATEGORY, TaiODataContract.POIEntry.COLUMN_DESCRIPTION,
+                TaiODataContract.POIEntry.COLUMN_RATING, TaiODataContract.POIEntry.COLUMN_OPENING_HOURS, TaiODataContract.POIEntry.COLUMN_PICTURE_URL};
         switch (id) {
             case URL_LOADER:
                 // Returns a new CursorLoader

@@ -1,4 +1,4 @@
-package hk.ust.cse.comp4521.taiotourism.syncAdapter;
+package hk.ust.cse.comp4521.taiotourism;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -99,7 +99,7 @@ public class GeneralInfoFragment extends Fragment implements LoaderManager.Loade
         if (id == ID_LOADER) {
             return new CursorLoader(
                     getActivity(),                  // Parent activity context
-                    TaiODataProvider.POIENTRY_URI,  // Table to query
+                    TaiODataProvider.GENERALINFO_URI,  // Table to query
                     projection,                     // Projection to return
                     null,                      // No selection clause
                     null,                  // No selection arguments
@@ -128,20 +128,25 @@ public class GeneralInfoFragment extends Fragment implements LoaderManager.Loade
         // Initialise the cursor to the first row
         itemCursor.moveToFirst();
 
-        // set the strings
-        switch (lang) {
-            case Constants.SHARED_PREFERENCES_CH:
-                taiODetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
-                        TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO_CH));
-                ywcaDetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
-                        TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO_CH));
-                break;
-            default:
-                taiODetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
-                        TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO));
-                ywcaDetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
-                        TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO));
-                break;
+        if (!itemCursor.isAfterLast()) {
+            // set the strings
+            switch (lang) {
+                case Constants.SHARED_PREFERENCES_CH:
+                    taiODetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                            TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO_CH));
+                    ywcaDetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                            TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO_CH));
+                    break;
+                default:
+                    taiODetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                            TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO));
+                    ywcaDetails = itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                            TaiODataContract.GeneralInfo.COLUMN_YWCA_INFO));
+                    break;
+            }
+        } else {
+            taiODetails = "Unable to fetch information. Please connect to wifi.";
+            ywcaDetails = "Unable to fetch information. Please connect to wifi.";
         }
 
         itemCursor.close();

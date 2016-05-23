@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeneralInfoFragment;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeoPoint;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
 

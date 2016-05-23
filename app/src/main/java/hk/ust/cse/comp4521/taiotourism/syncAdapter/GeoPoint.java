@@ -39,6 +39,6 @@ public class GeoPoint {
             //set default value because lng is out of bounds
             this.lng = 113.864075;
         }
-        this.lat = lat;
+        this.lng = lng;
     }
 }
