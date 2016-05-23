@@ -40,6 +40,7 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
     private List<POIModel> itemList = new ArrayList<POIModel>();
     private String listType = null;
     private static final int ID_LOADER = 0;
+    private static  final String prefixUrl = "http://52.221.252.163:3000/api/containers/images/download/";
 
     // Setters
     public void setItemClickListener(ItemListAdapter.ItemClickListener itemClickListener) {
@@ -162,7 +163,7 @@ public class ItemListFragment extends Fragment implements LoaderManager.LoaderCa
                         TaiODataContract.POIEntry.COLUMN_DESCRIPTION)));
                 item.setOpeningHours(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
                         TaiODataContract.POIEntry.COLUMN_OPENING_HOURS)));
-                item.setPictureUrl(itemCursor.getString(itemCursor.getColumnIndexOrThrow(
+                item.setPictureUrl(prefixUrl + itemCursor.getString(itemCursor.getColumnIndexOrThrow(
                         TaiODataContract.POIEntry.COLUMN_PICTURE_URL)));
                 item.setRating(itemCursor.getDouble(itemCursor.getColumnIndexOrThrow(
                         TaiODataContract.POIEntry.COLUMN_RATING)));
