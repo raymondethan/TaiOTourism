@@ -386,9 +386,12 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             @Override
             public void onClick(View v) {
                 ArrayList<String> info = markerInfo.get(marker);
-                toPOIFragListener.onPopupClickListener(marker.getTitle(),marker.getSnippet(),info.get(pictureUrlIndex),
-                        info.get(openingHoursIndex),Double.parseDouble(info.get(ratingIndex)),
-                        marker.getPosition().latitude,marker.getPosition().longitude);
+                Log.i("popup info", String.valueOf(info));
+                if (null != info) {
+                    toPOIFragListener.onPopupClickListener(marker.getTitle(), marker.getSnippet(), info.get(pictureUrlIndex),
+                            info.get(openingHoursIndex), Double.parseDouble(info.get(ratingIndex)),
+                            marker.getPosition().latitude, marker.getPosition().longitude);
+                }
             }
         });
 
@@ -546,6 +549,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                 info.add(pictureUrl);
                 info.add(opening_hours);
                 info.add(String.valueOf(rating));
+                markerInfo.put(m,info);
 
             }
             while (markerCursor.moveToNext());  // until you exhaust all the rows. returns false when we reach the end of the cursor
