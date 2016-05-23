@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import hk.ust.cse.comp4521.taiotourism.Constants;
 import hk.ust.cse.comp4521.taiotourism.TaiODataContract;
@@ -86,6 +87,9 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.i(TAG, "starting sync");
 
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+02:00"));
+        Log.i("formatter",formatter.getTimeZone().toString());
+
         mSharedPreferences = mContext.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,Context.MODE_PRIVATE);
 
         try {
@@ -95,13 +99,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             //There was an error when retrieving the date so we just reset it
             SharedPreferences.Editor editor = mSharedPreferences.edit();
             lastUpdate = new Date();
-            editor.putString(Constants.SHAREDPREF_LAST_UPDATE,new Date().toString());
+            editor.putString(Constants.SHAREDPREF_LAST_UPDATE,formatter.format(new Date()));
             editor.commit();
-            Log.i(TAG,"Updated last update: " + lastUpdate);
+            Log.i(TAG,"Updated last update: " + formatter.format(lastUpdate));
             e.printStackTrace();
         }
 
-        Log.i(TAG,"Last update: " + lastUpdate);
+        Log.i(TAG,"Last update: " + formatter.format(lastUpdate));
 
         SyncResult result = new SyncResult();
 
@@ -109,10 +113,10 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             Looper.prepare();
             Log.i(TAG, "trying get all places");
 
-            getUpdate(String.valueOf(lastUpdate),getUpdateUrl);
-            getUpdate(String.valueOf(lastUpdate),getGenInfoUpdateUrl);
+            getUpdate(formatter.format(lastUpdate),getUpdateUrl);
+            getUpdate(formatter.format(lastUpdate),getGenInfoUpdateUrl);
 
-            setLastUpdatPreference();
+            setLastUpdatePreference();
         }
         catch (Exception e) {
             syncResult.hasHardError();
@@ -122,11 +126,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i(TAG, "done sync");
     }
 
-    private void setLastUpdatPreference() {
+    private void setLastUpdatePreference() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(Constants.SHAREDPREF_LAST_UPDATE, String.valueOf(new Date()));
+        editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
+        //editor.putString(Constants.SHAREDPREF_LAST_UPDATE, "Mon May 23 14:58:14 UTC 2016");
         editor.commit();
-        Log.i(TAG,"Updated last update: " + lastUpdate);
+        Log.i(TAG,"Updated last update: " + formatter.format(lastUpdate));
     }
 
     private void deletePoi(Long id) {

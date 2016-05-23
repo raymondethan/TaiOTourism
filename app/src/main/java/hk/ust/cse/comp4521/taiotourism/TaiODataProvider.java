@@ -149,9 +149,6 @@ public class TaiODataProvider extends ContentProvider {
         int uriType = uriMatcher.match(uri);
         SQLiteDatabase sqlDB = db.getWritableDatabase();
         int rowsDeleted = 0;
-        Log.i("Delete poi uri", uri.toString());
-        Log.i("Delete poi selection", selection);
-        Log.i("Delete poi sel args", String.valueOf(selectionArgs));
         switch (uriType) {
             case POI_ENTRY:
                 Log.i("Delete poi","deleting from poi entry");

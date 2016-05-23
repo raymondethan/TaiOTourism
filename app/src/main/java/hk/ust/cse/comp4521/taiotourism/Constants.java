@@ -46,7 +46,7 @@ public final class Constants {
     public static final float ZOOM_LEVEL = 12;
 
     public static final String SHAREDPREF_LAST_UPDATE = "LAST_UPDATE";
-    public static final String LAST_UPDATE_DEFAULT = "1990-00-10T00:00:00.000Z";
+    public static final String LAST_UPDATE_DEFAULT = "Mon May 23 23:14:54 UTC 2010";
     //public static final String DATE_FORMAT = "yyyy-MM-ddhh:mm:ss:SSS";
     public static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss z yyyy";
 
