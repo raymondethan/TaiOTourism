@@ -12,18 +12,7 @@ public final class Constants {
     private Constants() {
     }
 
-    public static final int SUCCESS_RESULT = 0;
-
-    public static final int FAILURE_RESULT = 1;
-
     public static final String PACKAGE_NAME = "hk.ust.cse.comp4521.taiotourism";
-
-    public static final String RECEIVER = PACKAGE_NAME + ".RECEIVER";
-
-    public static final String RESULT_DATA_KEY = PACKAGE_NAME + ".RESULT_DATA_KEY";
-
-    public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME + ".LOCATION_DATA_EXTRA";
-
 
     public static final String SHARED_PREFERENCES_NAME = PACKAGE_NAME + ".SHARED_PREFERENCES_NAME";
     public static final String SHARED_PREFERENCES_LANG = "language";    // key for language setting
@@ -58,7 +47,8 @@ public final class Constants {
 
     public static final String SHAREDPREF_LAST_UPDATE = "LAST_UPDATE";
     public static final String LAST_UPDATE_DEFAULT = "1990-00-10T00:00:00.000Z";
-    public static final String DATE_FORMAT = "yyyy-MM-ddhh:mm:ss:SSS";
+    //public static final String DATE_FORMAT = "yyyy-MM-ddhh:mm:ss:SSS";
+    public static final String DATE_FORMAT = "EEE MMM dd HH:mm:ss z yyyy";
 
     // Fragment's arguments
     // used to define the filter setting of the map from the menu

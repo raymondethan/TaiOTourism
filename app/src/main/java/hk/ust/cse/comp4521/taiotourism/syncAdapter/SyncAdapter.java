@@ -24,43 +24,22 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.internal.$Gson$Types;
-import com.google.gson.reflect.TypeToken;
-import com.strongloop.android.loopback.Model;
-import com.strongloop.android.loopback.ModelRepository;
-import com.strongloop.android.loopback.RestAdapter;
-import com.strongloop.android.loopback.callbacks.ListCallback;
-import com.strongloop.android.loopback.callbacks.ObjectCallback;
-import com.strongloop.android.remoting.Repository;
-import com.strongloop.android.remoting.adapters.Adapter;
-import com.strongloop.android.remoting.adapters.RestContractItem;
-
-import org.json.JSONArray;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import hk.ust.cse.comp4521.taiotourism.Constants;
 import hk.ust.cse.comp4521.taiotourism.TaiODataContract;
@@ -111,11 +90,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             lastUpdate = formatter.parse(mSharedPreferences.getString(Constants.SHAREDPREF_LAST_UPDATE,Constants.LAST_UPDATE_DEFAULT));
+            //lastUpdate = mSharedPreferences.getString(Constants.SHAREDPREF_LAST_UPDATE,Constants.LAST_UPDATE_DEFAULT);
         } catch (ParseException e) {
             //There was an error when retrieving the date so we just reset it
             SharedPreferences.Editor editor = mSharedPreferences.edit();
             lastUpdate = new Date();
-            editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
+            editor.putString(Constants.SHAREDPREF_LAST_UPDATE,new Date().toString());
             editor.commit();
             Log.i(TAG,"Updated last update: " + lastUpdate);
             e.printStackTrace();
@@ -128,14 +108,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             Looper.prepare();
             Log.i(TAG, "trying get all places");
-            //TODO: get rid of this before submission
 
-            getUpdate(formatter.format(lastUpdate),getUpdateUrl);
-            getUpdate(formatter.format(lastUpdate),getGenInfoUpdateUrl);
+            getUpdate(String.valueOf(lastUpdate),getUpdateUrl);
+            getUpdate(String.valueOf(lastUpdate),getGenInfoUpdateUrl);
 
             setLastUpdatPreference();
-            //getAllPlaces();
-            //2016-05-10T00:00:00.000Z
         }
         catch (Exception e) {
             syncResult.hasHardError();
@@ -147,25 +124,26 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void setLastUpdatPreference() {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(Constants.SHAREDPREF_LAST_UPDATE, formatter.format(new Date()));
+        editor.putString(Constants.SHAREDPREF_LAST_UPDATE, String.valueOf(new Date()));
         editor.commit();
         Log.i(TAG,"Updated last update: " + lastUpdate);
     }
 
-    private void deletePlaces() throws RemoteException {
-
-        //int retval = mContext.getContentResolver().delete(POIContract.POIProvider.CONTENT_URI, null, null);
-        int retval = 0;
-
-        Log.i(TAG, "Rows deleted: "+retval);
-    }
-
     private void deletePoi(Long id) {
         try {
-            mContentResolver.delete(TaiODataProvider.POIENTRY_URI,id+"=?",new String[] {id.toString()});
+            mContentResolver.delete(TaiODataProvider.POIENTRY_URI,TaiODataContract.POIEntry._ID+"=?",new String[] {id.toString()});
             Log.i("Poi deleted",id.toString());
         } catch (Exception e) {
             Log.e("Poi failed to delete", e.toString());
+        }
+    }
+
+    private void deleteGeneralInfo() {
+        try {
+            mContentResolver.delete(TaiODataProvider.GENERALINFO_URI,null,null);
+            Log.i("General Info","erased");
+        } catch (Exception e) {
+            Log.e("General Info","failed to erase");
         }
     }
 
@@ -184,31 +162,30 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
             mCursor.moveToFirst();
             long id = mCursor.getLong(mCursor.getColumnIndexOrThrow(_ID));
             deletePoi(id);
-        } else {
-            Log.i(TAG, "Inserting:  " + poi.getName() + ", " + poi.getDescription());
-            final ContentValues values = new ContentValues();
-            values.put(TaiODataContract.POIEntry.COLUMN_NAME, poi.getName());
-            values.put(TaiODataContract.POIEntry.COLUMN_NAME_CH, poi.getNameCH());
-            values.put(TaiODataContract.POIEntry._ID, ((Double) poi.getId()).intValue());
-            values.put(TaiODataContract.POIEntry.COLUMN_LATITUDE, poi.getCoordinates().getLat());
-            values.put(TaiODataContract.POIEntry.COLUMN_LONGITUDE, poi.getCoordinates().getLng());
-            values.put(TaiODataContract.POIEntry.COLUMN_CATEGORY, poi.getCategory());
-            values.put(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, poi.getTourOrder());
-            values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION, poi.getDescription());
-            values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION_CH, poi.getDescriptionCH());
-            values.put(TaiODataContract.POIEntry.COLUMN_RATING, poi.getRating());
-            values.put(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER, poi.getCounter());
-            values.put(TaiODataContract.POIEntry.COLUMN_LAST_MODIFIED, poi.getLastModified());
-            values.put(TaiODataContract.POIEntry.COLUMN_PICTURE_URL, poi.getPictureUrl());
-            Uri contractUri = mContentResolver.insert(TaiODataProvider.POIENTRY_URI, values);
-            long rawContactId = ContentUris.parseId(contractUri);
-            Log.i("Inserted ID: ", String.valueOf(rawContactId));
         }
+        final ContentValues values = new ContentValues();
+        values.put(TaiODataContract.POIEntry.COLUMN_NAME, poi.getName());
+        values.put(TaiODataContract.POIEntry.COLUMN_NAME_CH, poi.getNameCH());
+        values.put(TaiODataContract.POIEntry._ID, ((Double) poi.getId()).intValue());
+        values.put(TaiODataContract.POIEntry.COLUMN_LATITUDE, poi.getCoordinates().getLat());
+        values.put(TaiODataContract.POIEntry.COLUMN_LONGITUDE, poi.getCoordinates().getLng());
+        values.put(TaiODataContract.POIEntry.COLUMN_CATEGORY, poi.getCategory());
+        values.put(TaiODataContract.POIEntry.COLUMN_TOUR_ORDER, poi.getTourOrder());
+        values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION, poi.getDescription());
+        values.put(TaiODataContract.POIEntry.COLUMN_DESCRIPTION_CH, poi.getDescriptionCH());
+        values.put(TaiODataContract.POIEntry.COLUMN_RATING, poi.getRating());
+        values.put(TaiODataContract.POIEntry.COLUMN_VISIT_COUNTER, poi.getCounter());
+        values.put(TaiODataContract.POIEntry.COLUMN_LAST_MODIFIED, poi.getLastModified());
+        values.put(TaiODataContract.POIEntry.COLUMN_PICTURE_URL, poi.getPictureUrl());
+        Uri contractUri = mContentResolver.insert(TaiODataProvider.POIENTRY_URI, values);
+        long rawContactId = ContentUris.parseId(contractUri);
+        Log.i("Inserted ID: ", String.valueOf(rawContactId));
         mCursor.close();
     }
 
     private void insertGeneralInfo(GeneralInfoModel genInfo) {
         Log.i(TAG, "Inserting:  " + genInfo.getTaiODescription() + ", " + genInfo.getYwcaDesciption());
+        deleteGeneralInfo();
         final ContentValues values = new ContentValues();
         values.put(TaiODataContract.GeneralInfo.COLUMN_NAME, "General Information");
         values.put(TaiODataContract.GeneralInfo.COLUMN_TAIO_INFO, genInfo.getTaiODescription());
@@ -260,11 +237,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
         HttpURLConnection urlConnection;
         Integer result = 0;
         //We need to do this because loopback formats dates differently than Java can
-        lastUpdate = lastUpdate.substring(0,10) + "T" + lastUpdate.substring(10,18) + "." + lastUpdate.substring(19,lastUpdate.length()) + "Z";
-        String serverUrl = this.serverUrl + getUpdateUrl + lastUpdate;
+        //lastUpdate = lastUpdate.substring(0,10) + "T" + lastUpdate.substring(10,18) + "." + lastUpdate.substring(19,lastUpdate.length()) + "Z";
+        String serverUrl = this.serverUrl + getUpdateUrl + lastUpdate.replace(" ","%20").replace(":","%3A").replace("+","%2B");
+        //String serverUrl = "http://52.221.252.163:3000/api/PointOfInterests/getUpdate?date=Mon%20May%2021%2021%3A12%3A05%20GMT%2B08%3A00%202016";
         try {
                 /* forming th java.net.URL object */
             Log.e(TAG, "server update ulr is "+serverUrl);
+            //Log.e(TAG, "server update ulr1 is "+serverUrl1);
             URL url = new URL(serverUrl);
             urlConnection = (HttpURLConnection) url.openConnection();
 

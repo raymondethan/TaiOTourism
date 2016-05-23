@@ -149,8 +149,12 @@ public class TaiODataProvider extends ContentProvider {
         int uriType = uriMatcher.match(uri);
         SQLiteDatabase sqlDB = db.getWritableDatabase();
         int rowsDeleted = 0;
+        Log.i("Delete poi uri", uri.toString());
+        Log.i("Delete poi selection", selection);
+        Log.i("Delete poi sel args", String.valueOf(selectionArgs));
         switch (uriType) {
             case POI_ENTRY:
+                Log.i("Delete poi","deleting from poi entry");
                 rowsDeleted = sqlDB.delete(POIEntry.TABLE_NAME, selection,
                         selectionArgs);
                 break;
@@ -163,6 +167,7 @@ public class TaiODataProvider extends ContentProvider {
                         selectionArgs);
                 break;
             case POI_ENTRY_ID: {
+                Log.i("Delete poi","deleting from poi entry id");
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection)) {
                     rowsDeleted = sqlDB.delete(POIEntry.TABLE_NAME,
@@ -207,6 +212,7 @@ public class TaiODataProvider extends ContentProvider {
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
+        Log.i("Delete poi",String.valueOf(rowsDeleted));
         getContext().getContentResolver().notifyChange(uri, null);
         return rowsDeleted;
     }
