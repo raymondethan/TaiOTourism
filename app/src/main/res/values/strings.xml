@@ -4,6 +4,18 @@
     <string name="tai_o">Tai O</string>
     <string name="btn_ok">OK</string>
     <string name="btn_cancel">Cancel</string>
+    <string name="ywca">YWCA</string>
+
+    <!--YWCA information-->
+    <string name="ywca_website">http://cerc.ywca.org.hk</string>
+    <string name="ywca_email">cerc@ywca.org.hk</string>
+    <string name="ycwa_telephone">2985 6310</string>
+    <string name="ywca_description">The Tai O Cultural and Economic Resource Centre is dedicated to
+        promoting regional economics by facilitating the interactions of locals allowing them to
+        share their culture with visitors through ecological and cultural tourism outreach programs.
+        We provide job training to low-skilled, under-educated local residents for the sustainable
+        promotion and preservation of Tai O's unique and timeless culture.
+    </string>
 
     <!--toolbar title-->
     <string name="toolbar_home">Tai O</string>
@@ -12,6 +24,13 @@
     <string name="toolbar_restaurants">Restaurants</string>
     <string name="toolbar_facilities">Facilities</string>
     <string name="toolbar_transportation">Transportation</string>
+
+    <!--fragment home page-->
+    <string name="by_ywca">By YWCA</string>
+    <string name="map">Map</string>
+    <string name="take_tour">Take the Tour</string>
+    <string name="about_ywca">About YWCA</string>
+    <string name="transportation">Transportation details</string>
 
     <!--fragments list and poi-->
     <string name="opening_hours">Opening hours: %s</string>
@@ -34,7 +53,8 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
-    <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
+    <string name="no_location_detected">No location detected.
+        Make sure location is enabled on the device.</string>
     <string name="no_geocoder_available">No geocoder available</string>
 
     <!--<Action>-->

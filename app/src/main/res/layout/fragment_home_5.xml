@@ -29,7 +29,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:text="Tai O Guide"
+                    android:text="@string/app_name"
                     android:color="#fff"
                     android:id="@+id/textView5"
                     android:textColor="#fff"
@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="By YCMA"
+                    android:text="@string/by_ywca"
                     android:id="@+id/textView6"
                     android:textColor="#BEFFFFFF" />
 
@@ -71,7 +71,7 @@
 
 
                 <Button
-                    android:text="Map"
+                    android:text="@string/map"
                     android:id="@+id/home_map_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -83,7 +83,7 @@
                     android:gravity="center_vertical|left"
                     android:layout_marginBottom="10dp" />
                 <Button
-                    android:text="Take the tour"
+                    android:text="@string/take_tour"
                     android:id="@+id/home_tour_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -95,7 +95,7 @@
                     android:drawableLeft="@android:drawable/ic_menu_directions"
                     android:layout_marginBottom="10dp" />
                 <Button
-                    android:text="Transport Information"
+                    android:text="@string/transportation"
                     android:id="@+id/home_transport_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -107,7 +107,7 @@
                     android:drawableLeft="@android:drawable/ic_menu_info_details"
                     android:layout_marginBottom="10dp" />
                 <Button
-                    android:text="About YCMA"
+                    android:text="@string/about_ywca"
                     android:id="@+id/home_about_button"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -32,7 +32,6 @@ import android.view.MenuItem;
 
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.GeoPoint;
 import hk.ust.cse.comp4521.taiotourism.syncAdapter.POIModel;
-import hk.ust.cse.comp4521.taiotourism.syncAdapter.SyncAdapter;
 
 import com.strongloop.android.loopback.RestAdapter;
 

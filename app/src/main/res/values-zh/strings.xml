@@ -5,6 +5,10 @@
     <string name="tai_o">大澳</string>
     <string name="btn_ok">是</string>
     <string name="btn_cancel">取消</string>
+    <string name="ywca">香港基督教女青年會</string>
+
+    <!--YWCA information-->
+    <string name="ywca_description">本中心透過運用大澳的文化和生態兩大資本，協助地區上低技術和低學歷的本土居民提供在職培訓及就業機會，為大澳的可持續發展繼續踏出寶貴的步伐。</string>
 
     <!--toolbar title-->
     <string name="toolbar_home">大澳</string>
@@ -12,7 +16,14 @@
     <string name="toolbar_tour_stops">遊站</string>
     <string name="toolbar_restaurants">餐廳</string>
     <string name="toolbar_facilities">設備</string>
-    <string name="toolbar_transportation">Transportation</string>
+    <string name="toolbar_transportation">怎么去</string>
+
+    <!--fragment home page-->
+    <string name="by_ywca">由 香港基督教女青年會</string>
+    <string name="map">地圖</string>
+    <string name="take_tour">乘坐觀光遊</string>
+    <string name="about_ywca">关于我们</string>
+    <string name="transportation">怎么去</string>
 
     <!--fragments list and poi-->
     <string name="opening_hours">營業時間: %s</string>
@@ -31,7 +42,8 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
-    <string name="no_location_detected">No location detected. Make sure location is enabled on the device.</string>
+    <string name="no_location_detected">No location detected.
+        Make sure location is enabled on the device.</string>
     <string name="no_geocoder_available">No geocoder available</string>
 
     <!--Action-->
