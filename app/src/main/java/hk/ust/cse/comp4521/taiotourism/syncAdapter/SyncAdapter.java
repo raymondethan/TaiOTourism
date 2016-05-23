@@ -87,14 +87,13 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.i(TAG, "starting sync");
 
-        formatter.setTimeZone(TimeZone.getTimeZone("GMT+02:00"));
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         Log.i("formatter",formatter.getTimeZone().toString());
 
         mSharedPreferences = mContext.getSharedPreferences(Constants.SHARED_PREFERENCES_NAME,Context.MODE_PRIVATE);
 
         try {
             lastUpdate = formatter.parse(mSharedPreferences.getString(Constants.SHAREDPREF_LAST_UPDATE,Constants.LAST_UPDATE_DEFAULT));
-            //lastUpdate = mSharedPreferences.getString(Constants.SHAREDPREF_LAST_UPDATE,Constants.LAST_UPDATE_DEFAULT);
         } catch (ParseException e) {
             //There was an error when retrieving the date so we just reset it
             SharedPreferences.Editor editor = mSharedPreferences.edit();
