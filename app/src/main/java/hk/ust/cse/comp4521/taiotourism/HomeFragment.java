@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     public void onResume () {
         super.onResume();
         ((MainActivity)getActivity()).toolbar.getBackground().setAlpha(0);
-        ((MainActivity)getActivity()).findViewById(R.id.main_activity_bg).setBackgroundResource(R.drawable.home_bg_8);
+        ((MainActivity)getActivity()).findViewById(R.id.main_activity_bg).setBackgroundResource(R.drawable.home_bg_10);
         ((MainActivity)getActivity()).nvDrawer.getMenu().getItem(0).setChecked(true);
     }
 

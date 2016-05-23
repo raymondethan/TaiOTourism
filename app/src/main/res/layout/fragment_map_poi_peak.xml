@@ -33,14 +33,14 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_margin="5dp">
 
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="match_parent"
+                android:layout_width="155dp"
                 android:layout_height="match_parent">
 
                 <TextView
@@ -55,16 +55,40 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Medium Text"
-                    android:id="@+id/textView4" />
+                    android:id="@+id/Title_Two" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="&quot;Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...&quot; &quot;There is no one who loves pain itself, who seeks after it and wants to have it, simply because it is pain...&quot;  What is Lorem Ipsum? Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book."
                     android:id="@+id/Description" />
 
             </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableBottom="@android:drawable/ic_menu_mapmode">
+
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="x"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:background="@color/colorGrey"
+                android:id="@+id/close" />
+            <Button
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:text=">"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:background="@color/colorGrey"
+                android:id="@+id/more" />
+
         </LinearLayout>
 
     </LinearLayout>

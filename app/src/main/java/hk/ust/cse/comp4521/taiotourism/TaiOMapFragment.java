@@ -70,6 +70,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -398,14 +399,21 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
         if (poi_closed) {
             //Only change the layout information if a popup is not already open
             TextView title = (TextView) poi_peak.findViewById(R.id.Title);
+            TextView title_two = (TextView) poi_peak.findViewById(R.id.Title_Two);
             TextView description = (TextView) poi_peak.findViewById(R.id.Description);
 
             //Change this to the marker image url
             ImageView image = (ImageView) poi_peak.findViewById(R.id.POI_image);
+            Picasso.with(getContext())
+                    .load(markerInfo.get(marker).get(pictureUrlIndex))
+                    .into(image);
+
             image.setBackgroundResource(R.drawable.nav_drawer_head);
 
             title.setText(marker.getTitle());
+            title_two.setText(markerInfo.get(marker).get(openingHoursIndex));
             description.setText(marker.getSnippet());
+
             animatePopup(ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight(), m.getHeight() - poi_peak.getHeight()));
         } else {
             animatePopup(ObjectAnimator.ofFloat(poi_peak, View.TRANSLATION_Y, m.getHeight() - poi_peak.getHeight(), m.getHeight()));
@@ -788,6 +796,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
 
     // TODO: setup interface for main activity to change content pane according to events here.
     public interface OnFragmentInteractionListener {
+        // Implemented in main activity.
         void OnMapFragmentPOIPopupInteraction(String name, String description, String pictureUrl, String openingHours, double rating, double latitude, double longitude);
     }
 

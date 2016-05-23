@@ -40,5 +40,6 @@
         app:menu="@menu/drawer_view" />
     <!--NOTE: app:headerLayout inflates the specified layout into the header automatically-->
 
+
 </android.support.v4.widget.DrawerLayout>
 
