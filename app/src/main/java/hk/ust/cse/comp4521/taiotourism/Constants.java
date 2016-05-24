@@ -43,7 +43,7 @@ public final class Constants {
     public static final String CATEGORY_RESTAURANT_TEXT = "Restaurants";
     public static final String CATEGORY_FACILITY_TEXT = "Facilities";
 
-    public static final float ZOOM_LEVEL = 12;
+    public static final float ZOOM_LEVEL = 15;
 
     public static final String SHAREDPREF_LAST_UPDATE = "LAST_UPDATE";
     public static final String LAST_UPDATE_DEFAULT = "Mon May 23 23:14:54 UTC 2010";

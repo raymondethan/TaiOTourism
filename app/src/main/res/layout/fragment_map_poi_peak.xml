@@ -27,7 +27,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/POI_image"
-                android:background="@drawable/nav_drawer_head"
                 android:layout_margin="5dp" />
         </LinearLayout>
 

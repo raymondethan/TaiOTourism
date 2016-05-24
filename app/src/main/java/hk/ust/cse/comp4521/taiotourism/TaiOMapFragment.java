@@ -99,6 +99,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private String mapFilterSetting = "";
     private double initialLat;
     private double initialLng;
+    private String pictureUrlPrefix = "http://52.221.252.163:3000/api/containers/images/download/";
 
     private OnFragmentInteractionListener mListener;
     private static ToPOIFragListener toPOIFragListener;
@@ -300,8 +301,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                     .findFragmentById(R.id.gmFragment);
             mapFragment.getMapAsync(this);
         }
-
-        Log.i(TAG + " onCreateView", mLastLocation.toString());
+        if (null != mLastLocation) {
+            Log.i(TAG + " onCreateView", mLastLocation.toString());
+        }
         return view;
     }
 
@@ -388,8 +390,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             public void onClick(View v) {
                 ArrayList<String> info = markerInfo.get(marker);
                 Log.i("popup info", String.valueOf(info));
+                String url = pictureUrlPrefix + info.get(pictureUrlIndex);
                 if (null != info) {
-                    mListener.OnMapFragmentPOIPopupInteraction(marker.getTitle(), marker.getSnippet(), info.get(pictureUrlIndex),
+                    mListener.OnMapFragmentPOIPopupInteraction(marker.getTitle(), marker.getSnippet(), url,
                             info.get(openingHoursIndex), Double.parseDouble(info.get(ratingIndex)),
                             marker.getPosition().latitude, marker.getPosition().longitude);
                 }
@@ -405,10 +408,10 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             //Change this to the marker image url
             ImageView image = (ImageView) poi_peak.findViewById(R.id.POI_image);
             Picasso.with(getContext())
-                    .load(pictureurlprefix + markerInfo.get(marker).get(pictureUrlIndex))
+                    .load(pictureUrlPrefix + markerInfo.get(marker).get(pictureUrlIndex))
                     .into(image);
 
-            image.setBackgroundResource(R.drawable.nav_drawer_head);
+//            image.setBackgroundResource(R.drawable.nav_drawer_head);
             System.out.println("oh: " + markerInfo.get(marker));
             title.setText(marker.getTitle());
             title_two.setText(markerInfo.get(marker).get(openingHoursIndex));
