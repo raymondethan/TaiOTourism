@@ -141,6 +141,14 @@ public class POIFragment extends Fragment implements View.OnClickListener{
             vRating.setText(getString(R.string.rating, poiRating));
         }
 
+        ((MainActivity)getActivity()).drawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println();
+                toMapListener.onToMapClickListener(poiLatitude, poiLongitude);
+            }
+        });
+
         return rootView;
     }
 

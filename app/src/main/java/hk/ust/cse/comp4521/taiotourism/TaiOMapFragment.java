@@ -405,11 +405,11 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             //Change this to the marker image url
             ImageView image = (ImageView) poi_peak.findViewById(R.id.POI_image);
             Picasso.with(getContext())
-                    .load(markerInfo.get(marker).get(pictureUrlIndex))
+                    .load(pictureurlprefix + markerInfo.get(marker).get(pictureUrlIndex))
                     .into(image);
 
             image.setBackgroundResource(R.drawable.nav_drawer_head);
-
+            System.out.println("oh: " + markerInfo.get(marker));
             title.setText(marker.getTitle());
             title_two.setText(markerInfo.get(marker).get(openingHoursIndex));
             description.setText(marker.getSnippet());
