@@ -141,6 +141,8 @@ public class POIFragment extends Fragment implements View.OnClickListener{
             vRating.setText(getString(R.string.rating, poiRating));
         }
 
+        Log.i("Picture URL",poiPictureUrl);
+
         return rootView;
     }
 

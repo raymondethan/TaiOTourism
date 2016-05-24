@@ -99,6 +99,7 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
     private String mapFilterSetting = "";
     private double initialLat;
     private double initialLng;
+    private String pictureUrlPrefix = "http://52.221.252.163:3000/api/containers/images/download/";
 
     private OnFragmentInteractionListener mListener;
     private static ToPOIFragListener toPOIFragListener;
@@ -389,8 +390,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             public void onClick(View v) {
                 ArrayList<String> info = markerInfo.get(marker);
                 Log.i("popup info", String.valueOf(info));
+                String url = pictureUrlPrefix + info.get(pictureUrlIndex);
                 if (null != info) {
-                    mListener.OnMapFragmentPOIPopupInteraction(marker.getTitle(), marker.getSnippet(), info.get(pictureUrlIndex),
+                    mListener.OnMapFragmentPOIPopupInteraction(marker.getTitle(), marker.getSnippet(), url,
                             info.get(openingHoursIndex), Double.parseDouble(info.get(ratingIndex)),
                             marker.getPosition().latitude, marker.getPosition().longitude);
                 }
