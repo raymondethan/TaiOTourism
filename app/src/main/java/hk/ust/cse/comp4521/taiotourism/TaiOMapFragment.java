@@ -409,7 +409,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
             ImageView image = (ImageView) poi_peak.findViewById(R.id.POI_image);
             Picasso.with(getContext())
                     .load(pictureUrlPrefix + markerInfo.get(marker).get(pictureUrlIndex))
+                    .fit().centerCrop()
                     .into(image);
+
 
 //            image.setBackgroundResource(R.drawable.nav_drawer_head);
             System.out.println("oh: " + markerInfo.get(marker));
