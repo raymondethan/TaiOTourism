@@ -300,8 +300,9 @@ public class TaiOMapFragment extends Fragment implements View.OnClickListener, G
                     .findFragmentById(R.id.gmFragment);
             mapFragment.getMapAsync(this);
         }
-
-        Log.i(TAG + " onCreateView", mLastLocation.toString());
+        if (null != mLastLocation) {
+            Log.i(TAG + " onCreateView", mLastLocation.toString());
+        }
         return view;
     }
 
